@@ -1,7 +1,7 @@
-package com.zalamena.condominios.moradores.domain.usecase
+package com.zalamena.moradores.domain.usecase
 
-import com.zalamena.condominios.moradores.domain.models.Morador
-import com.zalamena.condominios.moradores.domain.repository.MoradoresRepository
+import com.zalamena.moradores.domain.models.Morador
+import com.zalamena.moradores.domain.repository.MoradoresRepository
 
 class AddMoradorUseCase(
     private val moradoresRepository: MoradoresRepository

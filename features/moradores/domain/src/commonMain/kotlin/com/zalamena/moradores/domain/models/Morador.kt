@@ -1,4 +1,4 @@
-package com.zalamena.condominios.moradores.domain.models
+package com.zalamena.moradores.domain.models
 
 data class Morador(
     val nome: String,

@@ -1,6 +1,6 @@
-package com.zalamena.condominios.moradores.domain.repository
+package com.zalamena.moradores.domain.repository
 
-import com.zalamena.condominios.moradores.domain.models.Morador
+import com.zalamena.moradores.domain.models.Morador
 
 interface MoradoresRepository {
 

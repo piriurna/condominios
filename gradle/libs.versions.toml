@@ -25,6 +25,7 @@ assertk = "0.28.1"
 coreKtx = "1.7.0"
 composeTest = "1.9.0"
 junitJupiter = "5.13.4"
+jetbrainsKotlinJvm = "2.2.10"
 
 [libraries]
 androidx-core = { module = "androidx.test:core", version.ref = "coreKtx" }
@@ -71,3 +72,4 @@ composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "k
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
+jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
