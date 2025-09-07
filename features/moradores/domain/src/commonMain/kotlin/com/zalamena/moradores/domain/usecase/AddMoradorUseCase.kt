@@ -9,7 +9,7 @@ class AddMoradorUseCase(
 
 
     operator fun invoke(morador: Morador): Result<Unit> {
-        val existingMorador = moradoresRepository.getMorador(morador)
+        val existingMorador = moradoresRepository.getMorador(morador.cpf)
 
         if(existingMorador == null) {
             moradoresRepository.addMorador(morador)

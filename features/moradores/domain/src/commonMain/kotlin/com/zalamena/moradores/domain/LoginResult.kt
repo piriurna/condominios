@@ -1,6 +1,6 @@
 package com.zalamena.moradores.domain
 
-import com.zalamena.condominios.moradores.domain.models.Morador
+import com.zalamena.moradores.domain.models.Morador
 
 sealed class LoginResult {
 

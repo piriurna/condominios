@@ -12,7 +12,7 @@ interface MoradoresRepository {
 
     fun addMorador(morador: Morador)
 
-    fun getMorador(morador: Morador): Morador?
+    fun getMorador(cpf: String): Morador?
 
     fun getAllMoradores(): List<Morador>
 }

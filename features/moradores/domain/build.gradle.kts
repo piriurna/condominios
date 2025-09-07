@@ -1,5 +1,6 @@
 @file:OptIn(ExperimentalComposeLibrary::class)
 
+import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -12,6 +13,7 @@ plugins {
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    id("org.kodein.mock.mockmp") version "2.0.2"
 }
 
 kotlin {
@@ -66,7 +68,6 @@ kotlin {
             implementation(libs.kotlin.test)
             implementation(libs.assertk)
             implementation(compose.uiTest)
-
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -86,10 +87,16 @@ kotlin {
 }
 
 android {
-    namespace = "com.zalamena.condominios.morades.domain"
+    namespace = "com.zalamena.condominios.moradores.domain"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
+    }
+}
+
+mockmp {
+    onTest {
+        withHelper()
     }
 }

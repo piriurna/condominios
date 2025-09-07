@@ -21,9 +21,9 @@ class MoradoresRepositoryImpl(
         }
     }
 
-    override fun getMorador(morador: Morador): Morador? {
+    override fun getMorador(cpf: String): Morador? {
         with(moradorMapper) {
-            return moradoresDao.getAllMoradores().firstOrNull { it.cpf == morador.cpf }?.toDomain()
+            return moradoresDao.getAllMoradores().firstOrNull { it.cpf == cpf }?.toDomain()
         }
     }
 
