@@ -6,8 +6,6 @@ import com.zalamena.moradores.domain.repository.MoradoresRepository
 class AddMoradorUseCase(
     private val moradoresRepository: MoradoresRepository
 ) {
-
-
     operator fun invoke(morador: Morador): Result<Unit> {
         val existingMorador = moradoresRepository.getMorador(morador.cpf)
 

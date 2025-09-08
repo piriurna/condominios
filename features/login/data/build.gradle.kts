@@ -60,11 +60,14 @@ kotlin {
             implementation(libs.koin.core)
 
             implementation(libs.kotlinx.datetime)
+
+            implementation(project(":features:login:domain"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.assertk)
             implementation(compose.uiTest)
+            implementation(project(":features:login:domain"))
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -80,7 +83,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.zalamena.condominios.moradores.domain"
+    namespace = "com.zalamena.condominios.login.data"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

@@ -35,3 +35,5 @@ plugins {
 include(":composeApp")
 include(":features:moradores:data")
 include(":features:moradores:domain")
+include(":features:login:data")
+include(":features:login:domain")

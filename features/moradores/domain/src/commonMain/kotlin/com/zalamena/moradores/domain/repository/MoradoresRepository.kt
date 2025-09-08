@@ -6,10 +6,6 @@ interface MoradoresRepository {
 
     fun getCurrentLoggedMorador(): Morador?
 
-
-    fun loginMorador(morador: Morador)
-
-
     fun addMorador(morador: Morador)
 
     fun getMorador(cpf: String): Morador?
