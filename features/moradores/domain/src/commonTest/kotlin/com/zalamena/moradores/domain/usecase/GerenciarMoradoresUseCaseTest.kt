@@ -13,7 +13,7 @@ class GerenciarMoradoresUseCaseTest: MoradorTest() {
     }
 
     @Test
-    fun `GIVEN a user is getting added WHEN there is no user with same apartment and name THEN should add it`() {
+    fun `GIVEN a user is getting added WHEN there is no user with same cpf THEN should add it`() {
         setUpMocks()
 
         val dummyMorador = Morador(

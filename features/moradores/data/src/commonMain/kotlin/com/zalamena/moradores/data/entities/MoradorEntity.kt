@@ -11,4 +11,14 @@ data class MoradorEntity(
     val apartamento: String,
     val cpf: String
 ) {
+
+
+    companion object {
+        val dummy = MoradorEntity(
+            id = 1L,
+            nome = "nome",
+            apartamento = "apartamento",
+            cpf = "cpf"
+        )
+    }
 }

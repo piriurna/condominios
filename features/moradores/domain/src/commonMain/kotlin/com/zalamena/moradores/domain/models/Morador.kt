@@ -6,4 +6,13 @@ data class Morador(
     val cpf: String
 
 ) {
+
+    companion object {
+
+        val dummy = Morador(
+            nome = "nome",
+            apartamento = "apartamento",
+            cpf = "cpf"
+        )
+    }
 }

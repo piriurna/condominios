@@ -3,12 +3,9 @@ package com.zalamena.moradores.domain.repository
 import com.zalamena.moradores.domain.models.Morador
 
 interface MoradoresRepository {
+    fun addMorador(morador: Morador): Result<Unit>
 
-    fun getCurrentLoggedMorador(): Morador?
+    fun getMorador(cpf: String): Result<Morador?>
 
-    fun addMorador(morador: Morador)
-
-    fun getMorador(cpf: String): Morador?
-
-    fun getAllMoradores(): List<Morador>
+    fun getAllMoradores(): Result<List<Morador>>
 }

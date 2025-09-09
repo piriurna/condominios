@@ -8,11 +8,11 @@ class GetMoradoresUseCaseTest: MoradorTest() {
 
     @Test
     fun `GIVEN no user is added WHEN getting all moradores THEN should return empty list`() {
-        every { moradoresRepository.getAllMoradores() } returns emptyList()
+        every { moradoresRepository.getAllMoradores() } returns Result.success(emptyList())
 
         val moradores = getMoradoresUseCase()
 
-        assertEquals(emptyList(), moradores)
+        assertEquals(emptyList(), moradores.getOrThrow())
     }
 
 
@@ -24,10 +24,10 @@ class GetMoradoresUseCaseTest: MoradorTest() {
             cpf = "12345678900"
         )
 
-        every { moradoresRepository.getAllMoradores() } returns listOf(addedMorador)
+        every { moradoresRepository.getAllMoradores() } returns Result.success(listOf(addedMorador))
 
         val moradores = getMoradoresUseCase()
 
-        assertEquals(listOf(addedMorador), moradores)
+        assertEquals(listOf(addedMorador), moradores.getOrThrow())
     }
 }

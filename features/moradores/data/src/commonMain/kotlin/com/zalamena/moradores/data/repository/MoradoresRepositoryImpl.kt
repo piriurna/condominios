@@ -14,36 +14,28 @@ class MoradoresRepositoryImpl(
     val moradorMapper: MoradorMapper
 ): MoradoresRepository {
 
-    override fun loginMorador(morador: Morador) {
-        with(moradorMapper) {
-            val expiryDate = LocalDateTime.now().date.plus(DatePeriod(days = 1))
-            moradoresDao.setLoggedInMorador(morador.cpf, expiryDate.toEpochDays())
+    override fun addMorador(morador: Morador): Result<Unit> {
+        return runCatching {
+            with(moradorMapper) {
+                Result.success(moradoresDao.addMorador(morador.toEntity()))
+            }
         }
     }
 
-    override fun getMorador(cpf: String): Morador? {
-        with(moradorMapper) {
-            return moradoresDao.getAllMoradores().firstOrNull { it.cpf == cpf }?.toDomain()
+    override fun getMorador(cpf: String): Result<Morador?> {
+        return runCatching {
+            with(moradorMapper) {
+                moradoresDao.getMorador(cpf).toDomain()
+            }
         }
     }
 
-    override fun getCurrentLoggedMorador(): Morador? {
-        with(moradorMapper) {
-            return moradoresDao.getLoggedInMorador()?.toDomain()
+    override fun getAllMoradores(): Result<List<Morador>> {
+        return runCatching {
+            with(moradorMapper) {
+                moradoresDao.getAllMoradores().map { it.toDomain() }
+            }
         }
-    }
-
-    override fun addMorador(morador: Morador) {
-        with(moradorMapper) {
-            return moradoresDao.addMorador(morador.toEntity())
-        }
-    }
-
-    override fun getAllMoradores(): List<Morador> {
-        with(moradorMapper) {
-            return moradoresDao.getAllMoradores().map { it.toDomain() }
-        }
-
     }
 
 }

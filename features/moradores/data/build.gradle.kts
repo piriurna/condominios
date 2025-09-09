@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    id("org.kodein.mock.mockmp") version "2.0.2"
 }
 
 kotlin {
@@ -32,6 +33,8 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
+
+            implementation(libs.androidx.room.sqlite.wrapper)
         }
 
         androidUnitTest.dependencies {
@@ -79,16 +82,17 @@ kotlin {
             implementation(libs.kotlinx.coroutinesSwing)
         }
     }
+}
 
-    dependencies {
-        // KSP support for Room Compiler.
-        add("kspAndroid", libs.room.compiler)
+room {
+    schemaDirectory("$projectDir/schemas")
+}
 
-    }
-
-    room {
-        schemaDirectory("$projectDir/schemas")
-    }
+dependencies {
+    add("kspAndroid", libs.room.compiler)
+    add("kspIosSimulatorArm64", libs.room.compiler)
+    add("kspIosArm64", libs.room.compiler)
+    add("kspJvm", libs.room.compiler)
 }
 
 android {
@@ -97,5 +101,11 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
+    }
+}
+
+mockmp {
+    onTest {
+        withHelper()
     }
 }
