@@ -1,14 +1,13 @@
 @file:OptIn(ExperimentalComposeLibrary::class)
 
-import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.compose.ExperimentalComposeLibrary
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
     id("org.kodein.mock.mockmp") version "2.0.2"
 }
 
@@ -28,6 +27,8 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.koin.android)
+
+            implementation(libs.androidx.room.sqlite.wrapper)
         }
 
         androidUnitTest.dependencies {
@@ -43,32 +44,45 @@ kotlin {
             implementation(libs.koin.junit4)
         }
         commonMain.dependencies {
+            implementation(libs.androidx.lifecycle.viewmodelCompose)
+            implementation(libs.androidx.lifecycle.runtimeCompose)
+
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
             implementation(libs.koin.core)
 
             implementation(libs.kotlinx.datetime)
 
-            implementation(project(":features:login:domain"))
+
+            //Projects
+            implementation(project(":features:apartamentos:domain"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.assertk)
-            implementation(project(":features:login:domain"))
+
+            implementation(project(":features:apartamentos:domain"))
+
         }
         jvmMain.dependencies {
             implementation(libs.kotlinx.coroutinesSwing)
         }
     }
+}
 
-    dependencies {
-        add("kspAndroid", libs.room.compiler)
-        add("kspIosSimulatorArm64", libs.room.compiler)
-        add("kspIosArm64", libs.room.compiler)
-        add("kspJvm", libs.room.compiler)
-    }
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
+dependencies {
+    add("kspAndroid", libs.room.compiler)
+    add("kspIosSimulatorArm64", libs.room.compiler)
+    add("kspIosArm64", libs.room.compiler)
+    add("kspJvm", libs.room.compiler)
 }
 
 android {
-    namespace = "com.zalamena.condominios.login.data"
+    namespace = "com.zalamena.condominios.apartamentos.data"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
