@@ -7,7 +7,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.ksp)
     id("org.kodein.mock.mockmp") version "2.0.2"
 }
@@ -53,6 +53,8 @@ kotlin {
             implementation(libs.kotlin.test)
             implementation(libs.assertk)
             implementation(project(":features:login:domain"))
+
+            implementation(libs.kotlinx.coroutines.test)
         }
         jvmMain.dependencies {
             implementation(libs.kotlinx.coroutinesSwing)

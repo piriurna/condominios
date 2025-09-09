@@ -27,8 +27,6 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.koin.android)
-
-            implementation(libs.androidx.room.sqlite.wrapper)
         }
 
         androidUnitTest.dependencies {

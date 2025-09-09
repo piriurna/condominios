@@ -45,7 +45,7 @@ class MoradoresRepositoryTest: TestsWithMocks() {
 
 
     @Test
-    fun ` WHEN adding a valid user THEN it should success`() = runTest {
+    fun `WHEN adding a valid user THEN it should success`() = runTest {
         val morador = Morador.dummy
 
         with(moradorMapper) {
@@ -58,7 +58,7 @@ class MoradoresRepositoryTest: TestsWithMocks() {
     }
 
     @Test
-    fun `GIVEN no user is added WHEN trying to getting a user THEN should return a failure with UserNotFoundException`() {
+    fun `GIVEN no user is added with the same cpf WHEN trying to get a user THEN should return a failure with UserNotFoundException`() {
         val cpf = "cpf"
         every { moradoresDao.getMorador(cpf) } returns null
 

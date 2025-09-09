@@ -6,6 +6,6 @@ import com.zalamena.moradores.domain.models.Morador
 fun Morador.toUi(): MoradorUiData {
     return MoradorUiData(
         nome = nome,
-        apartamento = apartamento
+        apartamento = apartamentoId
     )
 }

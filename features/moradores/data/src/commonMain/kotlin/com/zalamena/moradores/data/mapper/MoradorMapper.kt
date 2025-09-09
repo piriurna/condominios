@@ -7,7 +7,7 @@ class MoradorMapper {
     fun MoradorEntity.toDomain(): Morador {
         return Morador(
             nome = nome,
-            apartamento = apartamento,
+            apartamentoId = apartamentoId,
             cpf = cpf
         )
     }
@@ -17,7 +17,7 @@ class MoradorMapper {
         return MoradorEntity(
             id = 0,
             nome = nome,
-            apartamento = apartamento,
+            apartamentoId = apartamentoId,
             cpf = cpf
         )
     }
