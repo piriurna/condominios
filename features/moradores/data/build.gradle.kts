@@ -96,7 +96,7 @@ dependencies {
 }
 
 android {
-    namespace = "com.zalamena.condominios.morades.data"
+    namespace = "com.zalamena.condominios.moradores.data"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
