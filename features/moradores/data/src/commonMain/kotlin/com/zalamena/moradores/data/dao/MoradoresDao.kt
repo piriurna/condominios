@@ -11,9 +11,13 @@ interface MoradoresDao {
     @Query("SELECT * FROM Morador")
     fun getAllMoradores(): List<MoradorEntity>
 
+
     @Query("SELECT * FROM Morador WHERE cpf = :cpf LIMIT 1")
     fun getMorador(cpf: String): MoradorEntity?
 
     @Insert
     fun addMorador(morador: MoradorEntity)
+
+    @Query("SELECT * FROM Morador WHERE apartamentoId =:apartamentoId")
+    fun getAllMoradoresForApartamento(apartamentoId: String): List<MoradorEntity>
 }

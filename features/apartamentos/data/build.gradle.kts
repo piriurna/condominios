@@ -55,13 +55,11 @@ kotlin {
 
 
             //Projects
-            implementation(project(":features:apartamentos:domain"))
+            api(project(":features:apartamentos:domain"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.assertk)
-
-            implementation(project(":features:apartamentos:domain"))
 
         }
         jvmMain.dependencies {

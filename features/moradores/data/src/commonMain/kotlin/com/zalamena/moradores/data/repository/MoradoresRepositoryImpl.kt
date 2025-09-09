@@ -40,4 +40,14 @@ class MoradoresRepositoryImpl(
         }
     }
 
+    override fun getAllMoradoresForApartamento(apartamentoId: String): Result<List<Morador>> {
+        return runCatching {
+            with(moradorMapper) {
+                moradoresDao
+                    .getAllMoradoresForApartamento(apartamentoId)
+                    .map { it.toDomain() }
+            }
+        }
+    }
+
 }

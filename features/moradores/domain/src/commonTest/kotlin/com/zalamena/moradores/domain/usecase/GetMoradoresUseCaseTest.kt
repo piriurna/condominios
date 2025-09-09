@@ -18,11 +18,7 @@ class GetMoradoresUseCaseTest: MoradorTest() {
 
     @Test
     fun `GIVEN a user is added WHEN getting all moradores THEN should return a list with added morador`() {
-        val addedMorador = Morador(
-            nome = "Dummy Morado",
-            apartamento = "101",
-            cpf = "12345678900"
-        )
+        val addedMorador = Morador.dummy
 
         every { moradoresRepository.getAllMoradores() } returns Result.success(listOf(addedMorador))
 

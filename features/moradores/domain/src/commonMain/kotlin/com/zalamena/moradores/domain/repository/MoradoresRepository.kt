@@ -8,4 +8,6 @@ interface MoradoresRepository {
     fun getMorador(cpf: String): Result<Morador>
 
     fun getAllMoradores(): Result<List<Morador>>
+
+    fun getAllMoradoresForApartamento(apartamentoId: String): Result<List<Morador>>
 }

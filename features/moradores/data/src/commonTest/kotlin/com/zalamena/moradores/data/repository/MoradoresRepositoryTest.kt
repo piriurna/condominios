@@ -60,8 +60,6 @@ class MoradoresRepositoryTest: TestsWithMocks() {
     @Test
     fun `GIVEN no user is added WHEN trying to getting a user THEN should return a failure with UserNotFoundException`() {
         val cpf = "cpf"
-
-
         every { moradoresDao.getMorador(cpf) } returns null
 
 

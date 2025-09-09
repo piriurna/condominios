@@ -14,6 +14,8 @@ abstract class MoradorTest: TestsWithMocks() {
 
     protected val getMoradoresUseCase by lazy {  GetMoradoresUseCase(moradoresRepository) }
 
+    protected val getMoradoresForApartamentoUseCase by lazy {  GetMoradoresForApartamentoUseCase(moradoresRepository) }
+
     override fun setUpMocks() {
         mocker.injectMocks(this)
     }

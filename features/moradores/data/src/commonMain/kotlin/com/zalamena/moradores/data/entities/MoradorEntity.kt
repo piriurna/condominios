@@ -3,13 +3,15 @@ package com.zalamena.moradores.data.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "Morador")
+@Entity(
+    tableName = "Morador",
+)
 data class MoradorEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
     val nome: String,
-    val apartamento: String,
-    val cpf: String
+    val cpf: String,
+    val apartamentoId: String
 ) {
 
 
@@ -17,8 +19,8 @@ data class MoradorEntity(
         val dummy = MoradorEntity(
             id = 1L,
             nome = "nome",
-            apartamento = "apartamento",
-            cpf = "cpf"
+            cpf = "cpf",
+            apartamentoId = "1"
         )
     }
 }
