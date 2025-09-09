@@ -1,8 +1,6 @@
 @file:OptIn(ExperimentalComposeLibrary::class)
 
-import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.compose.ExperimentalComposeLibrary
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
