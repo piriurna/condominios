@@ -1,6 +1,7 @@
 @file:OptIn(ExperimentalComposeLibrary::class)
 
 import org.jetbrains.compose.ExperimentalComposeLibrary
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -83,5 +84,21 @@ android {
 mockmp {
     onTest {
         withHelper()
+    }
+}
+
+dependencies {
+    debugImplementation(compose.uiTooling)
+}
+
+compose.desktop {
+    application {
+        mainClass = "com.zalamena.condominios.MainKt"
+
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "com.zalamena.condominios"
+            packageVersion = "1.0.0"
+        }
     }
 }
