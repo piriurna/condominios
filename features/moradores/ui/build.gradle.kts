@@ -73,7 +73,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.zalamena.condominios.moradores.domain"
+    namespace = "com.zalamena.condominios.moradores.ui"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
