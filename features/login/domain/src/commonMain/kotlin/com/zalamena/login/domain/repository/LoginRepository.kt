@@ -1,9 +1,8 @@
 package com.zalamena.login.domain.repository
 
-import com.zalamena.login.domain.repository.LoginException
+import com.zalamena.login.domain.models.User
 
 interface LoginRepository {
 
-    @Throws(LoginException::class)
-    suspend fun login(username: String, password: String): String
+    suspend fun login(username: String, password: String): Result<User>
 }

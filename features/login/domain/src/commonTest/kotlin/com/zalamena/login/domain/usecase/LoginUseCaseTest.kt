@@ -1,5 +1,6 @@
 package com.zalamena.login.domain.usecase
 
+import com.zalamena.login.domain.models.User
 import com.zalamena.login.domain.repository.LoginException
 import com.zalamena.login.domain.repository.LoginRepository
 import kotlinx.coroutines.test.runTest
@@ -21,23 +22,24 @@ class LoginUseCaseTest: TestsWithMocks() {
 
     val loginUseCase by lazy { LoginUseCase(loginRepository) }
 
-
-
     @Test
     fun `GIVEN a username and password logs in WHEN it exists and password matches THEN it should be a successful login`() = runTest {
         val username = "username"
         val password = "password"
-        val token = "token"
+        val cpf = "cpf"
+        val email = "email"
 
-
-        everySuspending { loginRepository.login(username, password) } returns token
+        everySuspending { loginRepository.login(username, password) } returns Result.success(User(
+            name = username,
+            cpf = cpf,
+            email = email
+        ))
 
 
         val result = loginUseCase(username, password)
 
 
         assertTrue(result.isSuccess)
-        assertEquals(result.getOrThrow(), token)
     }
 
 
@@ -46,16 +48,13 @@ class LoginUseCaseTest: TestsWithMocks() {
         val username = "username"
         val password = "password"
 
-        everySuspending { loginRepository.login(username, password) } runs {
-            throw LoginException.NonExistentUserException
-        }
+        everySuspending { loginRepository.login(username, password) } returns Result.failure(
+            LoginException.NonExistentUserException
+        )
 
         val result = loginUseCase(username, password)
 
-        assertTrue(result.isFailure)
-        result.onFailure {
-            assertEquals("Non existent user", it.message)
-        }
+        assertEquals(LoginException.NonExistentUserException, result.exceptionOrNull())
     }
 
     @Test
@@ -63,16 +62,13 @@ class LoginUseCaseTest: TestsWithMocks() {
         val username = "username"
         val password = "password"
 
-        everySuspending { loginRepository.login(username, password) } runs {
-            throw LoginException.InvalidCredentialsException
-        }
+        everySuspending { loginRepository.login(username, password) } returns
+                Result.failure(LoginException.InvalidCredentialsException)
 
         val result = loginUseCase(username, password)
 
         assertTrue(result.isFailure)
-        result.onFailure {
-            assertEquals("Invalid credentials", it.message)
-        }
+        assertEquals(LoginException.InvalidCredentialsException, result.exceptionOrNull())
     }
 
     @Test
@@ -81,16 +77,15 @@ class LoginUseCaseTest: TestsWithMocks() {
             val username = "username"
             val password = "password"
 
-            everySuspending { loginRepository.login(username, password) } runs {
-                throw LoginException.GenericErrorException("No internet connection")
-            }
+            everySuspending { loginRepository.login(username, password) } returns Result.failure(
+                LoginException.GenericErrorException("No internet connection")
+            )
 
             val result = loginUseCase(username, password)
 
             assertTrue(result.isFailure)
-            result.onFailure {
-                assertEquals("No internet connection", it.message)
-            }
+
+            assertEquals("No internet connection", result.exceptionOrNull()?.message)
         }
 
 }
