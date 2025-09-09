@@ -4,6 +4,7 @@ import com.zalamena.moradores.data.dao.MoradoresDao
 import com.zalamena.moradores.data.mapper.MoradorMapper
 import com.zalamena.moradores.data.utils.now
 import com.zalamena.moradores.domain.models.Morador
+import com.zalamena.moradores.domain.models.MoradorException
 import com.zalamena.moradores.domain.repository.MoradoresRepository
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDateTime
@@ -22,10 +23,11 @@ class MoradoresRepositoryImpl(
         }
     }
 
-    override fun getMorador(cpf: String): Result<Morador?> {
+    override fun getMorador(cpf: String): Result<Morador> {
         return runCatching {
             with(moradorMapper) {
-                moradoresDao.getMorador(cpf).toDomain()
+                moradoresDao.getMorador(cpf)?.toDomain()
+                    ?:throw MoradorException.MoradorNotFoundException
             }
         }
     }

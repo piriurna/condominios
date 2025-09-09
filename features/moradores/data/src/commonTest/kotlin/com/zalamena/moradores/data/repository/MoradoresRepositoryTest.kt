@@ -4,6 +4,7 @@ import com.zalamena.moradores.data.dao.MoradoresDao
 import com.zalamena.moradores.data.entities.MoradorEntity
 import com.zalamena.moradores.data.mapper.MoradorMapper
 import com.zalamena.moradores.domain.models.Morador
+import com.zalamena.moradores.domain.models.MoradorException
 import com.zalamena.moradores.domain.repository.MoradoresRepository
 import kotlinx.coroutines.test.runTest
 import org.kodein.mock.Mock
@@ -54,6 +55,21 @@ class MoradoresRepositoryTest: TestsWithMocks() {
         val addResult = moradoresRepository.addMorador(morador)
 
         assertTrue(addResult.isSuccess)
+    }
+
+    @Test
+    fun `GIVEN no user is added WHEN trying to getting a user THEN should return a failure with UserNotFoundException`() {
+        val cpf = "cpf"
+
+
+        every { moradoresDao.getMorador(cpf) } returns null
+
+
+        val result = moradoresRepository.getMorador(cpf)
+
+
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is MoradorException.MoradorNotFoundException)
     }
 
 

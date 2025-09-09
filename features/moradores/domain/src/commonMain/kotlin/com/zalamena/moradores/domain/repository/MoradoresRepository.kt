@@ -5,7 +5,7 @@ import com.zalamena.moradores.domain.models.Morador
 interface MoradoresRepository {
     fun addMorador(morador: Morador): Result<Unit>
 
-    fun getMorador(cpf: String): Result<Morador?>
+    fun getMorador(cpf: String): Result<Morador>
 
     fun getAllMoradores(): Result<List<Morador>>
 }
