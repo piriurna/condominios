@@ -37,7 +37,7 @@ class MoradoresRepositoryTest: TestsWithMocks() {
 
     @Test
     fun `GIVEN no user is added WHEN trying to get all users THEN it should return an empty list of morador`() = runTest {
-        every { moradoresDao.getAllMoradores() } returns emptyList()
+        everySuspending { moradoresDao.getAllMoradores() } returns emptyList()
 
         val result = moradoresRepository.getAllMoradores()
 
@@ -47,7 +47,7 @@ class MoradoresRepositoryTest: TestsWithMocks() {
 
     @Test
     fun `GIVEN a user is added WHEN trying to get all users THEN it should return a list with the morador`() = runTest {
-        every { moradoresDao.getAllMoradores() } returns
+        everySuspending { moradoresDao.getAllMoradores() } returns
                 listOf(MoradorWithIndividuoAndApartamentoEntity.dummy)
 
         val result = moradoresRepository.getAllMoradores()
@@ -66,7 +66,7 @@ class MoradoresRepositoryTest: TestsWithMocks() {
         )
 
         with(moradorMapper) {
-            every { moradoresDao.addMorador(morador) } runs {}
+            everySuspending { moradoresDao.addMorador(morador) } runs {}
         }
 
         val addResult = moradoresRepository.addMorador(Individuo.dummy, Apartamento.dummy)
@@ -78,7 +78,7 @@ class MoradoresRepositoryTest: TestsWithMocks() {
     fun `GIVEN no user is added with the same cpf WHEN trying to get a user THEN should return a failure with UserNotFoundException`() = runTest {
         val cpf = "cpf"
         val apartamentoId = "apartamentoId"
-        every { moradoresDao.getMorador(cpf, apartamentoId) } returns null
+        everySuspending { moradoresDao.getMorador(cpf, apartamentoId) } returns null
 
 
         val result = moradoresRepository.getMorador(cpf, apartamentoId)
@@ -92,7 +92,7 @@ class MoradoresRepositoryTest: TestsWithMocks() {
     @Test
     fun `GIVEN there is 1 morador in an apartment WHEN getting all moradores for apartment THEN should return a list with 1 morador`() = runTest {
         val apartamentoId = "apartamentoId"
-        every { moradoresDao.getAllMoradoresForApartamento(apartamentoId) } returns
+        everySuspending { moradoresDao.getAllMoradoresForApartamento(apartamentoId) } returns
                 listOf(MoradorWithIndividuoAndApartamentoEntity.dummy)
 
         val result = moradoresRepository.getAllMoradoresForApartamento(apartamentoId)
@@ -104,7 +104,7 @@ class MoradoresRepositoryTest: TestsWithMocks() {
     @Test
     fun `GIVEN there is no morador in an apartment WHEN getting all moradores for  apartment THEN should return empty list`() = runTest {
         val apartamentoId = "apartamentoId"
-        every { moradoresDao.getAllMoradoresForApartamento(apartamentoId) } returns
+        everySuspending { moradoresDao.getAllMoradoresForApartamento(apartamentoId) } returns
                 listOf()
 
         val result = moradoresRepository.getAllMoradoresForApartamento(apartamentoId)
@@ -116,7 +116,7 @@ class MoradoresRepositoryTest: TestsWithMocks() {
     @Test
     fun `GIVEN there is 1 morador in an apartment WHEN getting apartamento with moradores THEN should return a correct apartment and a list with 1 morador`() = runTest {
         val apartamentoId = "apartamentoId"
-        every { moradoresDao.getAllMoradoresForApartamento(apartamentoId) } returns
+        everySuspending { moradoresDao.getAllMoradoresForApartamento(apartamentoId) } returns
                 listOf(MoradorWithIndividuoAndApartamentoEntity.dummy)
 
         everySuspending { apartamentoRepository.getApartamento(apartamentoId) } returns Result.success(Apartamento.dummy)

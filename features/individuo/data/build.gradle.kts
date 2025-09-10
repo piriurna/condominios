@@ -3,6 +3,7 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.kodein.mock.gradle.MocKMPGradlePlugin
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -51,16 +52,15 @@ kotlin {
 
 
             //Projects
-            implementation(project(":features:moradores:domain"))
+            implementation(project(":features:individuo:domain"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.assertk)
 
-            implementation(project(":features:moradores:domain"))
-
             implementation(libs.kotlinx.coroutines.test)
 
+            implementation(project(":features:individuo:domain"))
         }
         jvmMain.dependencies {
             implementation(libs.kotlinx.coroutinesSwing)
@@ -90,6 +90,6 @@ android {
 
 mockmp {
     onTest {
-        withHelper()
+        withHelper(helper = MocKMPGradlePlugin.Helper.AutoDetect)
     }
 }
