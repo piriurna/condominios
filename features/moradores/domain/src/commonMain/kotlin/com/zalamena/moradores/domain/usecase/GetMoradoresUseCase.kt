@@ -6,7 +6,7 @@ import com.zalamena.moradores.domain.repository.MoradoresRepository
 class GetMoradoresUseCase(
     private val moradoresRepository: MoradoresRepository
 ) {
-    operator fun invoke(): Result<List<Morador>> {
+    suspend operator fun invoke(): Result<List<Morador>> {
         return moradoresRepository.getAllMoradores()
     }
 }

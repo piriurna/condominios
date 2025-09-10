@@ -50,13 +50,13 @@ kotlin {
 
 
             //Projects
-            implementation(project(":features:moradores:domain"))
+            api(project(":features:moradores:domain"))
+            api(project(":features:apartamentos:data"))
+            api(project(":features:individuo:data"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.assertk)
-
-            implementation(project(":features:moradores:domain"))
 
             implementation(libs.kotlinx.coroutines.test)
 

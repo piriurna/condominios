@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d41ad7755d5b205b5dbbd30c65ec1ecc",
+    "identityHash": "547078d54418da6df0eef6ea287a04ec",
     "entities": [
       {
         "tableName": "Morador",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `nome` TEXT NOT NULL, `cpf` TEXT NOT NULL, `apartamentoId` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `individuoId` TEXT NOT NULL, `apartamentoId` TEXT NOT NULL, FOREIGN KEY(`individuoId`) REFERENCES `Individuo`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`apartamentoId`) REFERENCES `Apartamento`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -15,14 +15,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "nome",
-            "columnName": "nome",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "cpf",
-            "columnName": "cpf",
+            "fieldPath": "individuoId",
+            "columnName": "individuoId",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -38,12 +32,36 @@
           "columnNames": [
             "id"
           ]
-        }
+        },
+        "foreignKeys": [
+          {
+            "table": "Individuo",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "individuoId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "Apartamento",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "apartamentoId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd41ad7755d5b205b5dbbd30c65ec1ecc')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '547078d54418da6df0eef6ea287a04ec')"
     ]
   }
 }

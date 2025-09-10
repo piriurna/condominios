@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
@@ -59,6 +59,8 @@ kotlin {
 
             implementation(libs.kotlinx.datetime)
             api(project(":features:moradores:domain"))
+            api(project(":features:apartamentos:ui"))
+            api(project(":features:individuo:ui"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

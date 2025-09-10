@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
@@ -73,7 +73,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.zalamena.individuo.moradores.ui"
+    namespace = "com.zalamena.condominios.individuo.ui"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

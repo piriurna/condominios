@@ -1,9 +1,14 @@
 package com.zalamena.moradores.domain.usecase
 
-import com.zalamena.moradores.domain.models.Morador
+import com.zalamena.condominios.apartamentos.domain.models.Apartamento
+import com.zalamena.condominios.apartamentos.domain.models.ApartamentoException
+import com.zalamena.condominios.individuo.domain.models.Individuo
+import com.zalamena.condominios.individuo.domain.models.IndividuoException
 import com.zalamena.moradores.domain.models.MoradorException
+import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class GerenciarMoradoresUseCaseTest: MoradorTest() {
@@ -13,27 +18,35 @@ class GerenciarMoradoresUseCaseTest: MoradorTest() {
     }
 
     @Test
-    fun `GIVEN a user is getting added WHEN there is no user with same cpf THEN should add it`() {
-        setUpMocks()
-        every { moradoresRepository.getMorador(Morador.dummy.cpf) } returns Result.failure(MoradorException.MoradorNotFoundException)
-        every { moradoresRepository.addMorador(Morador.dummy) } returns Result.success(Unit)
+    fun `GIVEN an individuo is getting added to an existing apartamento WHEN there is no user with same cpf in the apartamento THEN should add it`() = runTest {
+        everySuspending { moradoresRepository.getMorador(Individuo.dummy.cpf, Apartamento.dummy.id) } returns Result.failure(MoradorException.MoradorNotFoundException)
+        everySuspending { moradoresRepository.addMorador(Individuo.dummy, Apartamento.dummy) } returns Result.success(Unit)
 
-        val result = addMoradorUseCase.invoke(Morador.dummy)
+        val result = addMoradorUseCase.invoke(Individuo.dummy, Apartamento.dummy)
 
         assertTrue(result.isSuccess)
     }
 
 
     @Test
-    fun `GIVEN a user is getting added WHEN there is the same user added THEN should not add it`() {
-        val newDuplicateMorador = Morador.dummy
+    fun `GIVEN an individuo is getting added to a non existent apartamento THEN should fail it`() = runTest {
+        everySuspending { moradoresRepository.getMorador(Individuo.dummy.cpf, Apartamento.dummy.id) } returns Result
+            .failure(ApartamentoException.NoApartmentFoundException)
 
-        every { moradoresRepository.getMorador(newDuplicateMorador.cpf) } returns Result.success(newDuplicateMorador)
-        every { moradoresRepository.addMorador(newDuplicateMorador) } returns Result.failure(
-            MoradorException.DuplicateMoradorException)
-
-        val addResult = addMoradorUseCase.invoke(newDuplicateMorador)
+        val addResult = addMoradorUseCase.invoke(Individuo.dummy, Apartamento.dummy)
 
         assertTrue(addResult.isFailure)
+        assertEquals(ApartamentoException.NoApartmentFoundException, addResult.exceptionOrNull())
+    }
+
+    @Test
+    fun `GIVEN an non existent individuo is getting added to an existent apartamento THEN should fail it`() = runTest {
+        everySuspending { moradoresRepository.getMorador(Individuo.dummy.cpf, Apartamento.dummy.id) } returns Result
+            .failure(IndividuoException.IndividuoNotFoundException)
+
+        val addResult = addMoradorUseCase.invoke(Individuo.dummy, Apartamento.dummy)
+
+        assertTrue(addResult.isFailure)
+        assertEquals(IndividuoException.IndividuoNotFoundException, addResult.exceptionOrNull())
     }
 }

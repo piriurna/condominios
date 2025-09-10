@@ -43,10 +43,15 @@ kotlin {
             implementation(libs.koin.core)
 
             implementation(libs.kotlinx.datetime)
+
+            api(project(":features:individuo:domain"))
+            api(project(":features:apartamentos:domain"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.assertk)
+
+            implementation(libs.kotlinx.coroutines.test)
         }
         jvmMain.dependencies {
             implementation(libs.kotlinx.coroutinesSwing)

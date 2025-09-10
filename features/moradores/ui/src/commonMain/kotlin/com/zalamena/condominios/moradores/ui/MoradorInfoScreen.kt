@@ -1,5 +1,6 @@
 package com.zalamena.condominios.moradores.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.zalamena.condominios.moradores.ui.models.MoradorUiData
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -27,7 +29,7 @@ private fun MoradorInfoScreenContent(
 ) {
     if(uiState.morador != null) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().background(Color.White),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -38,7 +40,7 @@ private fun MoradorInfoScreenContent(
             Spacer(Modifier.height(12.dp))
 
             Text(
-                text = uiState.morador.apartamento
+                text = uiState.morador.apartamento.numero
             )
         }
     }

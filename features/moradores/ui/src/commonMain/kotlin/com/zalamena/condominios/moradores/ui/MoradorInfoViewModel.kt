@@ -21,12 +21,12 @@ class MoradorInfoViewModel constructor(
     val uiState: StateFlow<UiState> = _uiState
 
 
-    fun getMorador(cpf: String) {
+    suspend fun getMorador(cpf: String, apartamentoId: String) {
         _uiState.update {
             it.copy(isLoading = true)
         }
 
-        val moradorResult = getMoradorUseCase(cpf)
+        val moradorResult = getMoradorUseCase(cpf, apartamentoId)
 
 
         when {

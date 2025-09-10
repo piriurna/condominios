@@ -1,24 +1,16 @@
 package com.zalamena.moradores.data.mapper
 
+import com.zalamena.condominios.apartamentos.data.mapper.toDomain
+import com.zalamena.condominios.individuo.data.mapper.toDomain
 import com.zalamena.moradores.data.entities.MoradorEntity
+import com.zalamena.moradores.data.entities.MoradorWithIndividuoAndApartamentoEntity
 import com.zalamena.moradores.domain.models.Morador
 
 class MoradorMapper {
-    fun MoradorEntity.toDomain(): Morador {
+    fun MoradorWithIndividuoAndApartamentoEntity.toDomain(): Morador {
         return Morador(
-            nome = nome,
-            apartamentoId = apartamentoId,
-            cpf = cpf
-        )
-    }
-
-
-    fun Morador.toEntity(): MoradorEntity {
-        return MoradorEntity(
-            id = 0,
-            nome = nome,
-            apartamentoId = apartamentoId,
-            cpf = cpf
+            individuo = individuo.toDomain(),
+            apartamento = apartamento.toDomain()
         )
     }
 }

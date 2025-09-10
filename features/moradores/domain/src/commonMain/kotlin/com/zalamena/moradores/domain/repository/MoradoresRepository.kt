@@ -1,13 +1,18 @@
 package com.zalamena.moradores.domain.repository
 
+import com.zalamena.condominios.apartamentos.domain.models.Apartamento
+import com.zalamena.condominios.individuo.domain.models.Individuo
+import com.zalamena.moradores.domain.models.ApartamentoWithMoradores
 import com.zalamena.moradores.domain.models.Morador
 
 interface MoradoresRepository {
-    fun addMorador(morador: Morador): Result<Unit>
+    suspend fun addMorador(individuo: Individuo, apartamento: Apartamento): Result<Unit>
 
-    fun getMorador(cpf: String): Result<Morador>
+    suspend fun getMorador(cpf: String, apartamentoId: String): Result<Morador>
 
-    fun getAllMoradores(): Result<List<Morador>>
+    suspend fun getAllMoradores(): Result<List<Morador>>
 
-    fun getAllMoradoresForApartamento(apartamentoId: String): Result<List<Morador>>
+    suspend fun getAllMoradoresForApartamento(apartamentoId: String): Result<List<Morador>>
+
+    suspend fun getApartamentoWithMoradores(apartamentoId: String): Result<ApartamentoWithMoradores>
 }

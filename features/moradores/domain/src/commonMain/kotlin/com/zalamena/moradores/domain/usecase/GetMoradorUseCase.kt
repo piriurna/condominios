@@ -6,8 +6,8 @@ import com.zalamena.moradores.domain.repository.MoradoresRepository
 class GetMoradorUseCase(
     private val moradoresRepository: MoradoresRepository
 ) {
-    operator fun invoke(cpf: String): Result<Morador> {
-        return moradoresRepository.getMorador(cpf).getOrNull()?.let {
+    suspend operator fun invoke(cpf: String, apartamentoId: String): Result<Morador> {
+        return moradoresRepository.getMorador(cpf, apartamentoId).getOrNull()?.let {
             Result.success(it)
         }?: Result.failure(Exception("Morador não encontrado"))
     }

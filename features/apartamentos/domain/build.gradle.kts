@@ -48,8 +48,6 @@ kotlin {
             implementation(libs.kotlinx.datetime)
 
             implementation(libs.kotlinx.coroutines.test)
-
-            api(project(":features:moradores:domain"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

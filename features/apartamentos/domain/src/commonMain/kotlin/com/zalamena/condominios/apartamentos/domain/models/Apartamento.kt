@@ -1,20 +1,24 @@
 package com.zalamena.condominios.apartamentos.domain.models
 
-import com.zalamena.moradores.domain.models.Morador
+
+interface ApartamentoProperties {
+    val id: String
+    val numero: String
+    val andar: String
+}
+
 
 data class Apartamento(
-    val id: String,
-    val numero: String,
-    val andar: String,
-    val moradores: List<Morador>
-) {
+    override val id: String,
+    override val numero: String,
+    override val andar: String
+): ApartamentoProperties {
 
     companion object {
         val dummy = Apartamento(
             id = "id",
             numero = "numero",
-            andar = "andar",
-            moradores = emptyList()
+            andar = "andar"
         )
     }
 }

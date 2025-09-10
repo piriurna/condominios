@@ -1,14 +1,15 @@
 package com.zalamena.moradores.domain.usecase
 
 import com.zalamena.moradores.domain.models.Morador
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class GetMoradoresUseCaseTest: MoradorTest() {
 
     @Test
-    fun `GIVEN no user is added WHEN getting all moradores THEN should return empty list`() {
-        every { moradoresRepository.getAllMoradores() } returns Result.success(emptyList())
+    fun `GIVEN no user is added WHEN getting all moradores THEN should return empty list`() = runTest {
+        everySuspending { moradoresRepository.getAllMoradores() } returns Result.success(emptyList())
 
         val moradores = getMoradoresUseCase()
 
@@ -17,10 +18,10 @@ class GetMoradoresUseCaseTest: MoradorTest() {
 
 
     @Test
-    fun `GIVEN a user is added WHEN getting all moradores THEN should return a list with added morador`() {
+    fun `GIVEN a user is added WHEN getting all moradores THEN should return a list with added morador`() = runTest {
         val addedMorador = Morador.dummy
 
-        every { moradoresRepository.getAllMoradores() } returns Result.success(listOf(addedMorador))
+        everySuspending { moradoresRepository.getAllMoradores() } returns Result.success(listOf(addedMorador))
 
         val moradores = getMoradoresUseCase()
 
