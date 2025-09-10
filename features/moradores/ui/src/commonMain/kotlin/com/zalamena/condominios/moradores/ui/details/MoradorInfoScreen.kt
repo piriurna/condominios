@@ -1,4 +1,4 @@
-package com.zalamena.condominios.moradores.ui
+package com.zalamena.condominios.moradores.ui.details
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
