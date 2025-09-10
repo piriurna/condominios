@@ -1,9 +1,7 @@
 package com.zalamena.moradores.domain.usecase
 
 import com.zalamena.condominios.apartamentos.domain.models.Apartamento
-import com.zalamena.condominios.apartamentos.domain.models.ApartamentoException
 import com.zalamena.condominios.individuo.domain.models.Individuo
-import com.zalamena.moradores.domain.models.Morador
 import com.zalamena.moradores.domain.models.MoradorException
 import com.zalamena.moradores.domain.repository.MoradoresRepository
 

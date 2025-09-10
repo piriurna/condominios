@@ -60,6 +60,7 @@ kotlin {
             implementation(libs.kotlin.test)
             implementation(libs.assertk)
 
+            implementation(libs.kotlinx.coroutines.test)
         }
         jvmMain.dependencies {
             implementation(libs.kotlinx.coroutinesSwing)

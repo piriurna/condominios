@@ -23,8 +23,7 @@ tasks.register("runCommonTests") {
         subproject.tasks.matching { task ->
             println("TASK NAME: ${subproject.name}")
             task.name.endsWith("Test")
-                    && !task.name.contains("installDebugAndroidTest", ignoreCase = true)
-                    && !task.name.contains("uninstallDebugAndroidTest", ignoreCase = true)
+                    && task.name.contains("jvm", ignoreCase = true)
         }
     })
 }

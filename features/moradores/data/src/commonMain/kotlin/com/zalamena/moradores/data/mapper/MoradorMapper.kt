@@ -2,7 +2,6 @@ package com.zalamena.moradores.data.mapper
 
 import com.zalamena.condominios.apartamentos.data.mapper.toDomain
 import com.zalamena.condominios.individuo.data.mapper.toDomain
-import com.zalamena.moradores.data.entities.MoradorEntity
 import com.zalamena.moradores.data.entities.MoradorWithIndividuoAndApartamentoEntity
 import com.zalamena.moradores.domain.models.Morador
 

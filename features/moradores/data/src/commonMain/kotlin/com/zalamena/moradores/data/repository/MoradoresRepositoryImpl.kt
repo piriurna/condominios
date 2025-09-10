@@ -1,25 +1,16 @@
 package com.zalamena.moradores.data.repository
 
-import com.zalamena.condominios.apartamentos.data.dao.ApartamentoDao
-import com.zalamena.condominios.apartamentos.data.mapper.toDomain
-import com.zalamena.condominios.apartamentos.data.mapper.toEntity
 import com.zalamena.condominios.apartamentos.domain.models.Apartamento
 import com.zalamena.condominios.apartamentos.domain.repository.ApartamentosRepository
 import com.zalamena.condominios.individuo.data.mapper.toDomain
-import com.zalamena.condominios.individuo.data.mapper.toEntity
 import com.zalamena.condominios.individuo.domain.models.Individuo
-import com.zalamena.condominios.individuo.domain.repository.IndividuoRepository
 import com.zalamena.moradores.data.dao.MoradoresDao
 import com.zalamena.moradores.data.entities.MoradorEntity
 import com.zalamena.moradores.data.mapper.MoradorMapper
-import com.zalamena.moradores.data.utils.now
 import com.zalamena.moradores.domain.models.ApartamentoWithMoradores
 import com.zalamena.moradores.domain.models.Morador
 import com.zalamena.moradores.domain.models.MoradorException
 import com.zalamena.moradores.domain.repository.MoradoresRepository
-import kotlinx.datetime.DatePeriod
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.plus
 
 class MoradoresRepositoryImpl(
     val moradoresDao: MoradoresDao,
