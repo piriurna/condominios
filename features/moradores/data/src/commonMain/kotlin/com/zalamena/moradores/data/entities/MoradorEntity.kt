@@ -46,13 +46,13 @@ data class MoradorEntity(
 data class MoradorWithIndividuoAndApartamentoEntity(
     @Embedded val morador: MoradorEntity,
     @Relation(
-        parentColumn = "id",
-        entityColumn = "individuoId"
+        parentColumn = "individuoId",
+        entityColumn = "id"
     )
     val individuo: IndividuoEntity,
     @Relation(
-        parentColumn = "id",
-        entityColumn = "apartamentoId"
+        parentColumn = "apartamentoId",
+        entityColumn = "id"
     )
     val apartamento: ApartamentoEntity
 ) {

@@ -27,6 +27,7 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
+            implementation(libs.room.runtime.android)
         }
 
         androidUnitTest.dependencies {

@@ -45,10 +45,13 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
             implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
 
             api(project(":features:moradores:ui"))
             api(project(":features:moradores:data"))
             api(project(":features:database"))
+            api(project(":features:di"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

@@ -1,6 +1,7 @@
+package com.zalamena.condominios.database
+
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.zalamena.condominios.database.AppDatabase
 import java.io.File
 
 fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {

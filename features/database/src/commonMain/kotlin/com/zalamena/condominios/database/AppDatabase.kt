@@ -4,7 +4,9 @@ import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
+import com.zalamena.condominios.apartamentos.data.dao.ApartamentoDao
 import com.zalamena.condominios.apartamentos.data.entity.ApartamentoEntity
+import com.zalamena.condominios.individuo.data.dao.IndividuoDao
 import com.zalamena.condominios.individuo.data.entities.IndividuoEntity
 import com.zalamena.moradores.data.dao.MoradoresDao
 import com.zalamena.moradores.data.entities.MoradorEntity
@@ -17,6 +19,8 @@ import com.zalamena.moradores.data.entities.MoradorEntity
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getMoradoresDao(): MoradoresDao
+    abstract fun getApartamentosDao(): ApartamentoDao
+    abstract fun getIndividuoDao(): IndividuoDao
 }
 
 // The Room compiler generates the `actual` implementations.
