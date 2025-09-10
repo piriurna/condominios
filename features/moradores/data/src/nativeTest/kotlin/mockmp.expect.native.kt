@@ -4,7 +4,7 @@ import org.kodein.mock.Mocker
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 
-internal actual fun <T : Any> org.kodein.mock.Mocker.mock(type: KClass<T>): T {
+internal actual fun <T : Any> Mocker.mock(type: KClass<T>): T {
     TODO("Not yet implemented")
 }
 
