@@ -1,6 +1,3 @@
-@file:OptIn(ExperimentalComposeLibrary::class)
-
-import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -10,8 +7,6 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -20,7 +15,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -30,27 +25,14 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     jvm()
-    
+
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
-        }
-
-        androidUnitTest.dependencies {
-            implementation(libs.core.ktx)
-            implementation(libs.androidx.room.testing)
-            implementation(libs.androidx.core)
-            implementation(libs.androidx.runner)
-            implementation(libs.androidx.rules)
-            implementation(libs.androidx.testExt.junit)
-
-            // Koin testing
-            implementation(libs.koin.test)
-            implementation(libs.koin.junit4)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -62,35 +44,19 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
-            implementation(libs.room.runtime)
-            implementation(libs.sqlite.bundled)
             implementation(libs.koin.core)
 
-            implementation(libs.kotlinx.datetime)
+            api(project(":features:moradores:ui"))
+            api(project(":features:moradores:data"))
+            api(project(":features:database"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
-            implementation(libs.assertk)
-            implementation(compose.uiTest)
-
-            // Koin testing
-            implementation(libs.koin.test)
-
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
         }
-    }
-
-    dependencies {
-        // KSP support for Room Compiler.
-        add("kspAndroid", libs.room.compiler)
-
-    }
-
-    room {
-        schemaDirectory("$projectDir/schemas")
     }
 }
 
@@ -122,7 +88,6 @@ android {
 }
 
 dependencies {
-    testImplementation(libs.junit.jupiter)
     debugImplementation(compose.uiTooling)
 }
 
