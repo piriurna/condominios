@@ -19,7 +19,7 @@ import com.zalamena.moradores.domain.usecase.GetApartamentoWithMoradoresUseCase
 import com.zalamena.moradores.domain.usecase.GetMoradoresForApartamentoUseCase
 import com.zalamena.moradores.domain.usecase.GetMoradoresUseCase
 import org.koin.core.module.Module
-import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 expect val platformModule: Module
@@ -48,5 +48,5 @@ val useCaseModule = module {
 }
 
 val viewModelModule = module {
-    viewModel { MoradoresListViewModel(get()) }
+    viewModelOf(::MoradoresListViewModel)
 }

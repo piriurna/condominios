@@ -3,6 +3,7 @@ package com.zalamena.condominios.moradores.ui.list
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -21,22 +22,26 @@ fun MoradoresListScreen(
 ) {
     val uiState = viewModel.uiState.value
 
-    MoradoresListScreenContent(uiState)
+    MoradoresListScreenContent(
+        uiState,
+        viewModel::addMoradorClicked
+    )
 }
 
 
 
 @Composable
 fun MoradoresListScreenContent(
-    uiState: MoradoresListUiState
+    uiState: MoradoresListUiState,
+    onAddMoradorClicked: () -> Unit = {}
 ) {
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize().background(Color.White),
+        modifier = Modifier.fillMaxSize().padding(top = 50.dp).background(Color.White),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            Button(onClick = {}) {
+            Button(onClick = { onAddMoradorClicked() }) {
                 Text("Add Morador")
             }
         }

@@ -27,7 +27,7 @@ class MoradoresRepositoryImpl(
                     pessoaId = pessoa.id,
                     apartamentoId = apartamento.id,
                 )
-                Result.success(moradoresDao.addMorador(morador))
+                moradoresDao.addMorador(morador)
             }
         }
     }
