@@ -17,7 +17,7 @@ interface PessoaDao {
 
 
     @Query("SELECT * FROM pessoa")
-    suspend fun getAllIndividos(): List<PessoaEntity>
+    suspend fun getAllPessoas(): List<PessoaEntity>
 
 
 }

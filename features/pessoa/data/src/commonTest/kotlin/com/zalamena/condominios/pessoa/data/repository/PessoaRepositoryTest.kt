@@ -20,7 +20,7 @@ class PessoaRepositoryTest: TestsWithMocks() {
 
     @Test
     fun `GIVEN no pessoa is added WHEN getting all pessoas THEN return empty list`() = runTest {
-        everySuspending { pessoaDao.getAllIndividos() } returns emptyList()
+        everySuspending { pessoaDao.getAllPessoas() } returns emptyList()
 
 
         val result = pessoaRepository.getAllIndividos()
@@ -35,7 +35,7 @@ class PessoaRepositoryTest: TestsWithMocks() {
     fun `GIVEN a pessoa is added WHEN getting all pessoas THEN return the added pessoa`() = runTest {
         val pessoaEntity = PessoaEntity.dummy
 
-        everySuspending { pessoaDao.getAllIndividos() } returns listOf(pessoaEntity)
+        everySuspending { pessoaDao.getAllPessoas() } returns listOf(pessoaEntity)
 
         val result = pessoaRepository.getAllIndividos()
 

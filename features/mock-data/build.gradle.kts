@@ -3,13 +3,11 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.kodein.mock.gradle.MocKMPGradlePlugin
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.room)
     kotlin("plugin.serialization") version "2.2.0"
     id("org.kodein.mock.mockmp") version "2.0.2"
 }
@@ -28,35 +26,19 @@ kotlin {
     jvm()
 
     sourceSets {
-        androidMain.dependencies {
-            implementation(libs.koin.android)
-        }
-
-        androidUnitTest.dependencies {
-            implementation(libs.core.ktx)
-            implementation(libs.androidx.room.testing)
-            implementation(libs.androidx.core)
-            implementation(libs.androidx.runner)
-            implementation(libs.androidx.rules)
-            implementation(libs.androidx.testExt.junit)
-
-            // Koin testing
-            implementation(libs.koin.test)
-            implementation(libs.koin.junit4)
-        }
         commonMain.dependencies {
-            implementation(libs.room.runtime)
-            implementation(libs.sqlite.bundled)
             implementation(libs.koin.core)
 
             implementation(libs.kotlinx.datetime)
 
-
             //Projects
-            implementation(project(":features:pessoa:domain"))
+            implementation(project(":features:moradores:data"))
+            implementation(project(":features:pessoa:data"))
+            implementation(project(":features:apartamentos:data"))
 
-
-            implementation(libs.kotlinx.serialization.json)
+            // Serializtionss
+            api(libs.kotlinx.serialization.json)
+            api(kotlin("reflect"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -64,7 +46,8 @@ kotlin {
 
             implementation(libs.kotlinx.coroutines.test)
 
-            implementation(project(":features:pessoa:domain"))
+            implementation(project(":features:moradores:data"))
+
         }
         jvmMain.dependencies {
             implementation(libs.kotlinx.coroutinesSwing)
@@ -72,19 +55,8 @@ kotlin {
     }
 }
 
-room {
-    schemaDirectory("$rootDir/features/database/schemas")
-}
-
-dependencies {
-    add("kspAndroid", libs.room.compiler)
-    add("kspIosSimulatorArm64", libs.room.compiler)
-    add("kspIosArm64", libs.room.compiler)
-    add("kspJvm", libs.room.compiler)
-}
-
 android {
-    namespace = "com.zalamena.condominios.pessoa.data"
+    namespace = "com.zalamena.condominios.database"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
@@ -94,6 +66,6 @@ android {
 
 mockmp {
     onTest {
-        withHelper(helper = MocKMPGradlePlugin.Helper.AutoDetect)
+        withHelper()
     }
 }
