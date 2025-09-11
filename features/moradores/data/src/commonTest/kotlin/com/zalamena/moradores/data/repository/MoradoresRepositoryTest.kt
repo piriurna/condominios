@@ -2,10 +2,10 @@ package com.zalamena.moradores.data.repository
 
 import com.zalamena.condominios.apartamentos.domain.models.Apartamento
 import com.zalamena.condominios.apartamentos.domain.repository.ApartamentosRepository
-import com.zalamena.condominios.individuo.domain.models.Individuo
+import com.zalamena.condominios.pessoa.domain.models.Pessoa
 import com.zalamena.moradores.data.dao.MoradoresDao
 import com.zalamena.moradores.data.entities.MoradorEntity
-import com.zalamena.moradores.data.entities.MoradorWithIndividuoAndApartamentoEntity
+import com.zalamena.moradores.data.entities.MoradorWithPessoaAndApartamentoEntity
 import com.zalamena.moradores.data.mapper.MoradorMapper
 import com.zalamena.moradores.domain.models.MoradorException
 import com.zalamena.moradores.domain.repository.MoradoresRepository
@@ -48,7 +48,7 @@ class MoradoresRepositoryTest: TestsWithMocks() {
     @Test
     fun `GIVEN a user is added WHEN trying to get all users THEN it should return a list with the morador`() = runTest {
         everySuspending { moradoresDao.getAllMoradores() } returns
-                listOf(MoradorWithIndividuoAndApartamentoEntity.dummy)
+                listOf(MoradorWithPessoaAndApartamentoEntity.dummy)
 
         val result = moradoresRepository.getAllMoradores()
 
@@ -58,10 +58,10 @@ class MoradoresRepositoryTest: TestsWithMocks() {
 
 
     @Test
-    fun `GIVEN a valid individuo and valid apartamento when adding morador THEN it should success`() = runTest {
+    fun `GIVEN a valid pessoa and valid apartamento when adding morador THEN it should success`() = runTest {
         val morador = MoradorEntity.dummy.copy(
             id = 0L,
-            individuoId = Individuo.dummy.id,
+            pessoaId = Pessoa.dummy.id,
             apartamentoId = Apartamento.dummy.id
         )
 
@@ -69,7 +69,7 @@ class MoradoresRepositoryTest: TestsWithMocks() {
             everySuspending { moradoresDao.addMorador(morador) } runs {}
         }
 
-        val addResult = moradoresRepository.addMorador(Individuo.dummy, Apartamento.dummy)
+        val addResult = moradoresRepository.addMorador(Pessoa.dummy, Apartamento.dummy)
 
         assertTrue(addResult.isSuccess)
     }
@@ -93,7 +93,7 @@ class MoradoresRepositoryTest: TestsWithMocks() {
     fun `GIVEN there is 1 morador in an apartment WHEN getting all moradores for apartment THEN should return a list with 1 morador`() = runTest {
         val apartamentoId = "apartamentoId"
         everySuspending { moradoresDao.getAllMoradoresForApartamento(apartamentoId) } returns
-                listOf(MoradorWithIndividuoAndApartamentoEntity.dummy)
+                listOf(MoradorWithPessoaAndApartamentoEntity.dummy)
 
         val result = moradoresRepository.getAllMoradoresForApartamento(apartamentoId)
 
@@ -117,7 +117,7 @@ class MoradoresRepositoryTest: TestsWithMocks() {
     fun `GIVEN there is 1 morador in an apartment WHEN getting apartamento with moradores THEN should return a correct apartment and a list with 1 morador`() = runTest {
         val apartamentoId = "apartamentoId"
         everySuspending { moradoresDao.getAllMoradoresForApartamento(apartamentoId) } returns
-                listOf(MoradorWithIndividuoAndApartamentoEntity.dummy)
+                listOf(MoradorWithPessoaAndApartamentoEntity.dummy)
 
         everySuspending { apartamentoRepository.getApartamento(apartamentoId) } returns Result.success(Apartamento.dummy)
 

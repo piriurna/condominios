@@ -6,16 +6,16 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import com.zalamena.condominios.apartamentos.data.entity.ApartamentoEntity
-import com.zalamena.condominios.individuo.data.entities.IndividuoEntity
+import com.zalamena.condominios.pessoa.data.entities.PessoaEntity
 
 
 @Entity(
     tableName = "Morador",
     foreignKeys = [
         ForeignKey(
-            entity = IndividuoEntity::class,
+            entity = PessoaEntity::class,
             parentColumns = ["id"],
-            childColumns = ["individuoId"],
+            childColumns = ["pessoaId"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
@@ -29,7 +29,7 @@ import com.zalamena.condominios.individuo.data.entities.IndividuoEntity
 data class MoradorEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
-    val individuoId: String,
+    val pessoaId: String,
     val apartamentoId: String,
 ) {
 
@@ -37,19 +37,19 @@ data class MoradorEntity(
     companion object {
         val dummy = MoradorEntity(
             id = 1L,
-            individuoId = "id",
+            pessoaId = "id",
             apartamentoId = "id"
         )
     }
 }
 
-data class MoradorWithIndividuoAndApartamentoEntity(
+data class MoradorWithPessoaAndApartamentoEntity(
     @Embedded val morador: MoradorEntity,
     @Relation(
-        parentColumn = "individuoId",
+        parentColumn = "pessoaId",
         entityColumn = "id"
     )
-    val individuo: IndividuoEntity,
+    val pessoa: PessoaEntity,
     @Relation(
         parentColumn = "apartamentoId",
         entityColumn = "id"
@@ -58,9 +58,9 @@ data class MoradorWithIndividuoAndApartamentoEntity(
 ) {
 
     companion object {
-        val dummy = MoradorWithIndividuoAndApartamentoEntity(
+        val dummy = MoradorWithPessoaAndApartamentoEntity(
             morador = MoradorEntity.dummy,
-            individuo = IndividuoEntity.dummy,
+            pessoa = PessoaEntity.dummy,
             apartamento = ApartamentoEntity.dummy
         )
     }

@@ -45,7 +45,7 @@ kotlin {
 
             implementation(libs.kotlinx.datetime)
 
-            api(project(":features:individuo:domain"))
+            api(project(":features:pessoa:domain"))
             api(project(":features:apartamentos:domain"))
         }
         commonTest.dependencies {

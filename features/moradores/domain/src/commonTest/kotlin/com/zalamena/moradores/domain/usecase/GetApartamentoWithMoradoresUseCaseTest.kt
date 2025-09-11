@@ -20,7 +20,7 @@ class GetApartamentoWithMoradoresUseCaseTest: TestsWithMocks() {
     val getApartamentoWithMoradoresUseCase by lazy {  GetApartamentoWithMoradoresUseCase(moradoresRepository) }
 
     @Test
-    fun `GIVEN apartamento has 1 individuo WHEN getting apartamento with moradores THEN should return apartamento information with the given morador`() = runTest {
+    fun `GIVEN apartamento has 1 pessoa WHEN getting apartamento with moradores THEN should return apartamento information with the given morador`() = runTest {
         everySuspending { moradoresRepository.getApartamentoWithMoradores("apartamentoId") } returns Result
             .success(ApartamentoWithMoradores.dummy)
 

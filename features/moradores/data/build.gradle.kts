@@ -53,7 +53,7 @@ kotlin {
             //Projects
             api(project(":features:moradores:domain"))
             api(project(":features:apartamentos:data"))
-            api(project(":features:individuo:data"))
+            api(project(":features:pessoa:data"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

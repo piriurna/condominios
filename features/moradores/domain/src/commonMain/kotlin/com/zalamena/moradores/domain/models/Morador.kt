@@ -1,17 +1,17 @@
 package com.zalamena.moradores.domain.models
 
 import com.zalamena.condominios.apartamentos.domain.models.Apartamento
-import com.zalamena.condominios.individuo.domain.models.Individuo
-import com.zalamena.condominios.individuo.domain.models.IndividuoProperties
+import com.zalamena.condominios.pessoa.domain.models.Pessoa
+import com.zalamena.condominios.pessoa.domain.models.PessoaProperties
 
 data class Morador(
-    val individuo: Individuo,
+    val pessoa: Pessoa,
     val apartamento: Apartamento
-): IndividuoProperties by individuo {
+): PessoaProperties by pessoa {
 
     companion object {
         val dummy = Morador(
-            individuo = Individuo.dummy,
+            pessoa = Pessoa.dummy,
             apartamento = Apartamento.dummy
         )
     }

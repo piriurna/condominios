@@ -57,8 +57,8 @@ kotlin {
 
             api(project(":features:apartamentos:data"))
             api(project(":features:apartamentos:domain"))
-            api(project(":features:individuo:data"))
-            api(project(":features:individuo:domain"))
+            api(project(":features:pessoa:data"))
+            api(project(":features:pessoa:domain"))
             api(project(":features:moradores:data"))
             api(project(":features:moradores:domain"))
             api(project(":features:moradores:ui"))

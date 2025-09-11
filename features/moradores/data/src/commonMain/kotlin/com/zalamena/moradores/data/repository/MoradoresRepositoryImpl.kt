@@ -2,8 +2,8 @@ package com.zalamena.moradores.data.repository
 
 import com.zalamena.condominios.apartamentos.domain.models.Apartamento
 import com.zalamena.condominios.apartamentos.domain.repository.ApartamentosRepository
-import com.zalamena.condominios.individuo.data.mapper.toDomain
-import com.zalamena.condominios.individuo.domain.models.Individuo
+import com.zalamena.condominios.pessoa.data.mapper.toDomain
+import com.zalamena.condominios.pessoa.domain.models.Pessoa
 import com.zalamena.moradores.data.dao.MoradoresDao
 import com.zalamena.moradores.data.entities.MoradorEntity
 import com.zalamena.moradores.data.mapper.MoradorMapper
@@ -18,13 +18,13 @@ class MoradoresRepositoryImpl(
     val moradorMapper: MoradorMapper
 ): MoradoresRepository {
     override suspend fun addMorador(
-        individuo: Individuo,
+        pessoa: Pessoa,
         apartamento: Apartamento
     ): Result<Unit> {
         return runCatching {
             with(moradorMapper) {
                 val morador = MoradorEntity(
-                    individuoId = individuo.id,
+                    pessoaId = pessoa.id,
                     apartamentoId = apartamento.id,
                 )
                 Result.success(moradoresDao.addMorador(morador))
@@ -69,13 +69,13 @@ class MoradoresRepositoryImpl(
                     .getApartamento(apartamentoId)
                     .getOrThrow()
 
-                val individuos = moradoresDao
+                val pessoas = moradoresDao
                     .getAllMoradoresForApartamento(apartamentoId)
 
 
                 return@runCatching ApartamentoWithMoradores(
                     apartamento = apartamento,
-                    moradores = individuos.map { it.individuo.toDomain() }
+                    moradores = pessoas.map { it.pessoa.toDomain() }
                 )
             }
         }

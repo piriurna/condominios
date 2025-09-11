@@ -1,17 +1,17 @@
 package com.zalamena.condominios.moradores.ui.models
 
 import com.zalamena.condominios.apartamentos.ui.models.ApartamentoUiData
-import com.zalamena.condominios.individuo.ui.models.IndividuoUiData
-import com.zalamena.condominios.individuo.ui.models.IndividuoUiProperties
+import com.zalamena.condominios.pessoa.ui.models.PessoaUiData
+import com.zalamena.condominios.pessoa.ui.models.PessoaUiProperties
 
 data class MoradorUiData(
-    val morador: IndividuoUiData,
+    val morador: PessoaUiData,
     val apartamento: ApartamentoUiData
-): IndividuoUiProperties by morador {
+): PessoaUiProperties by morador {
 
     companion object {
         val dummy = MoradorUiData(
-            morador = IndividuoUiData.dummy,
+            morador = PessoaUiData.dummy,
             apartamento = ApartamentoUiData.dummy
         )
     }
