@@ -11,6 +11,10 @@ interface ApartamentoDao {
     suspend fun getApartamento(apartamentoId: String): ApartamentoEntity?
 
 
+    @Query("SELECT * FROM Apartamento")
+    suspend fun getApartamentos(): List<ApartamentoEntity>
+
+
     @Insert
     suspend fun addApartamento(apartamento: ApartamentoEntity)
 }

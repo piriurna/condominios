@@ -21,10 +21,10 @@ class AddPessoaUseCaseTest: TestsWithMocks() {
 
 
     @Test
-    fun `GIVEN no user with same cpf is added WHEN adding user THEN it should be successfully added`() = runTest {
+    fun `GIVEN no user with same id is added WHEN adding user THEN it should be successfully added`() = runTest {
         val newPessoa = Pessoa.dummy
 
-        everySuspending { pessoaRepository.getPessoa(newPessoa.cpf) } returns Result.failure(PessoaException.PessoaNotFoundException)
+        everySuspending { pessoaRepository.getPessoa(newPessoa.id) } returns Result.failure(PessoaException.PessoaNotFoundException)
         everySuspending { pessoaRepository.addPessoa(newPessoa) } returns Result.success(newPessoa)
 
         val addResult = addPessoaUseCase.invoke(newPessoa)
@@ -34,10 +34,10 @@ class AddPessoaUseCaseTest: TestsWithMocks() {
 
 
     @Test
-    fun `GIVEN user with same cpf is found WHEN adding user THEN it should fail adding user`() = runTest {
+    fun `GIVEN user with same id is found WHEN adding user THEN it should fail adding user`() = runTest {
         val newPessoa = Pessoa.dummy
 
-        everySuspending { pessoaRepository.getPessoa(newPessoa.cpf) } returns Result.success(newPessoa)
+        everySuspending { pessoaRepository.getPessoa(newPessoa.id) } returns Result.success(newPessoa)
         everySuspending { pessoaRepository.addPessoa(newPessoa) } returns Result.success(newPessoa)
 
         val addResult = addPessoaUseCase.invoke(newPessoa)
@@ -45,7 +45,7 @@ class AddPessoaUseCaseTest: TestsWithMocks() {
         assertTrue(addResult.isFailure)
         assertEquals(PessoaException.DuplicatePessoaException,addResult.exceptionOrNull())
         verifyWithSuspend {
-            pessoaRepository.getPessoa(newPessoa.cpf)
+            pessoaRepository.getPessoa(newPessoa.id)
         }
     }
 

@@ -18,11 +18,11 @@ class GerenciarMoradoresUseCaseTest: MoradorTest() {
     }
 
     @Test
-    fun `GIVEN an pessoa is getting added to an existing apartamento WHEN there is no user with same cpf in the apartamento THEN should add it`() = runTest {
-        everySuspending { moradoresRepository.getMorador(Pessoa.dummy.cpf, Apartamento.dummy.id) } returns Result.failure(MoradorException.MoradorNotFoundException)
-        everySuspending { moradoresRepository.addMorador(Pessoa.dummy, Apartamento.dummy) } returns Result.success(Unit)
+    fun `GIVEN an pessoa is getting added to an existing apartamento WHEN there is no user with same id in the apartamento THEN should add it`() = runTest {
+        everySuspending { moradoresRepository.getMorador(Pessoa.dummy.id, Apartamento.dummy.id) } returns Result.failure(MoradorException.MoradorNotFoundException)
+        everySuspending { moradoresRepository.addMorador(Pessoa.dummy.id, Apartamento.dummy.id) } returns Result.success(Unit)
 
-        val result = addMoradorUseCase.invoke(Pessoa.dummy, Apartamento.dummy)
+        val result = addMoradorUseCase.invoke(Pessoa.dummy.id, Apartamento.dummy.id)
 
         assertTrue(result.isSuccess)
     }
@@ -30,10 +30,10 @@ class GerenciarMoradoresUseCaseTest: MoradorTest() {
 
     @Test
     fun `GIVEN an pessoa is getting added to a non existent apartamento THEN should fail it`() = runTest {
-        everySuspending { moradoresRepository.getMorador(Pessoa.dummy.cpf, Apartamento.dummy.id) } returns Result
+        everySuspending { moradoresRepository.getMorador(Pessoa.dummy.id, Apartamento.dummy.id) } returns Result
             .failure(ApartamentoException.NoApartmentFoundException)
 
-        val addResult = addMoradorUseCase.invoke(Pessoa.dummy, Apartamento.dummy)
+        val addResult = addMoradorUseCase.invoke(Pessoa.dummy.id, Apartamento.dummy.id)
 
         assertTrue(addResult.isFailure)
         assertEquals(ApartamentoException.NoApartmentFoundException, addResult.exceptionOrNull())
@@ -41,10 +41,10 @@ class GerenciarMoradoresUseCaseTest: MoradorTest() {
 
     @Test
     fun `GIVEN an non existent pessoa is getting added to an existent apartamento THEN should fail it`() = runTest {
-        everySuspending { moradoresRepository.getMorador(Pessoa.dummy.cpf, Apartamento.dummy.id) } returns Result
+        everySuspending { moradoresRepository.getMorador(Pessoa.dummy.id, Apartamento.dummy.id) } returns Result
             .failure(PessoaException.PessoaNotFoundException)
 
-        val addResult = addMoradorUseCase.invoke(Pessoa.dummy, Apartamento.dummy)
+        val addResult = addMoradorUseCase.invoke(Pessoa.dummy.id, Apartamento.dummy.id)
 
         assertTrue(addResult.isFailure)
         assertEquals(PessoaException.PessoaNotFoundException, addResult.exceptionOrNull())

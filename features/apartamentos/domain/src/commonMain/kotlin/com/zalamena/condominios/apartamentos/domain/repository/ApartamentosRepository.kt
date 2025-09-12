@@ -6,5 +6,8 @@ interface ApartamentosRepository {
     suspend fun getApartamento(apartamentoId: String): Result<Apartamento>
 
 
+    suspend fun getApartamentos(): Result<List<Apartamento>>
+
+
     suspend fun addApartamento(apartamento: Apartamento): Result<Unit>
 }

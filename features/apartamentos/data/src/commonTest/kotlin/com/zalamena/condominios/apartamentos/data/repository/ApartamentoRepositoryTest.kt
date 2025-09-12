@@ -20,6 +20,29 @@ class ApartamentoRepositoryTest: TestsWithMocks() {
     private val apartamentoRepository by lazy {  ApartamentoRepositoryImpl(apartamentoDao) }
 
 
+    @Test
+    fun `GIVEN no apartamento added WHEN getting apartamentos THEN should return empty list`() = runTest {
+        everySuspending { apartamentoDao.getApartamentos() } returns emptyList()
+
+
+        val result = apartamentoRepository.getApartamentos()
+
+        assertTrue(result.isSuccess)
+        assertEquals(emptyList(), result.getOrThrow())
+
+    }
+
+
+    @Test
+    fun `GIVEN apartamento added WHEN getting apartamentos THEN should return list with apartamento`() = runTest {
+        everySuspending { apartamentoDao.getApartamentos() } returns listOf(ApartamentoEntity.dummy)
+
+        val result = apartamentoRepository.getApartamentos()
+
+        assertTrue(result.isSuccess)
+        assertEquals(listOf(ApartamentoEntity.dummy.toDomain()), result.getOrThrow())
+
+    }
 
     @Test
     fun `GIVEN apartamento exists WHEN getting apartamento THEN should return apartamento`() =

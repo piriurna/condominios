@@ -13,9 +13,9 @@ class GetMoradorUseCaseTest: MoradorTest() {
 
     @Test
     fun `GIVEN no user is added WHEN getting morador THEN should fail`() = runTest {
-        everySuspending { moradoresRepository.getMorador("cpf", "apartamentoId") } returns Result.failure(MoradorException.MoradorNotFoundException)
+        everySuspending { moradoresRepository.getMorador("id", "apartamentoId") } returns Result.failure(MoradorException.MoradorNotFoundException)
 
-        val moradorResult = getMoradorUseCase("cpf", "apartamentoId")
+        val moradorResult = getMoradorUseCase("id", "apartamentoId")
 
         assertTrue(moradorResult.isFailure)
     }

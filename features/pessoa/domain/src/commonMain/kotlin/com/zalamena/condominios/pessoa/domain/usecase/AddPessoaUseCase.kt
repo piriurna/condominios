@@ -8,7 +8,7 @@ class AddPessoaUseCase(
     private val pessoaRepository: PessoaRepository
 ) {
     suspend operator fun invoke(pessoa: Pessoa): Result<Pessoa> {
-        val existingPessoa = pessoaRepository.getPessoa(pessoa.cpf)
+        val existingPessoa = pessoaRepository.getPessoa(pessoa.id)
 
 
         if(existingPessoa.exceptionOrNull() == PessoaException.PessoaNotFoundException) {

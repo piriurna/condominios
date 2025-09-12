@@ -69,19 +69,19 @@ class MoradoresRepositoryTest: TestsWithMocks() {
             everySuspending { moradoresDao.addMorador(morador) } runs {}
         }
 
-        val addResult = moradoresRepository.addMorador(Pessoa.dummy, Apartamento.dummy)
+        val addResult = moradoresRepository.addMorador(Pessoa.dummy.id, Apartamento.dummy.id)
 
         assertTrue(addResult.isSuccess)
     }
 
     @Test
-    fun `GIVEN no user is added with the same cpf WHEN trying to get a user THEN should return a failure with UserNotFoundException`() = runTest {
-        val cpf = "cpf"
+    fun `GIVEN no user is added with the same id WHEN trying to get a user THEN should return a failure with UserNotFoundException`() = runTest {
+        val id = "id"
         val apartamentoId = "apartamentoId"
-        everySuspending { moradoresDao.getMorador(cpf, apartamentoId) } returns null
+        everySuspending { moradoresDao.getMorador(id, apartamentoId) } returns null
 
 
-        val result = moradoresRepository.getMorador(cpf, apartamentoId)
+        val result = moradoresRepository.getMorador(id, apartamentoId)
 
 
         assertTrue(result.isFailure)

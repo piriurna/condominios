@@ -1,9 +1,7 @@
 package com.zalamena.moradores.data.repository
 
-import com.zalamena.condominios.apartamentos.domain.models.Apartamento
 import com.zalamena.condominios.apartamentos.domain.repository.ApartamentosRepository
 import com.zalamena.condominios.pessoa.data.mapper.toDomain
-import com.zalamena.condominios.pessoa.domain.models.Pessoa
 import com.zalamena.moradores.data.dao.MoradoresDao
 import com.zalamena.moradores.data.entities.MoradorEntity
 import com.zalamena.moradores.data.mapper.MoradorMapper
@@ -18,14 +16,14 @@ class MoradoresRepositoryImpl(
     val moradorMapper: MoradorMapper
 ): MoradoresRepository {
     override suspend fun addMorador(
-        pessoa: Pessoa,
-        apartamento: Apartamento
+        pessoa: String,
+        apartamento: String
     ): Result<Unit> {
         return runCatching {
             with(moradorMapper) {
                 val morador = MoradorEntity(
-                    pessoaId = pessoa.id,
-                    apartamentoId = apartamento.id,
+                    pessoaId = pessoa,
+                    apartamentoId = apartamento,
                 )
                 moradoresDao.addMorador(morador)
             }
@@ -33,12 +31,12 @@ class MoradoresRepositoryImpl(
     }
 
     override suspend fun getMorador(
-        cpf: String,
+        id: String,
         apartamentoId: String
     ): Result<Morador> {
         return runCatching {
             with(moradorMapper) {
-                moradoresDao.getMorador(cpf, apartamentoId)?.toDomain()
+                moradoresDao.getMorador(id, apartamentoId)?.toDomain()
                     ?:throw MoradorException.MoradorNotFoundException
             }
         }

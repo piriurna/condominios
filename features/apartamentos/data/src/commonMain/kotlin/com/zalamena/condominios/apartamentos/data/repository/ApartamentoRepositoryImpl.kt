@@ -16,6 +16,12 @@ class ApartamentoRepositoryImpl(
         }
     }
 
+    override suspend fun getApartamentos(): Result<List<Apartamento>> {
+        return runCatching {
+            apartamentoDao.getApartamentos().map { it.toDomain() }
+        }
+    }
+
     override suspend fun addApartamento(apartamento: Apartamento): Result<Unit> {
         return runCatching {
             apartamentoDao.addApartamento(apartamento.toEntity())

@@ -21,11 +21,11 @@ interface MoradoresDao {
     @Query("""
         SELECT Morador.* FROM Morador
         LEFT JOIN Pessoa ON Morador.pessoaId = Pessoa.id
-        WHERE cpf = :cpf AND  apartamentoId =:apartamentoId
+        WHERE Pessoa.id = :id AND apartamentoId =:apartamentoId
         LIMIT 1
         """)
     @RewriteQueriesToDropUnusedColumns
-    suspend fun getMorador(cpf: String, apartamentoId: String): MoradorWithPessoaAndApartamentoEntity?
+    suspend fun getMorador(id: String, apartamentoId: String): MoradorWithPessoaAndApartamentoEntity?
 
     @Insert
     suspend fun addMorador(morador: MoradorEntity)

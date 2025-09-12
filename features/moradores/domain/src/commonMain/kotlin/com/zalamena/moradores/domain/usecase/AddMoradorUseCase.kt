@@ -1,21 +1,27 @@
 package com.zalamena.moradores.domain.usecase
 
-import com.zalamena.condominios.apartamentos.domain.models.Apartamento
-import com.zalamena.condominios.pessoa.domain.models.Pessoa
 import com.zalamena.moradores.domain.models.MoradorException
 import com.zalamena.moradores.domain.repository.MoradoresRepository
 
 class AddMoradorUseCase(
     private val moradoresRepository: MoradoresRepository
 ) {
-    suspend operator fun invoke(morador: Pessoa, apartamento: Apartamento): Result<Unit> {
-        val existingMoradorResult = moradoresRepository.getMorador(morador.cpf, apartamento.id)
+    suspend operator fun invoke(pessoaId: String, apartamentoId: String): Result<Unit> {
+        val existingMoradorResult = moradoresRepository.getMorador(pessoaId, apartamentoId)
 
-        if(existingMoradorResult.exceptionOrNull() == MoradorException.MoradorNotFoundException) {
-            moradoresRepository.addMorador(morador, apartamento)
-            return Result.success(Unit)
+        return when(val e = existingMoradorResult.exceptionOrNull()) {
+            is MoradorException.MoradorNotFoundException -> {
+                moradoresRepository.addMorador(pessoaId, apartamentoId)
+                Result.success(Unit)
+            }
+
+            null -> {
+                 Result.failure(MoradorException.DuplicateMoradorException)
+            }
+
+            else -> {
+                Result.failure(e)
+            }
         }
-
-        return Result.failure(existingMoradorResult.exceptionOrNull()?: Exception("Erro ao adicionar morador"))
     }
 }
