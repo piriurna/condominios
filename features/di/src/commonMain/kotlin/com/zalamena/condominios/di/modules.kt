@@ -5,14 +5,15 @@ import com.zalamena.condominios.apartamentos.data.repository.ApartamentoReposito
 import com.zalamena.condominios.apartamentos.domain.repository.ApartamentosRepository
 import com.zalamena.condominios.apartamentos.domain.usecase.AddApartamentoUseCase
 import com.zalamena.condominios.apartamentos.domain.usecase.GetApartamentosUseCase
+import com.zalamena.condominios.apartamentos.ui.add.AddApartamentoViewModel
 import com.zalamena.condominios.database.AppDatabase
 import com.zalamena.condominios.moradores.ui.add.AddMoradorViewModel
+import com.zalamena.condominios.moradores.ui.list.MoradoresListViewModel
 import com.zalamena.condominios.pessoa.data.dao.PessoaDao
 import com.zalamena.condominios.pessoa.data.repository.PessoaRepositoryImpl
 import com.zalamena.condominios.pessoa.domain.repository.PessoaRepository
 import com.zalamena.condominios.pessoa.domain.usecase.AddPessoaUseCase
 import com.zalamena.condominios.pessoa.domain.usecase.GetPessoaUseCase
-import com.zalamena.condominios.moradores.ui.list.MoradoresListViewModel
 import com.zalamena.condominios.pessoa.domain.usecase.GetPessoasListUseCase
 import com.zalamena.moradores.data.dao.MoradoresDao
 import com.zalamena.moradores.data.mapper.MoradorMapper
@@ -57,4 +58,5 @@ val useCaseModule = module {
 val viewModelModule = module {
     viewModelOf(::MoradoresListViewModel)
     viewModelOf(::AddMoradorViewModel)
+    viewModelOf(::AddApartamentoViewModel)
 }
