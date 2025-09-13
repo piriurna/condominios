@@ -27,4 +27,10 @@ class ApartamentoRepositoryImpl(
             apartamentoDao.addApartamento(apartamento.toEntity())
         }
     }
+
+    override suspend fun createApartamentoId(numeroApartamento: String): Result<String> {
+        return runCatching {
+            "${apartamentoDao.getApartamentos().size}-${numeroApartamento}"
+        }
+    }
 }

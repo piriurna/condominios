@@ -1,5 +1,7 @@
 package com.zalamena.condominios.pessoa.domain.usecase
 
+import com.zalamena.condominios.pessoa.domain.mapper.toPessoa
+import com.zalamena.condominios.pessoa.domain.models.AddPessoaForm
 import com.zalamena.condominios.pessoa.domain.models.Pessoa
 import com.zalamena.condominios.pessoa.domain.models.PessoaException
 import com.zalamena.condominios.pessoa.domain.repository.PessoaRepository
@@ -18,37 +20,65 @@ class AddPessoaUseCaseTest: TestsWithMocks() {
 
     private val addPessoaUseCase by lazy { AddPessoaUseCase(pessoaRepository) }
 
-
-
     @Test
-    fun `GIVEN no user with same id is added WHEN adding user THEN it should be successfully added`() = runTest {
-        val newPessoa = Pessoa.dummy
+    fun `GIVEN user added is valid WHEN adding user THEN it should be successfully added`() = runTest {
+        val addPessoaForm = AddPessoaForm.dummy
+        val newPessoaId = "validId"
 
-        everySuspending { pessoaRepository.getPessoa(newPessoa.id) } returns Result.failure(PessoaException.PessoaNotFoundException)
-        everySuspending { pessoaRepository.addPessoa(newPessoa) } returns Result.success(newPessoa)
+        onCreateIdReturns(newPessoaId)
+        onAddPessoaReturns(addPessoaForm.toPessoa(newPessoaId))
 
-        val addResult = addPessoaUseCase.invoke(newPessoa)
+        val addResult = addPessoaUseCase.invoke(addPessoaForm)
 
         assertTrue(addResult.isSuccess)
+        assertEquals(newPessoaId, addResult.getOrThrow().id)
     }
 
 
     @Test
-    fun `GIVEN user with same id is found WHEN adding user THEN it should fail adding user`() = runTest {
-        val newPessoa = Pessoa.dummy
+    fun `GIVEN there is an error creating user id WHEN adding user THEN it should fail adding user`() = runTest {
+        val addPessoaForm = AddPessoaForm.dummy
+        val validId = "validId"
+        val createdPessoa = addPessoaForm.toPessoa(validId)
 
-        everySuspending { pessoaRepository.getPessoa(newPessoa.id) } returns Result.success(newPessoa)
-        everySuspending { pessoaRepository.addPessoa(newPessoa) } returns Result.success(newPessoa)
+        onCreateIdFails(PessoaException.DuplicatePessoaException)
+        onCreateIdReturns(validId)
+        everySuspending { pessoaRepository.addPessoa(createdPessoa) } returns Result.success(createdPessoa)
 
-        val addResult = addPessoaUseCase.invoke(newPessoa)
+        val addResult = addPessoaUseCase.invoke(addPessoaForm)
 
         assertTrue(addResult.isFailure)
         assertEquals(PessoaException.DuplicatePessoaException,addResult.exceptionOrNull())
         verifyWithSuspend {
-            pessoaRepository.getPessoa(newPessoa.id)
+            pessoaRepository.createPessoaId(
+                addPessoaForm.cpf,
+                addPessoaForm.nome,
+                addPessoaForm.email,
+                addPessoaForm.telefone
+            )
         }
     }
 
+
+    private suspend fun onCreateIdReturns(id: String) {
+        val addPessoaForm = AddPessoaForm.dummy
+        everySuspending {
+            pessoaRepository.createPessoaId(addPessoaForm.cpf, addPessoaForm.nome, addPessoaForm.email, addPessoaForm.telefone)
+        } returns Result.success(id)
+    }
+
+    private suspend fun onAddPessoaReturns(pessoa: Pessoa) {
+        everySuspending { pessoaRepository.addPessoa(pessoa) } returns Result.success(pessoa)
+    }
+
+    private suspend fun onCreateIdFails(e: Exception) {
+        val addPessoaForm = AddPessoaForm.dummy
+        everySuspending {
+            pessoaRepository.createPessoaId(addPessoaForm.cpf, addPessoaForm.nome, addPessoaForm.email, addPessoaForm.telefone)
+        } runs {
+            Result.failure(e)
+        }
+    }
 
 
     override fun setUpMocks() {

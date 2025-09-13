@@ -1,19 +1,12 @@
 package com.zalamena.condominios.moradores.ui.list
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.zalamena.condominios.apartamentos.domain.models.Apartamento
-import com.zalamena.condominios.apartamentos.domain.usecase.AddApartamentoUseCase
 import com.zalamena.condominios.moradores.ui.mapper.toUi
 import com.zalamena.condominios.moradores.ui.models.MoradorUiData
-import com.zalamena.condominios.pessoa.domain.models.Pessoa
-import com.zalamena.condominios.pessoa.domain.usecase.AddPessoaUseCase
-import com.zalamena.moradores.domain.usecase.AddMoradorUseCase
 import com.zalamena.moradores.domain.usecase.GetMoradoresUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 data class MoradoresListUiState(
     val moradores: List<MoradorUiData> = emptyList(),
@@ -22,10 +15,7 @@ data class MoradoresListUiState(
 
 
 class MoradoresListViewModel(
-    private val getMoradoresUseCase: GetMoradoresUseCase,
-    private val addMoradorUseCase: AddMoradorUseCase,
-    private val addApartamentoUseCase: AddApartamentoUseCase,
-    private val addPessoaUseCase: AddPessoaUseCase,
+    private val getMoradoresUseCase: GetMoradoresUseCase
 ): ViewModel() {
     private val _uiState: MutableStateFlow<MoradoresListUiState> = MutableStateFlow(MoradoresListUiState())
     val uiState: Flow<MoradoresListUiState> = _uiState
@@ -61,27 +51,6 @@ class MoradoresListViewModel(
                     )
                 }
             }
-        }
-    }
-
-
-    fun addMoradorClicked() {
-        viewModelScope.launch {
-            println("addMoradorClicked")
-
-            val apartamentoResult = addApartamentoUseCase(Apartamento.dummy)
-
-            val pessoaResult = addPessoaUseCase(Pessoa.dummy)
-
-            addMoradorUseCase.invoke(
-                Pessoa.dummy.id,
-                Apartamento.dummy.id
-            ).onSuccess {
-                println("success")
-            }
-                .onFailure {
-                    println("failure")
-                }
         }
     }
 }

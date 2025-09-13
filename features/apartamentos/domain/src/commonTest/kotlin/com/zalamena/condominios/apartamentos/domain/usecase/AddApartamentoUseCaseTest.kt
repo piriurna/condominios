@@ -1,7 +1,7 @@
 package com.zalamena.condominios.apartamentos.domain.usecase
 
-import com.zalamena.condominios.apartamentos.domain.usecase.GetDetailsForApartamentoUseCase
-import com.zalamena.condominios.apartamentos.domain.models.Apartamento
+import com.zalamena.condominios.apartamentos.domain.mapper.toApartamento
+import com.zalamena.condominios.apartamentos.domain.models.AddApartamentoForm
 import com.zalamena.condominios.apartamentos.domain.models.ApartamentoException
 import com.zalamena.condominios.apartamentos.domain.repository.ApartamentosRepository
 import kotlinx.coroutines.test.runTest
@@ -19,14 +19,15 @@ class AddApartamentoUseCaseTest: TestsWithMocks() {
     private val addApartamentoUseCase by lazy { AddApartamentoUseCase(apartamentosRepository) }
 
     @Test
-    fun `GIVEN no apartment is found WHEN adding apartment THEN should be success`() = runTest {
-        everySuspending { apartamentosRepository.addApartamento(Apartamento.dummy) } returns Result.success(Unit)
-        everySuspending { apartamentosRepository.getApartamento(Apartamento.dummy.id) } returns Result.failure(
-            ApartamentoException.NoApartmentFoundException
-        )
+    fun `GIVEN create id is success WHEN adding apartment THEN should be success`() = runTest {
+        val addApartamentoForm = AddApartamentoForm.dummy
+        val validId = "validId"
+
+        everySuspending { apartamentosRepository.createApartamentoId(AddApartamentoForm.dummy.numero) } returns Result.success(validId)
+        everySuspending { apartamentosRepository.addApartamento(addApartamentoForm.toApartamento(validId)) } returns Result.success(Unit)
 
 
-        val addApartamentoResult = addApartamentoUseCase(Apartamento.dummy)
+        val addApartamentoResult = addApartamentoUseCase(addApartamentoForm)
 
 
         assertTrue(addApartamentoResult.isSuccess)
@@ -35,13 +36,18 @@ class AddApartamentoUseCaseTest: TestsWithMocks() {
 
 
     @Test
-    fun `GIVEN apartment is found WHEN adding apartment THEN should be not add apartment and fail`() = runTest {
-        everySuspending { apartamentosRepository.getApartamento(Apartamento.dummy.id) } returns Result.success(
-            Apartamento.dummy
+    fun `GIVEN error creating id WHEN adding apartment THEN should be not add apartment and fail`() = runTest {
+        val addApartamentoForm = AddApartamentoForm.dummy
+        val validId = "validId"
+        everySuspending { apartamentosRepository.createApartamentoId(addApartamentoForm.numero) } returns Result.success(
+            validId
+        )
+        everySuspending { apartamentosRepository.addApartamento(addApartamentoForm.toApartamento(validId)) } returns Result.failure(
+            ApartamentoException.DuplicatedApartmentException
         )
 
 
-        val addApartamentoResult = addApartamentoUseCase(Apartamento.dummy)
+        val addApartamentoResult = addApartamentoUseCase(addApartamentoForm)
 
 
         assertTrue(addApartamentoResult.isFailure)

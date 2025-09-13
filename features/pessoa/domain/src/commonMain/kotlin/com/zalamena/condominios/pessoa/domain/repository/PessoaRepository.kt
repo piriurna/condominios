@@ -8,4 +8,7 @@ interface PessoaRepository {
     suspend fun getPessoa(id: String): Result<Pessoa>
 
     suspend fun getAllIndividos(): Result<List<Pessoa>>
+
+    suspend fun createPessoaId(cpf: String?, nome: String, email: String?, telefone: String?): Result<String>
+
 }

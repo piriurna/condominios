@@ -24,8 +24,7 @@ fun MoradoresListScreen(
     val uiState = viewModel.uiState.collectAsState(MoradoresListUiState()).value
 
     MoradoresListScreenContent(
-        uiState,
-        viewModel::addMoradorClicked
+        uiState
     )
 }
 
@@ -33,20 +32,13 @@ fun MoradoresListScreen(
 
 @Composable
 fun MoradoresListScreenContent(
-    uiState: MoradoresListUiState,
-    onAddMoradorClicked: () -> Unit = {}
+    uiState: MoradoresListUiState
 ) {
 
     LazyColumn(
         modifier = Modifier.fillMaxSize().padding(top = 50.dp).background(Color.White),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item {
-            Button(onClick = { onAddMoradorClicked() }) {
-                Text("Add Morador")
-            }
-        }
-
         items(uiState.moradores) {
             MoradorListItem(it)
         }

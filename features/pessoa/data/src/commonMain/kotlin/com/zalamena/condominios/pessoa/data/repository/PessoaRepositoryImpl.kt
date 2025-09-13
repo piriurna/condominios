@@ -30,4 +30,15 @@ class PessoaRepositoryImpl(
             return@runCatching pessoaDao.getAllPessoas().map { it.toDomain() }
         }
     }
+
+    override suspend fun createPessoaId(
+        cpf: String?,
+        nome: String,
+        email: String?,
+        telefone: String?
+    ): Result<String> {
+        return runCatching {
+            return@runCatching pessoaDao.getAllPessoas().size.toString()
+        }
+    }
 }

@@ -1,20 +1,22 @@
 package com.zalamena.condominios.apartamentos.domain.usecase
 
-import com.zalamena.condominios.apartamentos.domain.models.Apartamento
-import com.zalamena.condominios.apartamentos.domain.models.ApartamentoException
+import com.zalamena.condominios.apartamentos.domain.mapper.toApartamento
+import com.zalamena.condominios.apartamentos.domain.models.AddApartamentoForm
 import com.zalamena.condominios.apartamentos.domain.repository.ApartamentosRepository
 
 class AddApartamentoUseCase(
     private val apartamentosRepository: ApartamentosRepository
 ) {
-    suspend operator fun invoke(apartamento: Apartamento): Result<Unit> {
-        val registeredApartamento = apartamentosRepository.getApartamento(apartamento.id)
+    suspend operator fun invoke(apartamentoForm: AddApartamentoForm): Result<Unit> {
+        val apartamentoIdResult =
+            apartamentosRepository.createApartamentoId(apartamentoForm.numero)
 
-        if(registeredApartamento.exceptionOrNull() == ApartamentoException.NoApartmentFoundException) {
-            apartamentosRepository.addApartamento(apartamento)
-            return Result.success(Unit)
+        return if(apartamentoIdResult.isSuccess) {
+            val id = apartamentoIdResult.getOrThrow()
+
+            apartamentosRepository.addApartamento(apartamentoForm.toApartamento(id))
+        } else {
+            Result.failure(apartamentoIdResult.exceptionOrNull()!!)
         }
-
-        return Result.failure(ApartamentoException.DuplicatedApartmentException)
     }
 }
