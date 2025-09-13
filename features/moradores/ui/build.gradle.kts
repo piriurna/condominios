@@ -62,6 +62,7 @@ kotlin {
             api(project(":features:moradores:domain"))
             api(project(":features:apartamentos:ui"))
             api(project(":features:pessoa:ui"))
+            api(project(":features:common:ui"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

@@ -1,9 +1,7 @@
 package com.zalamena.condominios.apartamentos.ui.add
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.zalamena.condominios.common.ui.components.loading.FullscreenLoading
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -37,20 +36,8 @@ fun AddApartamentoScreen(
         onNumeroApartamentoChange = viewModel::setNumeroApartamento,
         addApartamentoClick = viewModel::addApartamento
     )
-    AnimatedVisibility(
-        uiState.value.isLoading,
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("Carregando...")
-        }
-    }
+
+    FullscreenLoading(isLoading = uiState.value.isLoading)
 }
 
 

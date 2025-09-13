@@ -59,8 +59,6 @@ kotlin {
             implementation(libs.koin.core)
 
             implementation(libs.kotlinx.datetime)
-            api(project(":features:apartamentos:domain"))
-            api(project(":features:common:ui"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -75,7 +73,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.zalamena.condominios.apartamentos.ui"
+    namespace = "com.zalamena.condominios.common.ui"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
