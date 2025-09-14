@@ -1,8 +1,6 @@
 package com.zalamena.condominios.apartamentos.ui.mapper
 
-import com.zalamena.condominios.apartamentos.domain.models.AddApartamentoForm
 import com.zalamena.condominios.apartamentos.domain.models.Apartamento
-import com.zalamena.condominios.apartamentos.ui.models.AddApartamentoFormUiData
 import com.zalamena.condominios.apartamentos.ui.models.ApartamentoUiData
 
 fun Apartamento.toUi(): ApartamentoUiData {
@@ -11,13 +9,4 @@ fun Apartamento.toUi(): ApartamentoUiData {
         numero = numero,
         andar = andar,
     )
-}
-
-
-fun AddApartamentoFormUiData.toDomain(): AddApartamentoForm {
-    return AddApartamentoForm(
-        numero = numero,
-        andar = andar,
-    )
-
 }

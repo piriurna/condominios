@@ -32,8 +32,9 @@ class GetApartamentosUseCaseTest: TestsWithMocks() {
 
     @Test
     fun `GIVEN apartamento is found WHEN getting apartamentos THEN should return list with apartamento`() = runTest {
-        everySuspending { apartamentosRepository.getApartamentos() } returns Result.success(listOf(
-            Apartamento.dummy))
+        everySuspending { apartamentosRepository.getApartamentos() } returns Result.success(
+            listOf(Apartamento.dummy)
+        )
 
 
         val result = getApartamentosUseCase()

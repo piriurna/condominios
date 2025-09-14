@@ -1,4 +1,4 @@
-package com.zalamena.condominios.apartamentos.ui.add
+package com.zalamena.condominios.addapartamento.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -39,8 +39,6 @@ fun AddApartamentoScreen(
 
     FullscreenLoading(isLoading = uiState.value.isLoading)
 }
-
-
 
 @Composable
 private fun AddApartamentoScreenContent(

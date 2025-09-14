@@ -18,7 +18,11 @@ tasks.register("runCommonTests") {
 
     // Then run the JVM tests
     dependsOn(subprojects.flatMap { subproject ->
-        if(subproject.name == "database" || subproject.name == "ui" || subproject.name == "di" || subproject.name == "mock-data") return@flatMap emptyList()
+        if(subproject.name == "database"
+            || subproject.name == "ui"
+            || subproject.name == "di"
+            || subproject.name == "mock-data"
+            ) return@flatMap emptyList()
 
         subproject.tasks.matching { task ->
             println("TASK NAME: ${subproject.name}")

@@ -3,7 +3,8 @@ package com.zalamena.condominios.navigation.ui
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.zalamena.condominios.apartamentos.ui.add.AddApartamentoViewModel
+import com.zalamena.condominios.addapartamento.ui.AddApartamentoViewModel
+import com.zalamena.condominios.addapartamento.ui.navigation.addApartamentoNavHost
 import com.zalamena.condominios.apartamentos.ui.navigation.Apartamento
 import com.zalamena.condominios.apartamentos.ui.navigation.apartamentosNavHost
 import com.zalamena.condominios.moradores.ui.add.AddMoradorViewModel
@@ -16,7 +17,9 @@ fun AppNavHost(
     addMoradorViewModel: AddMoradorViewModel,
 ) {
     NavHost(navController, startDestination = Apartamento) {
-        apartamentosNavHost(addApartamentoViewModel)
+        addApartamentoNavHost(addApartamentoViewModel)
+
+        apartamentosNavHost()
 
         moradorNavGraph(addMoradorViewModel)
     }

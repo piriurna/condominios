@@ -55,7 +55,6 @@ kotlin {
 
             //Projects
             api(project(":features:apartamentos:domain"))
-            api(project(":features:pessoa:data"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

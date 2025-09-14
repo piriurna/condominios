@@ -1,4 +1,4 @@
-package com.zalamena.condominios.apartamentos.domain.models
+package com.zalamena.condominios.addapartamento.domain.models
 
 data class AddApartamentoForm(
     val numero: String,

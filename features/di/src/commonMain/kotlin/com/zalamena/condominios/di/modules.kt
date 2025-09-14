@@ -1,11 +1,11 @@
 package com.zalamena.condominios.di
 
+import com.zalamena.condominios.addapartamento.domain.usecases.AddApartamentoUseCase
+import com.zalamena.condominios.addapartamento.ui.AddApartamentoViewModel
 import com.zalamena.condominios.apartamentos.data.dao.ApartamentoDao
 import com.zalamena.condominios.apartamentos.data.repository.ApartamentoRepositoryImpl
 import com.zalamena.condominios.apartamentos.domain.repository.ApartamentosRepository
-import com.zalamena.condominios.apartamentos.domain.usecase.AddApartamentoUseCase
 import com.zalamena.condominios.apartamentos.domain.usecase.GetApartamentosUseCase
-import com.zalamena.condominios.apartamentos.ui.add.AddApartamentoViewModel
 import com.zalamena.condominios.database.AppDatabase
 import com.zalamena.condominios.moradores.ui.add.AddMoradorViewModel
 import com.zalamena.condominios.moradores.ui.list.MoradoresListViewModel
