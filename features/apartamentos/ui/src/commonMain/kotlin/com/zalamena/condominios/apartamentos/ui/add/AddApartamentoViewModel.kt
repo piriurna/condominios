@@ -46,7 +46,7 @@ class AddApartamentoViewModel(
         _uiState.update {
             it.copy(
                 addApartamentoForm = it.addApartamentoForm.copy(
-                    andar = andarApartamento
+                    andar = fixedAndar
                 ),
                 errorMessage = null
             )

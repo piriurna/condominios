@@ -52,6 +52,12 @@ kotlin {
             api(project(":features:moradores:data"))
             api(project(":features:database"))
             api(project(":features:di"))
+            api(project(":features:navigation:ui"))
+
+            implementation(libs.navigation.compose)
+
+
+            implementation(libs.kotlinx.serialization.json)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

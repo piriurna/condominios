@@ -12,6 +12,8 @@ kotlin = "2.2.10"
 kotlin-serialization = "1.9.0"
 kotlinx-coroutines = "1.10.2"
 kotlinxDatetime = "0.7.1"
+navigationCompose = "2.9.4"
+navigationComposeVersion = "2.9.0-rc02"
 room = "2.7.2"
 sqlite = "2.5.2"
 ksp = "2.2.0-2.0.2"
@@ -30,6 +32,7 @@ composeBom = "2024.09.00"
 
 [libraries]
 androidx-core = { module = "androidx.test:core", version.ref = "coreKtx" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
 androidx-rules = { module = "androidx.test:rules", version.ref = "coreKtx" }
 androidx-runner = { module = "androidx.test:runner", version.ref = "coreKtx" }
@@ -51,6 +54,7 @@ ktor-client-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor"
 
 # Room
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }

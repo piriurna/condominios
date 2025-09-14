@@ -60,6 +60,9 @@ kotlin {
 
             implementation(libs.kotlinx.datetime)
             api(project(":features:moradores:domain"))
+
+            // Jetpack Compose integration
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.0-beta05")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

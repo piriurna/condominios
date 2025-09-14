@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.ksp)
+    kotlin("plugin.serialization") version "2.2.0"
     id("org.kodein.mock.mockmp") version "2.0.2"
 }
 
@@ -61,6 +62,11 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             api(project(":features:apartamentos:domain"))
             api(project(":features:common:ui"))
+
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.0-beta05")
+
+
+            implementation(libs.kotlinx.serialization.json)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

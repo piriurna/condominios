@@ -64,9 +64,6 @@ kotlin {
             api(project(":features:moradores:ui"))
             api(project(":features:database"))
             api(project(":features:mock-data"))
-
-
-
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
