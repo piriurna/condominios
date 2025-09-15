@@ -1,14 +1,17 @@
 @file:OptIn(ExperimentalComposeLibrary::class, ExperimentalKotlinGradlePluginApi::class)
 
 import org.jetbrains.compose.ExperimentalComposeLibrary
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.composeHotReload)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.room)
     id("org.kodein.mock.mockmp") version "2.0.2"
 }
 
@@ -22,12 +25,14 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
+
     jvm()
 
     sourceSets {
         androidMain.dependencies {
+            implementation(compose.preview)
+            implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
-            implementation(libs.room.runtime.android)
         }
 
         androidUnitTest.dependencies {
@@ -42,50 +47,38 @@ kotlin {
             implementation(libs.koin.junit4)
         }
         commonMain.dependencies {
-            implementation(libs.room.runtime)
-            implementation(libs.sqlite.bundled)
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.ui)
+            implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
             implementation(libs.koin.core)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
 
             implementation(libs.kotlinx.datetime)
-
-            implementation(libs.kotlinx.coroutines.test)
-
-            api(project(":features:apartamentos:data"))
-            api(project(":features:apartamentos:domain"))
-            api(project(":features:pessoa:data"))
-            api(project(":features:pessoa:domain"))
-            api(project(":features:moradores:data"))
-            api(project(":features:moradores:domain"))
-            api(project(":features:moradores:ui"))
-            api(project(":features:database"))
-            api(project(":features:mock-data"))
-            api(project(":features:add-apartamento:domain"))
-            api(project(":features:add-apartamento:ui"))
-            api(project(":features:add-pessoa:ui"))
             api(project(":features:add-pessoa:domain"))
+            api(project(":features:common:ui"))
+
+            // Jetpack Compose integration
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.0-beta05")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.assertk)
+            implementation(compose.uiTest)
         }
         jvmMain.dependencies {
+            implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
         }
     }
-
-}
-
-room {
-    schemaDirectory("$projectDir/schemas")
 }
 
 android {
-    namespace = "com.zalamena.condominios.di"
+    namespace = "com.zalamena.condominios.addpessoa.ui"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
@@ -96,5 +89,21 @@ android {
 mockmp {
     onTest {
         withHelper()
+    }
+}
+
+dependencies {
+    debugImplementation(compose.uiTooling)
+}
+
+compose.desktop {
+    application {
+        mainClass = "com.zalamena.condominios.MainKt"
+
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "com.zalamena.condominios"
+            packageVersion = "1.0.0"
+        }
     }
 }

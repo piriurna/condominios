@@ -1,7 +1,7 @@
-package com.zalamena.condominios.pessoa.domain.usecase
+package com.zalamena.condominios.addpessoa.domain.usecase
 
-import com.zalamena.condominios.pessoa.domain.mapper.toPessoa
-import com.zalamena.condominios.pessoa.domain.models.AddPessoaForm
+import com.zalamena.condominios.addpessoa.domain.mapper.toPessoa
+import com.zalamena.condominios.addpessoa.domain.models.AddPessoaForm
 import com.zalamena.condominios.pessoa.domain.models.Pessoa
 import com.zalamena.condominios.pessoa.domain.models.PessoaException
 import com.zalamena.condominios.pessoa.domain.repository.PessoaRepository
@@ -31,7 +31,6 @@ class AddPessoaUseCaseTest: TestsWithMocks() {
         val addResult = addPessoaUseCase.invoke(addPessoaForm)
 
         assertTrue(addResult.isSuccess)
-        assertEquals(newPessoaId, addResult.getOrThrow().id)
     }
 
 

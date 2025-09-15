@@ -1,4 +1,4 @@
-package com.zalamena.condominios.pessoa.domain.models
+package com.zalamena.condominios.addpessoa.domain.models
 
 data class AddPessoaForm(
     val nome: String,

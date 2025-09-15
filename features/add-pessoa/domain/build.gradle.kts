@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.room)
     id("org.kodein.mock.mockmp") version "2.0.2"
 }
 
@@ -21,13 +20,13 @@ kotlin {
 
     iosArm64()
     iosSimulatorArm64()
+    iosX64() // Add this for iOS support
 
     jvm()
 
     sourceSets {
         androidMain.dependencies {
             implementation(libs.koin.android)
-            implementation(libs.room.runtime.android)
         }
 
         androidUnitTest.dependencies {
@@ -42,50 +41,26 @@ kotlin {
             implementation(libs.koin.junit4)
         }
         commonMain.dependencies {
-            implementation(libs.room.runtime)
-            implementation(libs.sqlite.bundled)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-
             implementation(libs.koin.core)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
 
             implementation(libs.kotlinx.datetime)
 
-            implementation(libs.kotlinx.coroutines.test)
-
-            api(project(":features:apartamentos:data"))
-            api(project(":features:apartamentos:domain"))
-            api(project(":features:pessoa:data"))
-            api(project(":features:pessoa:domain"))
-            api(project(":features:moradores:data"))
-            api(project(":features:moradores:domain"))
-            api(project(":features:moradores:ui"))
-            api(project(":features:database"))
-            api(project(":features:mock-data"))
-            api(project(":features:add-apartamento:domain"))
-            api(project(":features:add-apartamento:ui"))
-            api(project(":features:add-pessoa:ui"))
-            api(project(":features:add-pessoa:domain"))
+            implementation(project(":features:pessoa:domain"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.assertk)
+
+            implementation(libs.kotlinx.coroutines.test)
         }
         jvmMain.dependencies {
             implementation(libs.kotlinx.coroutinesSwing)
         }
     }
-
-}
-
-room {
-    schemaDirectory("$projectDir/schemas")
 }
 
 android {
-    namespace = "com.zalamena.condominios.di"
+    namespace = "com.zalamena.condominios.addpessoa.domain"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

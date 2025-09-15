@@ -2,6 +2,7 @@ package com.zalamena.condominios.di
 
 import com.zalamena.condominios.addapartamento.domain.usecases.AddApartamentoUseCase
 import com.zalamena.condominios.addapartamento.ui.AddApartamentoViewModel
+import com.zalamena.condominios.addpessoa.domain.usecase.AddPessoaUseCase
 import com.zalamena.condominios.apartamentos.data.dao.ApartamentoDao
 import com.zalamena.condominios.apartamentos.data.repository.ApartamentoRepositoryImpl
 import com.zalamena.condominios.apartamentos.domain.repository.ApartamentosRepository
@@ -12,7 +13,6 @@ import com.zalamena.condominios.moradores.ui.list.MoradoresListViewModel
 import com.zalamena.condominios.pessoa.data.dao.PessoaDao
 import com.zalamena.condominios.pessoa.data.repository.PessoaRepositoryImpl
 import com.zalamena.condominios.pessoa.domain.repository.PessoaRepository
-import com.zalamena.condominios.pessoa.domain.usecase.AddPessoaUseCase
 import com.zalamena.condominios.pessoa.domain.usecase.GetPessoaUseCase
 import com.zalamena.condominios.pessoa.domain.usecase.GetPessoasListUseCase
 import com.zalamena.moradores.data.dao.MoradoresDao

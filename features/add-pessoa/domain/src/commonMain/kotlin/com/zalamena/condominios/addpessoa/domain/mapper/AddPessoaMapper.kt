@@ -1,6 +1,6 @@
-package com.zalamena.condominios.pessoa.domain.mapper
+package com.zalamena.condominios.addpessoa.domain.mapper
 
-import com.zalamena.condominios.pessoa.domain.models.AddPessoaForm
+import com.zalamena.condominios.addpessoa.domain.models.AddPessoaForm
 import com.zalamena.condominios.pessoa.domain.models.Pessoa
 
 fun AddPessoaForm.toPessoa(id: String) =
