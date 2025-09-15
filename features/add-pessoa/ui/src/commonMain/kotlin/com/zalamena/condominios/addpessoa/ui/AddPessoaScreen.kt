@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.zalamena.condominios.addpessoa.domain.models.AddPessoaFormError
 import com.zalamena.condominios.addpessoa.ui.models.AddPessoaFormUiData
 import com.zalamena.condominios.common.ui.components.loading.FullscreenLoading
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -54,9 +55,14 @@ private fun AddPessoaScreenContent(
         Text("Dados da pessoa", style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.height(16.dp))
             TextField(
-                modifier = Modifier.weight(2f),
-                value = uiState.addPessoaForm.nome?:"",
+                value = uiState.addPessoaForm.nome,
                 label = { Text("Nome Completo") },
+                isError = uiState.formErrors.contains(AddPessoaFormError.Nome),
+                supportingText = {
+                    if (uiState.formErrors.contains(AddPessoaFormError.Nome)) {
+                        Text("Nome inválido")
+                    }
+                },
                 onValueChange = {
                     onFormChange(uiState.addPessoaForm.copy(nome = it))
                 },
@@ -67,9 +73,14 @@ private fun AddPessoaScreenContent(
             )
             Spacer(modifier = Modifier.width(16.dp))
             TextField(
-                modifier = Modifier.weight(1f),
-                value = uiState.addPessoaForm.email?:"",
+                value = uiState.addPessoaForm.email,
                 label = { Text("E-mail") },
+                isError = uiState.formErrors.contains(AddPessoaFormError.Email),
+                supportingText = {
+                    if (uiState.formErrors.contains(AddPessoaFormError.Email)) {
+                        Text("Email inválido")
+                    }
+                },
                 onValueChange = {
                     onFormChange(uiState.addPessoaForm.copy(email = it))
                 },
@@ -81,9 +92,14 @@ private fun AddPessoaScreenContent(
             )
         Spacer(modifier = Modifier.width(16.dp))
         TextField(
-            modifier = Modifier.weight(1f),
-            value = uiState.addPessoaForm.email?:"",
+            value = uiState.addPessoaForm.email,
             label = { Text("Telefone") },
+            isError = uiState.formErrors.contains(AddPessoaFormError.Telefone),
+            supportingText = {
+                if (uiState.formErrors.contains(AddPessoaFormError.Telefone)) {
+                    Text("Telefone inválido")
+                }
+            },
             onValueChange = {
                 onFormChange(uiState.addPessoaForm.copy(telefone = it))
             },
@@ -94,22 +110,27 @@ private fun AddPessoaScreenContent(
         )
         Spacer(modifier = Modifier.width(16.dp))
         TextField(
-            modifier = Modifier.weight(1f),
-            value = uiState.addPessoaForm.email?:"",
+            value = uiState.addPessoaForm.email,
             label = { Text("Cpf") },
+            isError = uiState.formErrors.contains(AddPessoaFormError.Cpf),
+            supportingText = {
+                if (uiState.formErrors.contains(AddPessoaFormError.Cpf)) {
+                    Text("CPF inválido")
+                }
+            },
             onValueChange = {
                 onFormChange(uiState.addPessoaForm.copy(telefone = it))
             },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number
+                keyboardType = KeyboardType.Number,
             ),
         )
-    }
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onAddPessoa) {
             Text("Adicionar pessoa")
         }
+    }
 }
 
 @Preview
@@ -118,6 +139,6 @@ private fun AddPessoaScreenContentPreview() {
     AddPessoaScreenContent(
         AddPessoaUiState(),
         onFormChange = {},
-        onAddPessoa = {}
+        onAddPessoa = {},
     )
 }

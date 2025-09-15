@@ -3,6 +3,9 @@ package com.zalamena.condominios.di
 import com.zalamena.condominios.addapartamento.domain.usecases.AddApartamentoUseCase
 import com.zalamena.condominios.addapartamento.ui.AddApartamentoViewModel
 import com.zalamena.condominios.addpessoa.domain.usecase.AddPessoaUseCase
+import com.zalamena.condominios.addpessoa.domain.usecase.AddPessoaUseCaseImpl
+import com.zalamena.condominios.addpessoa.domain.validator.AddPessoaFormValidator
+import com.zalamena.condominios.addpessoa.domain.validator.AddPessoaFormValidatorImpl
 import com.zalamena.condominios.apartamentos.data.dao.ApartamentoDao
 import com.zalamena.condominios.apartamentos.data.repository.ApartamentoRepositoryImpl
 import com.zalamena.condominios.apartamentos.domain.repository.ApartamentosRepository
@@ -41,10 +44,11 @@ val repositoryModule = module {
     single<PessoaRepository> { PessoaRepositoryImpl(get()) }
     single<ApartamentosRepository> { ApartamentoRepositoryImpl(get()) }
     single<MoradoresRepository> { MoradoresRepositoryImpl(get(), get(), MoradorMapper()) }
+    single<AddPessoaFormValidator> { AddPessoaFormValidatorImpl() }
 }
 
 val useCaseModule = module {
-    factory { AddPessoaUseCase(get()) }
+    factory<AddPessoaUseCase> { AddPessoaUseCaseImpl(get(), get()) }
     factory { GetPessoaUseCase(get()) }
     factory { GetPessoasListUseCase(get()) }
     factory { AddMoradorUseCase(get()) }
