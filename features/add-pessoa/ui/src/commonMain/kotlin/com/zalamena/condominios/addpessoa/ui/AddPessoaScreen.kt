@@ -27,8 +27,8 @@ fun AddPessoaScreen(
 ) {
     val uiState = viewModel.uiState.collectAsState(AddPessoaUiState())
 
-    LaunchedEffect(uiState.value.addingFinished) {
-        if(uiState.value.addingFinished) navigate()
+    LaunchedEffect(uiState.value.createdPessoaId) {
+        if(uiState.value.createdPessoaId != null) navigate()
     }
 
     AddPessoaScreenContent(

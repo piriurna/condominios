@@ -16,6 +16,7 @@ fun App() {
         AppNavHost(
             navController,
             koinViewModel(),
+            koinViewModel(),
             koinViewModel()
         )
     }

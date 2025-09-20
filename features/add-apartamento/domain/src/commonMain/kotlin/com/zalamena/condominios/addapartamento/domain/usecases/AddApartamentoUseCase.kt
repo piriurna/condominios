@@ -7,14 +7,20 @@ import com.zalamena.condominios.apartamentos.domain.repository.ApartamentosRepos
 class AddApartamentoUseCase(
     private val apartamentosRepository: ApartamentosRepository
 ) {
-    suspend operator fun invoke(apartamentoForm: AddApartamentoForm): Result<Unit> {
+    suspend operator fun invoke(apartamentoForm: AddApartamentoForm): Result<String> {
         val apartamentoIdResult =
             apartamentosRepository.createApartamentoId(apartamentoForm.numero) // Maybe create a service for this
 
         return if(apartamentoIdResult.isSuccess) {
             val id = apartamentoIdResult.getOrThrow()
 
-            apartamentosRepository.addApartamento(apartamentoForm.toApartamento(id))
+            val addResult = apartamentosRepository.addApartamento(apartamentoForm.toApartamento(id))
+
+            if(addResult.isSuccess) {
+                Result.success(id)
+            } else {
+                Result.failure(addResult.exceptionOrNull()!!)
+            }
         } else {
             Result.failure(apartamentoIdResult.exceptionOrNull()!!)
         }

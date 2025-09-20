@@ -10,7 +10,7 @@ class AddPessoaUseCaseImpl(
     private val pessoaRepository: PessoaRepository,
     private val addPessoaFormValidator: AddPessoaFormValidator
 ): AddPessoaUseCase {
-    override suspend operator fun invoke(pessoaForm: AddPessoaForm): Result<Unit> {
+    override suspend operator fun invoke(pessoaForm: AddPessoaForm): Result<String> {
         addPessoaFormValidator.validate(pessoaForm).let {
             if(it.isNotEmpty()) {
                 return Result.failure(AddPessoaException.FormValidationException(it))
@@ -27,7 +27,7 @@ class AddPessoaUseCaseImpl(
         return if(pessoaIdResult.isSuccess) {
             val id = pessoaIdResult.getOrThrow()
             pessoaRepository.addPessoa(pessoaForm.toPessoa(id))
-            Result.success(Unit)
+            Result.success(id)
         } else {
             Result.failure(pessoaIdResult.exceptionOrNull()!!)
         }

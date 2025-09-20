@@ -19,7 +19,7 @@ class AddApartamentoUseCaseTest: TestsWithMocks() {
     private val addApartamentoUseCase by lazy { AddApartamentoUseCase(apartamentosRepository) }
 
     @Test
-    fun `GIVEN create id is success WHEN adding apartment THEN should be success`() = runTest {
+    fun `GIVEN create id is success WHEN adding apartment THEN should be success and return the created id`() = runTest {
         val addApartamentoForm = AddApartamentoForm.Companion.dummy
         val validId = "validId"
 
@@ -39,7 +39,7 @@ class AddApartamentoUseCaseTest: TestsWithMocks() {
 
 
         assertTrue(addApartamentoResult.isSuccess)
-        assertTrue(addApartamentoResult.getOrNull() == Unit)
+        assertTrue(addApartamentoResult.getOrNull() == validId)
     }
 
 

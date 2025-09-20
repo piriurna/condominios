@@ -2,6 +2,7 @@ package com.zalamena.condominios.di
 
 import com.zalamena.condominios.addapartamento.domain.usecases.AddApartamentoUseCase
 import com.zalamena.condominios.addapartamento.ui.AddApartamentoViewModel
+import com.zalamena.condominios.addmorador.ui.AddMoradorOverviewViewModel
 import com.zalamena.condominios.addpessoa.domain.usecase.AddPessoaUseCase
 import com.zalamena.condominios.addpessoa.domain.usecase.AddPessoaUseCaseImpl
 import com.zalamena.condominios.addpessoa.domain.validator.AddPessoaFormValidator
@@ -67,4 +68,5 @@ val viewModelModule = module {
     viewModelOf(::AddMoradorViewModel)
     viewModelOf(::AddApartamentoViewModel)
     viewModelOf(::AddPessoaViewModel)
+    viewModelOf(::AddMoradorOverviewViewModel)
 }

@@ -16,7 +16,7 @@ class GetPessoaUseCaseTest: TestsWithMocks() {
     @Mock
     lateinit var pessoaRepository: PessoaRepository
 
-    private val getPessoaUseCase by lazy { GetPessoaUseCase(pessoaRepository) }
+    private val getPessoaUseCase: GetPessoaUseCase by lazy { GetPessoaUseCaseImpl(pessoaRepository) }
 
 
 

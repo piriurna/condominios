@@ -32,8 +32,8 @@ fun AddApartamentoScreen(
 ) {
     val uiState = viewModel.uiState.collectAsState(AddApartamentoUiState())
 
-    LaunchedEffect(viewModel.uiState.value.addingFinished) {
-        if(viewModel.uiState.value.addingFinished) navigate()
+    LaunchedEffect(viewModel.uiState.value.createdApartamentoId) {
+        if(viewModel.uiState.value.createdApartamentoId != null) navigate()
     }
 
     AddApartamentoScreenContent(

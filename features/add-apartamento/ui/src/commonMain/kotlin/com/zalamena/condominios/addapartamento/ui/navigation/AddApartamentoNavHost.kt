@@ -11,12 +11,15 @@ import kotlinx.serialization.Serializable
 @Serializable
 object AddApartamento
 
+@Serializable
+object AddApartamentoScreen
+
 fun NavGraphBuilder.addApartamentoNavHost(
     navController: NavController,
     addApartamentoViewModel: AddApartamentoViewModel
 ) {
-    navigation<AddApartamento>(AddApartamento) {
-        composable<AddApartamento> {
+    navigation<AddApartamento>(AddApartamentoScreen) {
+        composable<AddApartamentoScreen> {
             AddApartamentoScreen(addApartamentoViewModel) {
                 navController.popBackStack() // In this case we are just adding an apartamento and not in the AddMorador Flow
             }

@@ -16,7 +16,7 @@ data class AddPessoaUiState(
     val addPessoaForm: AddPessoaFormUiData = AddPessoaFormUiData(),
     val isLoading: Boolean = false,
     val formErrors: List<AddPessoaFormError> = emptyList(),
-    val addingFinished: Boolean = false
+    val createdPessoaId: String? = null
 )
 
 class AddPessoaViewModel(
@@ -45,7 +45,7 @@ class AddPessoaViewModel(
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         formErrors = emptyList(),
-                        addingFinished = true
+                        createdPessoaId = addResult.getOrThrow()
                     )
                 }
 

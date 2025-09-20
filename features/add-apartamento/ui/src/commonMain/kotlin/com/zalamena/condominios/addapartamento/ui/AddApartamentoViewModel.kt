@@ -18,7 +18,7 @@ data class AddApartamentoUiState(
     val addApartamentoForm: AddApartamentoFormUiData = AddApartamentoFormUiData.BLANK,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
-    val addingFinished: Boolean = false
+    val createdApartamentoId: String? = null
 )
 
 
@@ -95,7 +95,7 @@ class AddApartamentoViewModel(
                         it.copy(
                             isLoading = false,
                             errorMessage = null,
-                            addingFinished = true
+                            createdApartamentoId = addResult.getOrThrow()
                         )
                     }
                 }
