@@ -7,8 +7,9 @@ import com.zalamena.condominios.addpessoa.domain.models.AddPessoaFormError
 import com.zalamena.condominios.addpessoa.domain.usecase.AddPessoaUseCase
 import com.zalamena.condominios.addpessoa.ui.mapper.toDomain
 import com.zalamena.condominios.addpessoa.ui.models.AddPessoaFormUiData
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class AddPessoaUiState(
@@ -23,7 +24,7 @@ class AddPessoaViewModel(
 ): ViewModel() {
 
     private val _uiState: MutableStateFlow<AddPessoaUiState> = MutableStateFlow(AddPessoaUiState())
-    val uiState: Flow<AddPessoaUiState> = _uiState
+    val uiState: StateFlow<AddPessoaUiState> = _uiState.asStateFlow()
 
     fun updateForm(form: AddPessoaFormUiData) {
         _uiState.value = _uiState.value.copy(

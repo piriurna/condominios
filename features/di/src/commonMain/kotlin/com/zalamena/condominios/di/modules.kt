@@ -10,6 +10,8 @@ import com.zalamena.condominios.addpessoa.ui.AddPessoaViewModel
 import com.zalamena.condominios.apartamentos.data.dao.ApartamentoDao
 import com.zalamena.condominios.apartamentos.data.repository.ApartamentoRepositoryImpl
 import com.zalamena.condominios.apartamentos.domain.repository.ApartamentosRepository
+import com.zalamena.condominios.apartamentos.domain.usecase.GetApartamentoUseCase
+import com.zalamena.condominios.apartamentos.domain.usecase.GetApartamentoUseCaseImpl
 import com.zalamena.condominios.apartamentos.domain.usecase.GetApartamentosUseCase
 import com.zalamena.condominios.database.AppDatabase
 import com.zalamena.condominios.moradores.ui.add.AddMoradorViewModel
@@ -18,6 +20,7 @@ import com.zalamena.condominios.pessoa.data.dao.PessoaDao
 import com.zalamena.condominios.pessoa.data.repository.PessoaRepositoryImpl
 import com.zalamena.condominios.pessoa.domain.repository.PessoaRepository
 import com.zalamena.condominios.pessoa.domain.usecase.GetPessoaUseCase
+import com.zalamena.condominios.pessoa.domain.usecase.GetPessoaUseCaseImpl
 import com.zalamena.condominios.pessoa.domain.usecase.GetPessoasListUseCase
 import com.zalamena.moradores.data.dao.MoradoresDao
 import com.zalamena.moradores.data.mapper.MoradorMapper
@@ -49,7 +52,8 @@ val repositoryModule = module {
 
 val useCaseModule = module {
     factory<AddPessoaUseCase> { AddPessoaUseCaseImpl(get(), get()) }
-    factory { GetPessoaUseCase(get()) }
+    factory<GetPessoaUseCase> { GetPessoaUseCaseImpl(get()) }
+    factory<GetApartamentoUseCase> { GetApartamentoUseCaseImpl(get()) }
     factory { GetPessoasListUseCase(get()) }
     factory { GetMoradoresUseCase(get()) }
     factory { GetMoradoresForApartamentoUseCase(get()) }

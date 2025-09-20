@@ -61,6 +61,7 @@ kotlin {
 
             implementation(libs.kotlinx.datetime)
             api(project(":features:add-morador:domain"))
+            api(project(":features:moradores:ui"))
             api(project(":features:add-apartamento:ui"))
             api(project(":features:add-pessoa:ui"))
             api(project(":features:common:ui"))

@@ -24,7 +24,7 @@ object AddMoradorApartamento
 object AddMoradorOverview
 
 
-fun NavGraphBuilder.addMoradorNavGraph(
+fun NavGraphBuilder.addMoradorNavGraph( // TODO: Improve this flow to make it less ui dependant and have these decisions on domain
     navController: NavController,
     addPessoaViewModel: AddPessoaViewModel,
     addApartamentoViewModel: AddApartamentoViewModel
