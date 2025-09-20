@@ -17,6 +17,7 @@ fun App() {
             navController,
             koinViewModel(),
             koinViewModel(),
+            koinViewModel(),
             koinViewModel()
         )
     }

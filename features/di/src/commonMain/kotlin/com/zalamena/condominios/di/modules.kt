@@ -2,7 +2,10 @@ package com.zalamena.condominios.di
 
 import com.zalamena.condominios.addapartamento.domain.usecases.AddApartamentoUseCase
 import com.zalamena.condominios.addapartamento.ui.AddApartamentoViewModel
-import com.zalamena.condominios.addmorador.ui.AddMoradorOverviewViewModel
+import com.zalamena.condominios.addmorador.domain.usecase.AddMoradorUseCase
+import com.zalamena.condominios.addmorador.domain.usecase.AddMoradorUseCaseImpl
+import com.zalamena.condominios.addmorador.ui.flowController.AddMoradorFlowViewModel
+import com.zalamena.condominios.addmorador.ui.overview.AddMoradorOverviewViewModel
 import com.zalamena.condominios.addpessoa.domain.usecase.AddPessoaUseCase
 import com.zalamena.condominios.addpessoa.domain.usecase.AddPessoaUseCaseImpl
 import com.zalamena.condominios.addpessoa.domain.validator.AddPessoaFormValidator
@@ -61,6 +64,7 @@ val useCaseModule = module {
     factory { GetApartamentoWithMoradoresUseCase(get()) }
     factory { AddApartamentoUseCase(get()) }
     factory { GetApartamentosUseCase(get()) }
+    factory<AddMoradorUseCase> { AddMoradorUseCaseImpl(get()) }
 }
 
 val viewModelModule = module {
@@ -69,4 +73,5 @@ val viewModelModule = module {
     viewModelOf(::AddApartamentoViewModel)
     viewModelOf(::AddPessoaViewModel)
     viewModelOf(::AddMoradorOverviewViewModel)
+    viewModelOf(::AddMoradorFlowViewModel)
 }

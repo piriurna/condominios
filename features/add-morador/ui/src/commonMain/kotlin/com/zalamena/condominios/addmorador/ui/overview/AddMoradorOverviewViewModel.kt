@@ -1,4 +1,4 @@
-package com.zalamena.condominios.addmorador.ui
+package com.zalamena.condominios.addmorador.ui.overview
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -49,7 +49,9 @@ class AddMoradorOverviewViewModel(
             if(pessoaResult.isFailure || apartamentoResult.isFailure) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = pessoaResult.exceptionOrNull()?.message?:"Error"
+                    error = pessoaResult.exceptionOrNull()?.message
+                        ?:apartamentoResult.exceptionOrNull()?.message
+                        ?:"Pessoa or Apartamento not found"
                 )
                 return@launch
             }
@@ -66,7 +68,7 @@ class AddMoradorOverviewViewModel(
 
     fun addMorador() {
         viewModelScope.launch {
-            _uiState.value.copy(
+            _uiState.value = _uiState.value.copy(
                 isLoading = true,
                 error = null
             )
@@ -75,7 +77,7 @@ class AddMoradorOverviewViewModel(
             val apartamentoId = uiState.value.apartamento?.id
 
             if(pessoaId == null || apartamentoId == null) {
-                _uiState.value.copy(
+                _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     error = "Missing Pessoa or Apartamento"
                 )
@@ -85,14 +87,14 @@ class AddMoradorOverviewViewModel(
             val addResult = addMoradorUseCase.invoke(pessoaId, apartamentoId)
 
             if(addResult.isFailure) {
-                _uiState.value.copy(
+                _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     error = addResult.exceptionOrNull()?.message
                 )
                 return@launch
             }
 
-            _uiState.value.copy(
+            _uiState.value = _uiState.value.copy(
                 isLoading = false,
                 error = null,
                 isCompleted = true

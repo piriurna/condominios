@@ -4,11 +4,11 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import androidx.navigation.toRoute
 import com.zalamena.condominios.addapartamento.ui.AddApartamentoScreen
 import com.zalamena.condominios.addapartamento.ui.AddApartamentoViewModel
-import com.zalamena.condominios.addmorador.ui.AddMoradorOverviewScreen
-import com.zalamena.condominios.addmorador.ui.AddMoradorOverviewViewModel
+import com.zalamena.condominios.addmorador.ui.flowController.AddMoradorFlowViewModel
+import com.zalamena.condominios.addmorador.ui.overview.AddMoradorOverviewScreen
+import com.zalamena.condominios.addmorador.ui.overview.AddMoradorOverviewViewModel
 import com.zalamena.condominios.addpessoa.ui.AddPessoaScreen
 import com.zalamena.condominios.addpessoa.ui.AddPessoaViewModel
 import kotlinx.serialization.Serializable
@@ -21,47 +21,44 @@ object AddMorador
 object AddMoradorPessoa
 
 @Serializable
-data class AddMoradorApartamento(
-    val pessoaId: String
-)
+object AddMoradorApartamento
 
 @Serializable
-data class AddMoradorOverview(
-    val pessoaId: String?,
-    val apartamentoId: String?
-)
+object AddMoradorOverview
 
 
 fun NavGraphBuilder.addMoradorNavGraph( // TODO: Improve this flow to make it less ui dependant and have these decisions on domain
     navController: NavController,
     addPessoaViewModel: AddPessoaViewModel,
     addApartamentoViewModel: AddApartamentoViewModel,
-    addMoradorOverviewViewModel: AddMoradorOverviewViewModel
+    addMoradorOverviewViewModel: AddMoradorOverviewViewModel,
+    addMoradorFlowViewModel: AddMoradorFlowViewModel
 ) {
     navigation<AddMorador>(startDestination = AddMoradorPessoa) {
         composable<AddMoradorPessoa> {
             AddPessoaScreen(addPessoaViewModel) {
-                navController.navigate(AddMoradorApartamento(addPessoaViewModel.uiState.value.createdPessoaId!!))
+                addMoradorFlowViewModel.setCreatedPessoaId(addPessoaViewModel.uiState.value.createdPessoaId!!)
+                navController.navigate(AddMoradorApartamento)
             }
         }
 
         composable<AddMoradorApartamento> {
             AddApartamentoScreen(addApartamentoViewModel) {
-                val apartamento: AddMoradorApartamento = it.toRoute()
-                navController.navigate(AddMoradorOverview(
-                    apartamento.pessoaId,
-                    addApartamentoViewModel.uiState.value.createdApartamentoId!!
-                ))
+                addMoradorFlowViewModel.setCreatedApartamentoId(addApartamentoViewModel.uiState.value.createdApartamentoId!!)
+                navController.navigate(AddMoradorOverview)
             }
         }
 
         composable<AddMoradorOverview> {
-            val overview: AddMoradorOverview = it.toRoute()
+            val pessoaId = addMoradorFlowViewModel.uiState.value.createdPessoaId
+            val apartamentoId = addMoradorFlowViewModel.uiState.value.createdApartamentoId
             AddMoradorOverviewScreen(
                 addMoradorOverviewViewModel,
-                overview.pessoaId,
-                overview.apartamentoId
+                pessoaId,
+                apartamentoId
             ) {
+                navController.popBackStack()
+                navController.popBackStack()
                 navController.popBackStack()
             }
         }

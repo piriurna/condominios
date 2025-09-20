@@ -1,6 +1,7 @@
 package com.zalamena.condominios.addmorador.domain
 
 import com.zalamena.condominios.addmorador.domain.usecase.AddMoradorUseCase
+import com.zalamena.condominios.addmorador.domain.usecase.AddMoradorUseCaseImpl
 import com.zalamena.condominios.apartamentos.domain.models.Apartamento
 import com.zalamena.condominios.apartamentos.domain.models.ApartamentoException
 import com.zalamena.condominios.pessoa.domain.models.Pessoa
@@ -20,7 +21,11 @@ class GerenciarMoradoresUseCaseTest: TestsWithMocks() {
     @Mock
     lateinit var moradoresRepository: MoradoresRepository
 
-    private val addMoradorUseCase: AddMoradorUseCase by lazy { AddMoradorUseCase(moradoresRepository) }
+    private val addMoradorUseCase: AddMoradorUseCase by lazy {
+        AddMoradorUseCaseImpl(
+            moradoresRepository
+        )
+    }
 
     @Test
     fun `GIVEN an pessoa is getting added to an existing apartamento WHEN there is no user with same id in the apartamento THEN should add it`() = runTest {

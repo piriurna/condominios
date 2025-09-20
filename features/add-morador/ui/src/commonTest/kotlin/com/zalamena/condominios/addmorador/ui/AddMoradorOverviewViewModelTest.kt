@@ -1,6 +1,7 @@
 package com.zalamena.condominios.addmorador.ui
 
-import androidx.lifecycle.SavedStateHandle
+import com.zalamena.condominios.addmorador.domain.usecase.AddMoradorUseCase
+import com.zalamena.condominios.addmorador.ui.overview.AddMoradorOverviewViewModel
 import com.zalamena.condominios.apartamentos.domain.models.Apartamento
 import com.zalamena.condominios.apartamentos.domain.models.ApartamentoException
 import com.zalamena.condominios.apartamentos.domain.usecase.GetApartamentoUseCase
@@ -32,16 +33,16 @@ class AddMoradorOverviewViewModelTest: TestsWithMocks() {
     @Mock
     lateinit var getApartamentoUseCase: GetApartamentoUseCase
 
-    private var savedStateHandle: SavedStateHandle = SavedStateHandle()
+    @Mock
+    lateinit var addMoradorUseCase: AddMoradorUseCase
 
-    private lateinit var viewModel: AddMoradorOverviewViewModel
+    private val viewModel by lazy { AddMoradorOverviewViewModel(getPessoaUseCase, getApartamentoUseCase, addMoradorUseCase) }
 
 
     @BeforeTest
     fun setup() {
         val testDispatcher: TestDispatcher = UnconfinedTestDispatcher()
         Dispatchers.setMain(testDispatcher)
-        reInitViewModel()
     }
 
     @AfterTest
@@ -60,32 +61,21 @@ class AddMoradorOverviewViewModelTest: TestsWithMocks() {
     }
 
     @Test
-    fun `GIVEN saved state handle valid WHEN populating form THEN populate pessoa and apartamento`() = runTest {
-        reInitViewModel(
-            SavedStateHandle(
-                initialState = mapOf("pessoaId" to "pessoaId","apartamentoId" to "apartamentoId")
-            )
-        )
+    fun `GIVEN valid pessoa and apartamento id WHEN populating form THEN populate pessoa and apartamento`() = runTest {
         everySuspending { getPessoaUseCase("pessoaId") } returns
                 Result.success(Pessoa.dummy)
         everySuspending { getApartamentoUseCase("apartamentoId") } returns
                 Result.success(Apartamento.dummy)
 
-        viewModel.populateForm()
+        viewModel.populateForm("pessoaId", "apartamentoId")
 
         assertEquals(Pessoa.dummy.toSelectUi(), viewModel.uiState.value.pessoa)
         assertEquals(Apartamento.dummy.toSelectUi(), viewModel.uiState.value.apartamento)
     }
 
     @Test
-    fun `GIVEN saved state handle invalid WHEN populating form THEN fail populating the form`() = runTest {
-        reInitViewModel(
-            SavedStateHandle(
-                initialState = mapOf("pessoaId" to "pessoaId")
-            )
-        )
-
-        viewModel.populateForm()
+    fun `GIVEN null apartamento id WHEN populating form THEN fail populating the form`() = runTest {
+        viewModel.populateForm("pessoaId", null)
 
         assertEquals("Pessoa or Apartamento not found", viewModel.uiState.value.error)
         assertEquals(null, viewModel.uiState.value.apartamento)
@@ -94,69 +84,47 @@ class AddMoradorOverviewViewModelTest: TestsWithMocks() {
 
     @Test
     fun `GIVEN get pessoa and get apartamento fails WHEN populating form THEN fail populating the form`() = runTest {
-        reInitViewModel(
-            SavedStateHandle(
-                initialState = mapOf("pessoaId" to "pessoaId", "apartamentoId" to "apartamentoId")
-            )
-        )
-
         everySuspending { getPessoaUseCase("pessoaId") } returns
                 Result.failure(PessoaException.PessoaNotFoundException)
         everySuspending { getApartamentoUseCase("apartamentoId") } returns
                 Result.failure(ApartamentoException.NoApartmentFoundException)
 
 
-        viewModel.populateForm()
+        viewModel.populateForm("pessoaId", "apartamentoId")
 
-        assertEquals("Pessoa or Apartamento not found", viewModel.uiState.value.error)
+        assertEquals(PessoaException.PessoaNotFoundException.message, viewModel.uiState.value.error)
         assertEquals(null, viewModel.uiState.value.apartamento)
         assertEquals(null, viewModel.uiState.value.pessoa)
     }
 
     @Test
     fun `GIVEN get pessoa fails and get apartamento succeeds WHEN populating form THEN fail populating the form`() = runTest {
-        reInitViewModel(
-            SavedStateHandle(
-                initialState = mapOf("pessoaId" to "pessoaId", "apartamentoId" to "apartamentoId")
-            )
-        )
-
         everySuspending { getPessoaUseCase("pessoaId") } returns
                 Result.failure(PessoaException.PessoaNotFoundException)
         everySuspending { getApartamentoUseCase("apartamentoId") } returns
                 Result.success(Apartamento.dummy)
 
 
-        viewModel.populateForm()
+        viewModel.populateForm("pessoaId", "apartamentoId")
 
-        assertEquals("Pessoa or Apartamento not found", viewModel.uiState.value.error)
+        assertEquals(PessoaException.PessoaNotFoundException.message, viewModel.uiState.value.error)
         assertEquals(null, viewModel.uiState.value.apartamento)
         assertEquals(null, viewModel.uiState.value.pessoa)
     }
 
     @Test
     fun `GIVEN get pessoa succeeds and get apartamento fails WHEN populating form THEN fail populating the form`() = runTest {
-        reInitViewModel(
-            SavedStateHandle(
-                initialState = mapOf("pessoaId" to "pessoaId", "apartamentoId" to "apartamentoId")
-            )
-        )
-
         everySuspending { getPessoaUseCase("pessoaId") } returns
                 Result.success(Pessoa.dummy)
         everySuspending { getApartamentoUseCase("apartamentoId") } returns
                 Result.failure(ApartamentoException.NoApartmentFoundException)
 
 
-        viewModel.populateForm()
+        viewModel.populateForm("pessoaId", "apartamentoId")
 
-        assertEquals("Pessoa or Apartamento not found", viewModel.uiState.value.error)
+        assertEquals(ApartamentoException.NoApartmentFoundException.message, viewModel.uiState.value.error)
         assertEquals(null, viewModel.uiState.value.apartamento)
         assertEquals(null, viewModel.uiState.value.pessoa)
-    }
-
-    private fun reInitViewModel(savedStateHandle: SavedStateHandle = this.savedStateHandle) {
-        viewModel = AddMoradorOverviewViewModel(getPessoaUseCase, getApartamentoUseCase, savedStateHandle)
     }
 
 

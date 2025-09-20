@@ -1,4 +1,4 @@
-package com.zalamena.condominios.addmorador.ui
+package com.zalamena.condominios.addmorador.ui.overview
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -45,20 +45,25 @@ fun AddMoradorOverviewScreen(
         }
     }
 
-    if(uiState.error != null) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(uiState.error)
+    when {
+        uiState.error != null -> {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(uiState.error)
+            }
         }
-    }
 
-    if(uiState.isLoading) {
-        FullscreenLoading(isLoading = uiState.isLoading)
-    }
+        uiState.isLoading -> {
+            FullscreenLoading(isLoading = uiState.isLoading)
+        }
 
-    AddMoradorOverviewScreenContent(
-        uiState,
-        onCompleteClicked = viewModel::addMorador
-    )
+        else -> {
+            AddMoradorOverviewScreenContent(
+                uiState,
+                onCompleteClicked = viewModel::addMorador
+            )
+        }
+
+    }
 }
 
 @Composable
