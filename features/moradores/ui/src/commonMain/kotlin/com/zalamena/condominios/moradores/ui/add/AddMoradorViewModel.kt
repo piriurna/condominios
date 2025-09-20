@@ -7,7 +7,6 @@ import com.zalamena.condominios.moradores.ui.mapper.toSelectUi
 import com.zalamena.condominios.moradores.ui.models.SelectApartamentoUiData
 import com.zalamena.condominios.moradores.ui.models.SelectPessoaUiData
 import com.zalamena.condominios.pessoa.domain.usecase.GetPessoasListUseCase
-import com.zalamena.moradores.domain.usecase.AddMoradorUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -24,7 +23,6 @@ data class AddMoradorUiState(
 
 
 class AddMoradorViewModel(
-    private val addMoradorUseCase: AddMoradorUseCase,
     private val getPessoasListUseCase: GetPessoasListUseCase,
     private val getApartamentosUseCase: GetApartamentosUseCase,
 ): ViewModel() {
@@ -79,7 +77,6 @@ class AddMoradorViewModel(
                 return@launch
             }
 
-            addMoradorUseCase(pessoaId, apartamentoId)
 
             _uiState.update {
                 it.copy(

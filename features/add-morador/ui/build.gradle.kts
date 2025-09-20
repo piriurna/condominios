@@ -60,13 +60,13 @@ kotlin {
             implementation(libs.koin.core)
 
             implementation(libs.kotlinx.datetime)
+            api(project(":features:add-morador:domain"))
+            api(project(":features:add-apartamento:ui"))
+            api(project(":features:add-pessoa:ui"))
+            api(project(":features:common:ui"))
 
             implementation(libs.navigation.compose)
 
-            implementation(project(":features:apartamentos:ui"))
-            api(project(":features:moradores:ui"))
-            api(project(":features:add-apartamento:ui"))
-            api(project(":features:add-morador:ui"))
 
             implementation(libs.kotlinx.serialization.json)
         }
@@ -83,7 +83,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.zalamena.condominios.navigation.ui"
+    namespace = "com.zalamena.condominios.addmorador.ui"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

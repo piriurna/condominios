@@ -10,8 +10,6 @@ abstract class MoradorTest: TestsWithMocks() {
     @Mock
     lateinit var moradoresRepository: MoradoresRepository
 
-    protected val addMoradorUseCase by lazy { AddMoradorUseCase(moradoresRepository) }
-
     protected val getMoradoresUseCase by lazy {  GetMoradoresUseCase(moradoresRepository) }
 
     protected val getMoradoresForApartamentoUseCase by lazy {  GetMoradoresForApartamentoUseCase(moradoresRepository) }

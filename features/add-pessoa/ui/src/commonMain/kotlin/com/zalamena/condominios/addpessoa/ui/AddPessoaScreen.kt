@@ -6,27 +6,30 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.zalamena.condominios.addpessoa.domain.models.AddPessoaFormError
+import com.zalamena.condominios.addpessoa.ui.form.AddPessoaForm
 import com.zalamena.condominios.addpessoa.ui.models.AddPessoaFormUiData
 import com.zalamena.condominios.common.ui.components.loading.FullscreenLoading
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun AddPessoaScreen(
-    viewModel: AddPessoaViewModel
+    viewModel: AddPessoaViewModel,
+    navigate: suspend () -> Unit = {}
 ) {
-    val uiState = viewModel.uiState
+    val uiState = viewModel.uiState.collectAsState(AddPessoaUiState())
+
+    LaunchedEffect(uiState.value.addingFinished) {
+        if(uiState.value.addingFinished) navigate()
+    }
 
     AddPessoaScreenContent(
         uiState.value,
@@ -52,79 +55,10 @@ private fun AddPessoaScreenContent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Dados da pessoa", style = MaterialTheme.typography.titleLarge)
-        Spacer(modifier = Modifier.height(16.dp))
-            TextField(
-                value = uiState.addPessoaForm.nome,
-                label = { Text("Nome Completo") },
-                isError = uiState.formErrors.contains(AddPessoaFormError.Nome),
-                supportingText = {
-                    if (uiState.formErrors.contains(AddPessoaFormError.Nome)) {
-                        Text("Nome inválido")
-                    }
-                },
-                onValueChange = {
-                    onFormChange(uiState.addPessoaForm.copy(nome = it))
-                },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number
-                ),
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            TextField(
-                value = uiState.addPessoaForm.email,
-                label = { Text("E-mail") },
-                isError = uiState.formErrors.contains(AddPessoaFormError.Email),
-                supportingText = {
-                    if (uiState.formErrors.contains(AddPessoaFormError.Email)) {
-                        Text("Email inválido")
-                    }
-                },
-                onValueChange = {
-                    onFormChange(uiState.addPessoaForm.copy(email = it))
-                },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email
-                ),
-
-            )
-        Spacer(modifier = Modifier.width(16.dp))
-        TextField(
-            value = uiState.addPessoaForm.email,
-            label = { Text("Telefone") },
-            isError = uiState.formErrors.contains(AddPessoaFormError.Telefone),
-            supportingText = {
-                if (uiState.formErrors.contains(AddPessoaFormError.Telefone)) {
-                    Text("Telefone inválido")
-                }
-            },
-            onValueChange = {
-                onFormChange(uiState.addPessoaForm.copy(telefone = it))
-            },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Phone
-            ),
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        TextField(
-            value = uiState.addPessoaForm.email,
-            label = { Text("Cpf") },
-            isError = uiState.formErrors.contains(AddPessoaFormError.Cpf),
-            supportingText = {
-                if (uiState.formErrors.contains(AddPessoaFormError.Cpf)) {
-                    Text("CPF inválido")
-                }
-            },
-            onValueChange = {
-                onFormChange(uiState.addPessoaForm.copy(telefone = it))
-            },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-            ),
+        AddPessoaForm(
+            modifier = Modifier,
+            addPessoaForm = uiState.addPessoaForm,
+            onFormChange = onFormChange
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onAddPessoa) {

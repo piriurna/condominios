@@ -1,5 +1,6 @@
 package com.zalamena.condominios.addapartamento.ui.navigation
 
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -11,11 +12,14 @@ import kotlinx.serialization.Serializable
 object AddApartamento
 
 fun NavGraphBuilder.addApartamentoNavHost(
+    navController: NavController,
     addApartamentoViewModel: AddApartamentoViewModel
 ) {
     navigation<AddApartamento>(AddApartamento) {
         composable<AddApartamento> {
-            AddApartamentoScreen(addApartamentoViewModel)
+            AddApartamentoScreen(addApartamentoViewModel) {
+                navController.popBackStack() // In this case we are just adding an apartamento and not in the AddMorador Flow
+            }
         }
     }
 }

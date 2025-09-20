@@ -1,4 +1,4 @@
-package com.zalamena.moradores.domain.usecase
+package com.zalamena.condominios.addmorador.domain.usecase
 
 import com.zalamena.moradores.domain.models.MoradorException
 import com.zalamena.moradores.domain.repository.MoradoresRepository

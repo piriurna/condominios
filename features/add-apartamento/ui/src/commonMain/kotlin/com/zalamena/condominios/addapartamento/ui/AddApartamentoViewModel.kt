@@ -6,8 +6,9 @@ import com.zalamena.condominios.addapartamento.domain.usecases.AddApartamentoUse
 import com.zalamena.condominios.addapartamento.ui.mapper.toDomain
 import com.zalamena.condominios.addapartamento.ui.models.AddApartamentoFormUiData
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
@@ -16,7 +17,8 @@ import kotlin.time.Duration.Companion.seconds
 data class AddApartamentoUiState(
     val addApartamentoForm: AddApartamentoFormUiData = AddApartamentoFormUiData.BLANK,
     val isLoading: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val addingFinished: Boolean = false
 )
 
 
@@ -25,7 +27,7 @@ class AddApartamentoViewModel(
 ): ViewModel() {
 
     private val _uiState: MutableStateFlow<AddApartamentoUiState> = MutableStateFlow(AddApartamentoUiState())
-    val uiState: Flow<AddApartamentoUiState> = _uiState
+    val uiState: StateFlow<AddApartamentoUiState> = _uiState.asStateFlow()
 
 
     fun setNumeroApartamento(numeroApartamento: String) {
@@ -92,7 +94,8 @@ class AddApartamentoViewModel(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = null
+                            errorMessage = null,
+                            addingFinished = true
                         )
                     }
                 }

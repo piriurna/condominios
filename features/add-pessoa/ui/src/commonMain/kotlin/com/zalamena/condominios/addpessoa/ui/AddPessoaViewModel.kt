@@ -7,15 +7,15 @@ import com.zalamena.condominios.addpessoa.domain.models.AddPessoaFormError
 import com.zalamena.condominios.addpessoa.domain.usecase.AddPessoaUseCase
 import com.zalamena.condominios.addpessoa.ui.mapper.toDomain
 import com.zalamena.condominios.addpessoa.ui.models.AddPessoaFormUiData
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class AddPessoaUiState(
     val addPessoaForm: AddPessoaFormUiData = AddPessoaFormUiData(),
     val isLoading: Boolean = false,
-    val formErrors: List<AddPessoaFormError> = emptyList()
+    val formErrors: List<AddPessoaFormError> = emptyList(),
+    val addingFinished: Boolean = false
 )
 
 class AddPessoaViewModel(
@@ -23,7 +23,7 @@ class AddPessoaViewModel(
 ): ViewModel() {
 
     private val _uiState: MutableStateFlow<AddPessoaUiState> = MutableStateFlow(AddPessoaUiState())
-    val uiState: StateFlow<AddPessoaUiState> = _uiState.asStateFlow()
+    val uiState: Flow<AddPessoaUiState> = _uiState
 
     fun updateForm(form: AddPessoaFormUiData) {
         _uiState.value = _uiState.value.copy(
@@ -43,7 +43,8 @@ class AddPessoaViewModel(
                 addResult.isSuccess -> {
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
-                        formErrors = emptyList()
+                        formErrors = emptyList(),
+                        addingFinished = true
                     )
                 }
 
