@@ -18,9 +18,9 @@ class PessoaRepositoryImpl(
         }
     }
 
-    override suspend fun getPessoa(cpf: String): Result<Pessoa> {
+    override suspend fun getPessoa(id: String): Result<Pessoa> {
         return runCatching {
-            return@runCatching pessoaDao.getPessoa(cpf)?.toDomain()
+            return@runCatching pessoaDao.getPessoa(id)?.toDomain()
                 ?: throw PessoaException.PessoaNotFoundException
         }
     }
