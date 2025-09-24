@@ -1,17 +1,15 @@
 @file:OptIn(ExperimentalComposeLibrary::class, ExperimentalKotlinGradlePluginApi::class)
 
 import org.jetbrains.compose.ExperimentalComposeLibrary
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.kodein.mock.gradle.MocKMPGradlePlugin
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.composeHotReload)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
     kotlin("plugin.serialization") version "2.2.0"
     id("org.kodein.mock.mockmp") version "2.0.2"
 }
@@ -31,13 +29,12 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
         }
 
         androidUnitTest.dependencies {
             implementation(libs.core.ktx)
+            implementation(libs.androidx.room.testing)
             implementation(libs.androidx.core)
             implementation(libs.androidx.runner)
             implementation(libs.androidx.rules)
@@ -48,42 +45,46 @@ kotlin {
             implementation(libs.koin.junit4)
         }
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
             implementation(libs.koin.core)
 
             implementation(libs.kotlinx.datetime)
 
-            implementation(libs.navigation.compose)
 
-            implementation(project(":features:condominio:apartamentos:apartamento:ui"))
-            api(project(":features:condominio:moradores:moradores:ui"))
-            api(project(":features:condominio:apartamentos:add-apartamento:ui"))
-            api(project(":features:condominio:moradores:add-morador:ui"))
+            //Projects
+            implementation(project(":features:pessoa:pessoa:domain"))
+
 
             implementation(libs.kotlinx.serialization.json)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.assertk)
-            implementation(compose.uiTest)
+
+            implementation(libs.kotlinx.coroutines.test)
+
+            implementation(project(":features:pessoa:pessoa:domain"))
         }
         jvmMain.dependencies {
-            implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
         }
     }
 }
 
+room {
+    schemaDirectory("$rootDir/features/database/schemas")
+}
+
+dependencies {
+    add("kspAndroid", libs.room.compiler)
+    add("kspIosSimulatorArm64", libs.room.compiler)
+    add("kspIosArm64", libs.room.compiler)
+    add("kspJvm", libs.room.compiler)
+}
+
 android {
-    namespace = "com.zalamena.condominios.navigation.ui"
+    namespace = "com.zalamena.condominios.pessoa.data"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
@@ -93,22 +94,6 @@ android {
 
 mockmp {
     onTest {
-        withHelper()
-    }
-}
-
-dependencies {
-    debugImplementation(compose.uiTooling)
-}
-
-compose.desktop {
-    application {
-        mainClass = "com.zalamena.condominios.MainKt"
-
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.zalamena.condominios"
-            packageVersion = "1.0.0"
-        }
+        withHelper(helper = MocKMPGradlePlugin.Helper.AutoDetect)
     }
 }

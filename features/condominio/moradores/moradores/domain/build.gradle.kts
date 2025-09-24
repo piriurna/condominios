@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.ksp)
-    kotlin("plugin.serialization") version "2.2.0"
     id("org.kodein.mock.mockmp") version "2.0.2"
 }
 
@@ -21,33 +20,39 @@ kotlin {
 
     iosArm64()
     iosSimulatorArm64()
-
+    iosX64() // Add this for iOS support
 
     jvm()
 
     sourceSets {
+        androidMain.dependencies {
+            implementation(libs.koin.android)
+        }
+
+        androidUnitTest.dependencies {
+            implementation(libs.core.ktx)
+            implementation(libs.androidx.core)
+            implementation(libs.androidx.runner)
+            implementation(libs.androidx.rules)
+            implementation(libs.androidx.testExt.junit)
+
+            // Koin testing
+            implementation(libs.koin.test)
+            implementation(libs.koin.junit4)
+        }
         commonMain.dependencies {
             implementation(libs.koin.core)
 
             implementation(libs.kotlinx.datetime)
 
-            //Projects
-            implementation(project(":features:condominio:moradores:moradores:data"))
-            implementation(project(":features:pessoa:pessoa:data"))
-            implementation(project(":features:condominio:apartamentos:apartamento:data"))
-
-            // Serializtionss
-            api(libs.kotlinx.serialization.json)
-            api(kotlin("reflect"))
+            api(project(":features:pessoa:pessoa:domain"))
+            api(project(":features:condominio:apartamentos:apartamento:domain"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.assertk)
 
             implementation(libs.kotlinx.coroutines.test)
-
-            implementation(project(":features:condominio:moradores:moradores:data"))
-
         }
         jvmMain.dependencies {
             implementation(libs.kotlinx.coroutinesSwing)
@@ -56,7 +61,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.zalamena.condominios.database"
+    namespace = "com.zalamena.condominios.moradores.domain"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

@@ -12,7 +12,6 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.ksp)
-    kotlin("plugin.serialization") version "2.2.0"
     id("org.kodein.mock.mockmp") version "2.0.2"
 }
 
@@ -60,20 +59,18 @@ kotlin {
             implementation(libs.koin.core)
 
             implementation(libs.kotlinx.datetime)
+            api(project(":features:pessoa:add-pessoa:domain"))
+            api(project(":features:common:ui"))
 
-            implementation(libs.navigation.compose)
-
-            implementation(project(":features:condominio:apartamentos:apartamento:ui"))
-            api(project(":features:condominio:moradores:moradores:ui"))
-            api(project(":features:condominio:apartamentos:add-apartamento:ui"))
-            api(project(":features:condominio:moradores:add-morador:ui"))
-
-            implementation(libs.kotlinx.serialization.json)
+            // Jetpack Compose integration
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.0-beta05")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.assertk)
             implementation(compose.uiTest)
+
+            implementation(libs.kotlinx.coroutines.test)
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -83,7 +80,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.zalamena.condominios.navigation.ui"
+    namespace = "com.zalamena.condominios.addpessoa.ui"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

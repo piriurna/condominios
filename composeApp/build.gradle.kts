@@ -48,8 +48,8 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
 
-            api(project(":features:moradores:ui"))
-            api(project(":features:moradores:data"))
+            api(project(":features:condominio:moradores:moradores:ui"))
+            api(project(":features:condominio:moradores:moradores:data"))
             api(project(":features:database"))
             api(project(":features:di"))
             api(project(":features:navigation:ui"))
