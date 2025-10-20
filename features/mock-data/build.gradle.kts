@@ -32,9 +32,9 @@ kotlin {
             implementation(libs.kotlinx.datetime)
 
             //Projects
-            implementation(project(":features:condominio:moradores:moradores:data"))
+            implementation(project(":features:condominio:data"))
             implementation(project(":features:pessoa:pessoa:data"))
-            implementation(project(":features:condominio:apartamentos:apartamento:data"))
+            implementation(project(":features:condominio:data"))
 
             // Serializtionss
             api(libs.kotlinx.serialization.json)
@@ -46,7 +46,7 @@ kotlin {
 
             implementation(libs.kotlinx.coroutines.test)
 
-            implementation(project(":features:condominio:moradores:moradores:data"))
+            implementation(project(":features:condominio:data"))
 
         }
         jvmMain.dependencies {

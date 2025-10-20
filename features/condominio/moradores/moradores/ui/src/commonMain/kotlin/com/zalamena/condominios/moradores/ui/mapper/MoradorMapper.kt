@@ -1,13 +1,12 @@
 package com.zalamena.condominios.moradores.ui.mapper
 
-import com.zalamena.condominios.apartamentos.domain.models.Apartamento
-import com.zalamena.condominios.apartamentos.ui.mapper.toUi
-import com.zalamena.condominios.pessoa.ui.mapper.toUi
+import com.zalamena.condominios.condominio.domain.apartamento.models.Apartamento
+import com.zalamena.condominios.condominio.domain.moradores.models.Morador
 import com.zalamena.condominios.moradores.ui.models.MoradorUiData
 import com.zalamena.condominios.moradores.ui.models.SelectApartamentoUiData
 import com.zalamena.condominios.moradores.ui.models.SelectPessoaUiData
 import com.zalamena.condominios.pessoa.domain.models.Pessoa
-import com.zalamena.moradores.domain.models.Morador
+import com.zalamena.condominios.pessoa.ui.mapper.toUi
 
 fun Morador.toUi(): MoradorUiData {
     return MoradorUiData(

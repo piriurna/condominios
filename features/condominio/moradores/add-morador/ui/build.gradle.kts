@@ -60,11 +60,9 @@ kotlin {
             implementation(libs.koin.core)
 
             implementation(libs.kotlinx.datetime)
-            api(project(":features:condominio:moradores:add-morador:domain"))
-            api(project(":features:condominio:moradores:moradores:ui"))
-            api(project(":features:condominio:apartamentos:add-apartamento:ui"))
             api(project(":features:pessoa:add-pessoa:ui"))
             api(project(":features:common:ui"))
+            api(project(":features:condominio:domain"))
 
             implementation(libs.navigation.compose)
 

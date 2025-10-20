@@ -3,7 +3,7 @@ package com.zalamena.condominios.di
 import com.zalamena.condominios.addapartamento.domain.usecases.AddApartamentoUseCase
 import com.zalamena.condominios.addapartamento.ui.AddApartamentoViewModel
 import com.zalamena.condominios.addmorador.domain.usecase.AddMoradorUseCase
-import com.zalamena.condominios.addmorador.domain.usecase.AddMoradorUseCaseImpl
+import com.zalamena.condominios.condominio.domain.addmorador.usecase.AddMoradorUseCaseImpl
 import com.zalamena.condominios.addmorador.ui.flowController.AddMoradorFlowViewModel
 import com.zalamena.condominios.addmorador.ui.overview.AddMoradorOverviewViewModel
 import com.zalamena.condominios.addpessoa.domain.usecase.AddPessoaUseCase

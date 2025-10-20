@@ -60,8 +60,8 @@ kotlin {
             implementation(libs.koin.core)
 
             implementation(libs.kotlinx.datetime)
-            api(project(":features:condominio:apartamentos:apartamento:domain"))
             api(project(":features:common:ui"))
+            api(project(":features:condominio:domain"))
 
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.0-beta05")
 

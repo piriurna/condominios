@@ -2,7 +2,7 @@ package com.zalamena.condominios.moradores.ui.add
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zalamena.condominios.apartamentos.domain.usecase.GetApartamentosUseCase
+import com.zalamena.condominios.condominio.domain.apartamento.usecase.GetApartamentosUseCase
 import com.zalamena.condominios.moradores.ui.mapper.toSelectUi
 import com.zalamena.condominios.moradores.ui.models.SelectApartamentoUiData
 import com.zalamena.condominios.moradores.ui.models.SelectPessoaUiData

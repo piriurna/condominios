@@ -59,7 +59,7 @@ kotlin {
             implementation(libs.koin.core)
 
             implementation(libs.kotlinx.datetime)
-            api(project(":features:condominio:moradores:moradores:domain"))
+            api(project(":features:condominio:domain"))
 
             // Jetpack Compose integration
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.0-beta05")
