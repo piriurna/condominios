@@ -42,13 +42,13 @@ kotlin {
 
 
             //Projects
-            implementation(project(":features:condominio:moradores:moradores:data"))
+            implementation(project(":features:condominio:data"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.assertk)
 
-            implementation(project(":features:condominio:moradores:moradores:data"))
+            implementation(project(":features:condominio:data"))
 
         }
         jvmMain.dependencies {

@@ -12,13 +12,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.zalamena.condominios.addapartamento.ui.AddApartamentoViewModel
-import com.zalamena.condominios.addapartamento.ui.navigation.addApartamentoNavHost
-import com.zalamena.condominios.addmorador.ui.flowController.AddMoradorFlowViewModel
-import com.zalamena.condominios.addmorador.ui.navigation.AddMorador
-import com.zalamena.condominios.addmorador.ui.navigation.addMoradorNavGraph
-import com.zalamena.condominios.addmorador.ui.overview.AddMoradorOverviewViewModel
-import com.zalamena.condominios.addpessoa.ui.AddPessoaViewModel
+import com.zalamena.condominios.condominio.ui.addapartamento.AddApartamentoViewModel
+import com.zalamena.condominios.condominio.ui.addapartamento.navigation.addApartamentoNavHost
+import com.zalamena.condominios.condominio.ui.addmorador.flowController.AddMoradorFlowViewModel
+import com.zalamena.condominios.condominio.ui.addmorador.navigation.AddMorador
+import com.zalamena.condominios.condominio.ui.addmorador.navigation.addMoradorNavGraph
+import com.zalamena.condominios.condominio.ui.addmorador.overview.AddMoradorOverviewViewModel
+import com.zalamena.condominios.pessoa.ui.addpessoa.AddPessoaViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable

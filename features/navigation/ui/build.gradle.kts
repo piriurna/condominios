@@ -63,10 +63,8 @@ kotlin {
 
             implementation(libs.navigation.compose)
 
-            implementation(project(":features:condominio:apartamentos:apartamento:ui"))
-            api(project(":features:condominio:moradores:moradores:ui"))
-            api(project(":features:condominio:apartamentos:add-apartamento:ui"))
-            api(project(":features:condominio:moradores:add-morador:ui"))
+            api(project(":features:condominio:ui"))
+            api(project(":features:pessoa:ui"))
 
             implementation(libs.kotlinx.serialization.json)
         }

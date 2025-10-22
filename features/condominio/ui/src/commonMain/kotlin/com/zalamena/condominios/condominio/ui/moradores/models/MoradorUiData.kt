@@ -1,0 +1,18 @@
+package com.zalamena.condominios.condominio.ui.moradores.models
+
+import com.zalamena.condominios.condominio.ui.apartamentos.models.ApartamentoUiData
+import com.zalamena.condominios.pessoa.ui.models.PessoaUiData
+import com.zalamena.condominios.pessoa.ui.models.PessoaUiProperties
+
+data class MoradorUiData(
+    val morador: PessoaUiData,
+    val apartamento: ApartamentoUiData
+): PessoaUiProperties by morador {
+
+    companion object {
+        val dummy = MoradorUiData(
+            morador = PessoaUiData.dummy,
+            apartamento = ApartamentoUiData.dummy
+        )
+    }
+}
