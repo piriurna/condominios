@@ -15,16 +15,16 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-object AddMorador
+object AddMoradorRoute
 
 @Serializable
-object AddMoradorPessoa
+object AddMoradorPessoaRoute
 
 @Serializable
-object AddMoradorApartamento
+object AddMoradorApartamentoRoute
 
 @Serializable
-object AddMoradorOverview
+object AddMoradorOverviewRoute
 
 
 fun NavGraphBuilder.addMoradorNavGraph( // TODO: Improve this flow to make it less ui dependant and have these decisions on domain
@@ -34,22 +34,22 @@ fun NavGraphBuilder.addMoradorNavGraph( // TODO: Improve this flow to make it le
     addMoradorOverviewViewModel: AddMoradorOverviewViewModel,
     addMoradorFlowViewModel: AddMoradorFlowViewModel
 ) {
-    navigation<AddMorador>(startDestination = AddMoradorPessoa) {
-        composable<AddMoradorPessoa> {
+    navigation<AddMoradorRoute>(startDestination = AddMoradorPessoaRoute) {
+        composable<AddMoradorPessoaRoute> {
             AddPessoaScreen(addPessoaViewModel) {
                 addMoradorFlowViewModel.setCreatedPessoaId(addPessoaViewModel.uiState.value.createdPessoaId!!)
-                navController.navigate(AddMoradorApartamento)
+                navController.navigate(AddMoradorApartamentoRoute)
             }
         }
 
-        composable<AddMoradorApartamento> {
+        composable<AddMoradorApartamentoRoute> {
             AddApartamentoScreen(addApartamentoViewModel) {
                 addMoradorFlowViewModel.setCreatedApartamentoId(addApartamentoViewModel.uiState.value.createdApartamentoId!!)
-                navController.navigate(AddMoradorOverview)
+                navController.navigate(AddMoradorOverviewRoute)
             }
         }
 
-        composable<AddMoradorOverview> {
+        composable<AddMoradorOverviewRoute> {
             val pessoaId = addMoradorFlowViewModel.uiState.value.createdPessoaId
             val apartamentoId = addMoradorFlowViewModel.uiState.value.createdApartamentoId
             AddMoradorOverviewScreen(

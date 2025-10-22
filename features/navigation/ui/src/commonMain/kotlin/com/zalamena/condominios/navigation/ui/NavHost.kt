@@ -15,17 +15,17 @@ import androidx.navigation.navigation
 import com.zalamena.condominios.condominio.ui.addapartamento.AddApartamentoViewModel
 import com.zalamena.condominios.condominio.ui.addapartamento.navigation.addApartamentoNavHost
 import com.zalamena.condominios.condominio.ui.addmorador.flowController.AddMoradorFlowViewModel
-import com.zalamena.condominios.condominio.ui.addmorador.navigation.AddMorador
+import com.zalamena.condominios.condominio.ui.addmorador.navigation.AddMoradorRoute
 import com.zalamena.condominios.condominio.ui.addmorador.navigation.addMoradorNavGraph
 import com.zalamena.condominios.condominio.ui.addmorador.overview.AddMoradorOverviewViewModel
 import com.zalamena.condominios.pessoa.ui.addpessoa.AddPessoaViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable
-object Debug
+object DebugRoute
 
 @Serializable
-object Buttons
+object ButtonsRoute
 
 
 @Composable
@@ -36,19 +36,19 @@ fun AppNavHost(
     addMoradorOverviewViewModel: AddMoradorOverviewViewModel,
     addMoradorFlowViewModel: AddMoradorFlowViewModel
 ) {
-    NavHost(navController, startDestination = Debug) {
+    NavHost(navController, startDestination = DebugRoute) {
 
-        navigation<Debug>(startDestination = Buttons) {
-            composable<Buttons> {
+        navigation<DebugRoute>(startDestination = ButtonsRoute) {
+            composable<ButtonsRoute> {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Button(onClick = { navController.navigate(AddMorador) }) {
+                    Button(onClick = { navController.navigate(AddMoradorRoute) }) {
                         Text("Go to Add Morador Flow from scratch")
                     }
-                    Button(onClick = { navController.navigate(AddMorador) }) {
+                    Button(onClick = { navController.navigate(AddMoradorRoute) }) {
                         Text("Go to Add Morador Flow with created entities")
                     }
                 }
