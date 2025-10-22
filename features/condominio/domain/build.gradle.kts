@@ -50,7 +50,7 @@ kotlin {
 
             implementation(libs.kotlinx.coroutines.test)
 
-            api(project(":features:pessoa:pessoa:domain"))
+            api(project(":features:pessoa:domain"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

@@ -4,12 +4,12 @@ import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
-import com.zalamena.condominios.apartamentos.data.dao.ApartamentoDao
-import com.zalamena.condominios.apartamentos.data.entity.ApartamentoEntity
+import com.zalamena.condominios.condominio.data.apartamento.dao.ApartamentoDao
+import com.zalamena.condominios.condominio.data.apartamento.entity.ApartamentoEntity
+import com.zalamena.condominios.condominio.data.moradores.dao.MoradoresDao
+import com.zalamena.condominios.condominio.data.moradores.entities.MoradorEntity
 import com.zalamena.condominios.pessoa.data.dao.PessoaDao
 import com.zalamena.condominios.pessoa.data.entities.PessoaEntity
-import com.zalamena.moradores.data.dao.MoradoresDao
-import com.zalamena.moradores.data.entities.MoradorEntity
 
 @Database(entities = [
     MoradorEntity::class,

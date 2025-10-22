@@ -1,9 +1,10 @@
-package com.zalamena.condominios.addapartamento.domain.usecases
+package com.zalamena.condominios.condominio.domain.addapartamento
 
-import com.zalamena.condominios.addapartamento.domain.mapper.toApartamento
-import com.zalamena.condominios.addapartamento.domain.models.AddApartamentoForm
-import com.zalamena.condominios.apartamentos.domain.models.ApartamentoException
-import com.zalamena.condominios.apartamentos.domain.repository.ApartamentosRepository
+import com.zalamena.condominios.condominio.domain.addapartamento.mapper.toApartamento
+import com.zalamena.condominios.condominio.domain.addapartamento.models.AddApartamentoForm
+import com.zalamena.condominios.condominio.domain.addapartamento.usecases.AddApartamentoUseCase
+import com.zalamena.condominios.condominio.domain.apartamento.models.ApartamentoException
+import com.zalamena.condominios.condominio.domain.apartamento.repository.ApartamentosRepository
 import kotlinx.coroutines.test.runTest
 import org.kodein.mock.Mock
 import org.kodein.mock.generated.injectMocks

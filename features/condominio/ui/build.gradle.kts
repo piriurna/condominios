@@ -62,6 +62,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             api(project(":features:condominio:domain"))
             api(project(":features:common:ui"))
+            api(project(":features:pessoa:ui"))
 
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.0-beta05")
 

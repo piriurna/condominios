@@ -33,7 +33,7 @@ kotlin {
 
             //Projects
             implementation(project(":features:condominio:data"))
-            implementation(project(":features:pessoa:pessoa:data"))
+            implementation(project(":features:pessoa:data"))
             implementation(project(":features:condominio:data"))
 
             // Serializtionss

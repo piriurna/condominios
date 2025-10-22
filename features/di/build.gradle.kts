@@ -61,13 +61,8 @@ kotlin {
             api(project(":features:condominio:domain"))
             api(project(":features:condominio:ui"))
 
-            api(project(":features:pessoa:pessoa:data"))
-            api(project(":features:pessoa:pessoa:domain"))
-            api(project(":features:condominio:moradores:moradores:ui"))
-            api(project(":features:condominio:apartamentos:add-apartamento:ui"))
-            api(project(":features:pessoa:add-pessoa:ui"))
-            api(project(":features:pessoa:add-pessoa:domain"))
-            api(project(":features:condominio:moradores:add-morador:ui"))
+            api(project(":features:pessoa:data"))
+            api(project(":features:pessoa:domain"))
             api(project(":features:database"))
             api(project(":features:mock-data"))
         }

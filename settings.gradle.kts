@@ -33,11 +33,6 @@ plugins {
 }
 
 include(":composeApp")
-include(":features:condominio:moradores:moradores:ui")
-
-include(":features:condominio:apartamentos:add-apartamento:ui")
-
-include(":features:condominio:apartamentos:apartamento:ui")
 
 include(":features:condominio:ui")
 include(":features:condominio:data")
@@ -45,14 +40,17 @@ include(":features:condominio:domain")
 
 include(":features:login:data")
 include(":features:login:domain")
+
 include(":features:database")
-include(":features:pessoa:pessoa:data")
-include(":features:pessoa:pessoa:domain")
-include(":features:pessoa:pessoa:ui")
+
+include(":features:pessoa:data")
+include(":features:pessoa:domain")
+include(":features:pessoa:ui")
+
 include(":features:di")
+
 include(":features:mock-data")
+
 include(":features:common:ui")
+
 include(":features:navigation:ui")
-include(":features:pessoa:add-pessoa:domain")
-include(":features:pessoa:add-pessoa:ui")
-include(":features:condominio:moradores:add-morador:ui")

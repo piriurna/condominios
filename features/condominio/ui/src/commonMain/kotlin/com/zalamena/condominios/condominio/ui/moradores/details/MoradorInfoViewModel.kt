@@ -1,0 +1,51 @@
+package com.zalamena.condominios.condominio.ui.moradores.details
+
+import com.zalamena.condominios.condominio.domain.moradores.usecase.GetMoradorUseCase
+import com.zalamena.condominios.condominio.ui.moradores.mapper.toUi
+import com.zalamena.condominios.condominio.ui.moradores.models.MoradorUiData
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
+
+
+data class UiState(
+    val morador: MoradorUiData? = null,
+    val isLoading: Boolean = false
+)
+
+class MoradorInfoViewModel constructor(
+    private val getMoradorUseCase: GetMoradorUseCase
+) {
+    private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState())
+    val uiState: StateFlow<UiState> = _uiState
+
+
+    suspend fun getMorador(cpf: String, apartamentoId: String) {
+        _uiState.update {
+            it.copy(isLoading = true)
+        }
+
+        val moradorResult = getMoradorUseCase(cpf, apartamentoId)
+
+
+        when {
+            moradorResult.isSuccess -> {
+                _uiState.update {
+                    it.copy(
+                        morador = moradorResult.getOrThrow().toUi(),
+                        isLoading = false
+                    )
+                }
+            }
+
+            moradorResult.isFailure -> {
+                _uiState.update {
+                    it.copy(
+                        morador = null,
+                        isLoading = false
+                    )
+                }
+            }
+        }
+    }
+}
