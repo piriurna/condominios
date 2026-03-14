@@ -1,8 +1,10 @@
 package com.zalamena.condominios.di
 
-import com.zalamena.condominios.addmorador.domain.usecase.AddMoradorUseCase
+import com.zalamena.condominios.condominio.domain.addmorador.usecase.AddMoradorUseCase
 import com.zalamena.condominios.condominio.data.apartamento.dao.ApartamentoDao
 import com.zalamena.condominios.condominio.data.apartamento.repository.ApartamentoRepositoryImpl
+import com.zalamena.condominios.condominio.data.condominio.dao.CondominioDao
+import com.zalamena.condominios.condominio.data.condominio.repository.CondominioRepositoryImpl
 import com.zalamena.condominios.condominio.data.moradores.dao.MoradoresDao
 import com.zalamena.condominios.condominio.data.moradores.mapper.MoradorMapper
 import com.zalamena.condominios.condominio.data.moradores.repository.MoradoresRepositoryImpl
@@ -12,13 +14,14 @@ import com.zalamena.condominios.condominio.domain.apartamento.repository.Apartam
 import com.zalamena.condominios.condominio.domain.apartamento.usecase.GetApartamentoUseCase
 import com.zalamena.condominios.condominio.domain.apartamento.usecase.GetApartamentoUseCaseImpl
 import com.zalamena.condominios.condominio.domain.apartamento.usecase.GetApartamentosUseCase
+import com.zalamena.condominios.condominio.domain.condominio.repository.CondominioRepository
+import com.zalamena.condominios.condominio.domain.condominio.usecase.GetCondominioUseCase
+import com.zalamena.condominios.condominio.domain.condominio.usecase.GetMoradoresUseCase
 import com.zalamena.condominios.condominio.domain.moradores.repository.MoradoresRepository
-import com.zalamena.condominios.condominio.domain.moradores.usecase.GetApartamentoWithMoradoresUseCase
-import com.zalamena.condominios.condominio.domain.moradores.usecase.GetMoradoresForApartamentoUseCase
-import com.zalamena.condominios.condominio.domain.moradores.usecase.GetMoradoresUseCase
 import com.zalamena.condominios.condominio.ui.addapartamento.AddApartamentoViewModel
 import com.zalamena.condominios.condominio.ui.addmorador.flowController.AddMoradorFlowViewModel
 import com.zalamena.condominios.condominio.ui.addmorador.overview.AddMoradorOverviewViewModel
+import com.zalamena.condominios.condominio.ui.condominio.overview.CondominioOverviewViewModel
 import com.zalamena.condominios.condominio.ui.moradores.add.AddMoradorViewModel
 import com.zalamena.condominios.condominio.ui.moradores.list.MoradoresListViewModel
 import com.zalamena.condominios.database.AppDatabase
@@ -43,13 +46,14 @@ expect val platformModule: Module
 val daoModule = module {
     single<PessoaDao> { get<AppDatabase>().getPessoaDao() }
     single<ApartamentoDao> { get<AppDatabase>().getApartamentosDao() }
+    single<CondominioDao> { get<AppDatabase>().getCondominioDao() }
     single<MoradoresDao> { get<AppDatabase>().getMoradoresDao() }
 }
 
-// You can also create separate modules for better organization
 val repositoryModule = module {
     single<PessoaRepository> { PessoaRepositoryImpl(get()) }
     single<ApartamentosRepository> { ApartamentoRepositoryImpl(get()) }
+    single<CondominioRepository> { CondominioRepositoryImpl(get()) }
     single<MoradoresRepository> { MoradoresRepositoryImpl(get(), get(), MoradorMapper()) }
     single<AddPessoaFormValidator> { AddPessoaFormValidatorImpl() }
 }
@@ -59,9 +63,8 @@ val useCaseModule = module {
     factory<GetPessoaUseCase> { GetPessoaUseCaseImpl(get()) }
     factory<GetApartamentoUseCase> { GetApartamentoUseCaseImpl(get()) }
     factory { GetPessoasListUseCase(get()) }
+    factory { GetCondominioUseCase(get()) }
     factory { GetMoradoresUseCase(get()) }
-    factory { GetMoradoresForApartamentoUseCase(get()) }
-    factory { GetApartamentoWithMoradoresUseCase(get()) }
     factory { AddApartamentoUseCase(get()) }
     factory { GetApartamentosUseCase(get()) }
     factory<AddMoradorUseCase> { AddMoradorUseCaseImpl(get()) }
@@ -74,4 +77,5 @@ val viewModelModule = module {
     viewModelOf(::AddPessoaViewModel)
     viewModelOf(::AddMoradorOverviewViewModel)
     viewModelOf(::AddMoradorFlowViewModel)
+    viewModelOf(::CondominioOverviewViewModel)
 }
