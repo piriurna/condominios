@@ -2,7 +2,7 @@ package com.zalamena.condominios.condominio.ui.addapartamento
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zalamena.condominios.condominio.domain.addapartamento.usecases.AddApartamentoUseCase
+import com.zalamena.condominios.condominio.domain.apartamento.usecase.AddApartamentoUseCase
 import com.zalamena.condominios.condominio.ui.addapartamento.mapper.toDomain
 import com.zalamena.condominios.condominio.ui.addapartamento.models.AddApartamentoFormUiData
 import kotlinx.coroutines.delay

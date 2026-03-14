@@ -4,8 +4,8 @@ import com.zalamena.condominios.condominio.data.moradores.dao.MoradoresDao
 import com.zalamena.condominios.condominio.data.moradores.entities.MoradorEntity
 import com.zalamena.condominios.condominio.domain.apartamento.models.Apartamento
 import com.zalamena.condominios.condominio.domain.apartamento.repository.ApartamentosRepository
-import com.zalamena.condominios.condominio.domain.moradores.models.MoradorException
-import com.zalamena.condominios.condominio.domain.moradores.repository.MoradoresRepository
+import com.zalamena.condominios.condominio.domain.morador.model.MoradorException
+import com.zalamena.condominios.condominio.domain.morador.repository.MoradoresRepository
 import com.zalamena.condominios.pessoa.domain.models.Pessoa
 import kotlinx.coroutines.test.runTest
 import org.kodein.mock.Mock

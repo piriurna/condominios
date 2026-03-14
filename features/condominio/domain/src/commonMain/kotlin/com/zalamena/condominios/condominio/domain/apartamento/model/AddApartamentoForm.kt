@@ -1,4 +1,4 @@
-package com.zalamena.condominios.condominio.domain.addapartamento.models
+package com.zalamena.condominios.condominio.domain.apartamento.model
 
 data class AddApartamentoForm(
     val condominioId: String,

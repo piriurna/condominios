@@ -3,9 +3,9 @@ package com.zalamena.condominios.condominio.data.moradores.repository
 import com.zalamena.condominios.condominio.data.moradores.dao.MoradoresDao
 import com.zalamena.condominios.condominio.data.moradores.entities.MoradorEntity
 import com.zalamena.condominios.condominio.data.moradores.mapper.toDomain
-import com.zalamena.condominios.condominio.domain.moradores.models.Morador
-import com.zalamena.condominios.condominio.domain.moradores.models.MoradorException
-import com.zalamena.condominios.condominio.domain.moradores.repository.MoradoresRepository
+import com.zalamena.condominios.condominio.domain.morador.model.Morador
+import com.zalamena.condominios.condominio.domain.morador.model.MoradorException
+import com.zalamena.condominios.condominio.domain.morador.repository.MoradoresRepository
 
 
 class MoradoresRepositoryImpl(

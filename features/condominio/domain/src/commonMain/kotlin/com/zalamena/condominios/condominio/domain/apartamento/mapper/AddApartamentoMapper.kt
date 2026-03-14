@@ -1,6 +1,6 @@
-package com.zalamena.condominios.condominio.domain.addapartamento.mapper
+package com.zalamena.condominios.condominio.domain.apartamento.mapper
 
-import com.zalamena.condominios.condominio.domain.addapartamento.models.AddApartamentoForm
+import com.zalamena.condominios.condominio.domain.apartamento.model.AddApartamentoForm
 import com.zalamena.condominios.condominio.domain.apartamento.models.Apartamento
 
 fun AddApartamentoForm.toApartamento(id: String) =

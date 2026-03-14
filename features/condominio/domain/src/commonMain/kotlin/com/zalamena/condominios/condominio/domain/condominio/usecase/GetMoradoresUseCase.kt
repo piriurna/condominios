@@ -1,7 +1,7 @@
 package com.zalamena.condominios.condominio.domain.condominio.usecase
 
 import com.zalamena.condominios.condominio.domain.condominio.repository.CondominioRepository
-import com.zalamena.condominios.condominio.domain.moradores.models.Morador
+import com.zalamena.condominios.condominio.domain.morador.model.Morador
 
 class GetMoradoresUseCase(
     private val condominioRepository: CondominioRepository

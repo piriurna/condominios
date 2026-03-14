@@ -1,10 +1,10 @@
-package com.zalamena.condominios.condominio.domain.addapartamento
+package com.zalamena.condominios.condominio.domain.apartamento
 
-import com.zalamena.condominios.condominio.domain.addapartamento.mapper.toApartamento
-import com.zalamena.condominios.condominio.domain.addapartamento.models.AddApartamentoForm
-import com.zalamena.condominios.condominio.domain.addapartamento.usecases.AddApartamentoUseCase
+import com.zalamena.condominios.condominio.domain.apartamento.mapper.toApartamento
+import com.zalamena.condominios.condominio.domain.apartamento.model.AddApartamentoForm
 import com.zalamena.condominios.condominio.domain.apartamento.models.ApartamentoException
 import com.zalamena.condominios.condominio.domain.apartamento.repository.ApartamentosRepository
+import com.zalamena.condominios.condominio.domain.apartamento.usecase.AddApartamentoUseCase
 import kotlinx.coroutines.test.runTest
 import org.kodein.mock.Mock
 import org.kodein.mock.generated.injectMocks
@@ -12,7 +12,7 @@ import org.kodein.mock.tests.TestsWithMocks
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
-class AddApartamentoUseCaseTest: TestsWithMocks() {
+class AddApartamentoUseCaseTest : TestsWithMocks() {
 
     @Mock
     lateinit var apartamentosRepository: ApartamentosRepository
@@ -31,20 +31,15 @@ class AddApartamentoUseCaseTest: TestsWithMocks() {
         everySuspending {
             apartamentosRepository.addApartamento(
                 condominioId = condominioId,
-                apartamento = addApartamentoForm.toApartamento(
-                    validId
-                )
+                apartamento = addApartamentoForm.toApartamento(validId)
             )
         } returns Result.success(Unit)
 
-
         val addApartamentoResult = addApartamentoUseCase(addApartamentoForm)
-
 
         assertTrue(addApartamentoResult.isSuccess)
         assertTrue(addApartamentoResult.getOrNull() == validId)
     }
-
 
     @Test
     fun `GIVEN error creating id WHEN adding apartment THEN should be not add apartment and fail`() =
@@ -58,23 +53,15 @@ class AddApartamentoUseCaseTest: TestsWithMocks() {
             everySuspending {
                 apartamentosRepository.addApartamento(
                     condominioId = condominioId,
-                    apartamento = addApartamentoForm.toApartamento(
-                        validId
-                    )
+                    apartamento = addApartamentoForm.toApartamento(validId)
                 )
-            } returns Result.failure(
-                ApartamentoException.DuplicatedApartmentException
-            )
-
+            } returns Result.failure(ApartamentoException.DuplicatedApartmentException)
 
             val addApartamentoResult = addApartamentoUseCase(addApartamentoForm)
-
 
             assertTrue(addApartamentoResult.isFailure)
             assertTrue(addApartamentoResult.exceptionOrNull() is ApartamentoException.DuplicatedApartmentException)
         }
-
-
 
     override fun setUpMocks() {
         mocker.injectMocks(this)

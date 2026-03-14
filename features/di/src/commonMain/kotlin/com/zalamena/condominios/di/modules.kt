@@ -1,22 +1,22 @@
 package com.zalamena.condominios.di
 
-import com.zalamena.condominios.condominio.domain.addmorador.usecase.AddMoradorUseCase
 import com.zalamena.condominios.condominio.data.apartamento.dao.ApartamentoDao
 import com.zalamena.condominios.condominio.data.apartamento.repository.ApartamentoRepositoryImpl
 import com.zalamena.condominios.condominio.data.condominio.dao.CondominioDao
 import com.zalamena.condominios.condominio.data.condominio.repository.CondominioRepositoryImpl
 import com.zalamena.condominios.condominio.data.moradores.dao.MoradoresDao
 import com.zalamena.condominios.condominio.data.moradores.repository.MoradoresRepositoryImpl
-import com.zalamena.condominios.condominio.domain.addapartamento.usecases.AddApartamentoUseCase
-import com.zalamena.condominios.condominio.domain.addmorador.usecase.AddMoradorUseCaseImpl
 import com.zalamena.condominios.condominio.domain.apartamento.repository.ApartamentosRepository
+import com.zalamena.condominios.condominio.domain.apartamento.usecase.AddApartamentoUseCase
 import com.zalamena.condominios.condominio.domain.apartamento.usecase.GetApartamentoUseCase
 import com.zalamena.condominios.condominio.domain.apartamento.usecase.GetApartamentoUseCaseImpl
 import com.zalamena.condominios.condominio.domain.apartamento.usecase.GetApartamentosUseCase
 import com.zalamena.condominios.condominio.domain.condominio.repository.CondominioRepository
 import com.zalamena.condominios.condominio.domain.condominio.usecase.GetCondominioUseCase
 import com.zalamena.condominios.condominio.domain.condominio.usecase.GetMoradoresUseCase
-import com.zalamena.condominios.condominio.domain.moradores.repository.MoradoresRepository
+import com.zalamena.condominios.condominio.domain.morador.repository.MoradoresRepository
+import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCase
+import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCaseImpl
 import com.zalamena.condominios.condominio.ui.addapartamento.AddApartamentoViewModel
 import com.zalamena.condominios.condominio.ui.addmorador.flowController.AddMoradorFlowViewModel
 import com.zalamena.condominios.condominio.ui.addmorador.overview.AddMoradorOverviewViewModel

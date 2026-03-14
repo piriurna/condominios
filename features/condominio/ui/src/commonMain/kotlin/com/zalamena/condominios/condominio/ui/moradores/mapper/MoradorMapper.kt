@@ -1,7 +1,7 @@
 package com.zalamena.condominios.condominio.ui.moradores.mapper
 
 import com.zalamena.condominios.condominio.domain.apartamento.models.Apartamento
-import com.zalamena.condominios.condominio.domain.moradores.models.Morador
+import com.zalamena.condominios.condominio.domain.morador.model.Morador
 import com.zalamena.condominios.condominio.ui.apartamentos.mapper.toUi
 import com.zalamena.condominios.condominio.ui.moradores.models.MoradorUiData
 import com.zalamena.condominios.condominio.ui.moradores.models.SelectApartamentoUiData

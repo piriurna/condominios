@@ -5,7 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zalamena.condominios.condominio.domain.addmorador.usecase.AddMoradorUseCase
+import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCase
 import com.zalamena.condominios.condominio.domain.apartamento.usecase.GetApartamentoUseCase
 import com.zalamena.condominios.condominio.ui.moradores.mapper.toSelectUi
 import com.zalamena.condominios.condominio.ui.moradores.models.SelectApartamentoUiData

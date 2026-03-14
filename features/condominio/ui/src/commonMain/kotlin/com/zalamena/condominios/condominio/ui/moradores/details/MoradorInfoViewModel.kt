@@ -1,6 +1,6 @@
 package com.zalamena.condominios.condominio.ui.moradores.details
 
-import com.zalamena.condominios.condominio.domain.moradores.usecase.GetMoradorUseCase
+import com.zalamena.condominios.condominio.domain.morador.usecase.GetMoradorUseCase
 import com.zalamena.condominios.condominio.ui.moradores.mapper.toUi
 import com.zalamena.condominios.condominio.ui.moradores.models.MoradorUiData
 import kotlinx.coroutines.flow.MutableStateFlow
