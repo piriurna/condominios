@@ -22,15 +22,16 @@ class ApartamentoRepositoryImpl(
         }
     }
 
-    override suspend fun addApartamento(condominioId: String, apartamento: Apartamento): Result<Unit> {
+    override suspend fun addApartamento(condominioId: String, apartamento: Apartamento): Result<String> {
         return runCatching {
-            apartamentoDao.addApartamento(apartamento.toEntity(condominioId))
+            val id = generateApartamentoId(apartamento.numero)
+            val entity = apartamento.copy(id = id).toEntity(condominioId)
+            apartamentoDao.addApartamento(entity)
+            id
         }
     }
 
-    override suspend fun createApartamentoId(numeroApartamento: String): Result<String> {
-        return runCatching {
-            "${apartamentoDao.getApartamentos().size}-${numeroApartamento}"
-        }
+    private suspend fun generateApartamentoId(numeroApartamento: String): String {
+        return "${apartamentoDao.getApartamentos().size}-${numeroApartamento}"
     }
 }

@@ -20,48 +20,39 @@ class AddApartamentoUseCaseTest : TestsWithMocks() {
     private val addApartamentoUseCase by lazy { AddApartamentoUseCase(apartamentosRepository) }
 
     @Test
-    fun `GIVEN create id is success WHEN adding apartment THEN should be success and return the created id`() = runTest {
-        val addApartamentoForm = AddApartamentoForm.Companion.dummy
+    fun `GIVEN valid form WHEN adding apartment THEN should be success and return the created id`() = runTest {
+        val addApartamentoForm = AddApartamentoForm.dummy
         val validId = "validId"
-        val condominioId = "condominioId"
 
-        everySuspending { apartamentosRepository.createApartamentoId(AddApartamentoForm.Companion.dummy.numero) } returns Result.success(
-            validId
-        )
         everySuspending {
             apartamentosRepository.addApartamento(
-                condominioId = condominioId,
-                apartamento = addApartamentoForm.toApartamento(validId)
+                condominioId = addApartamentoForm.condominioId,
+                apartamento = addApartamentoForm.toApartamento("")
             )
-        } returns Result.success(Unit)
+        } returns Result.success(validId)
 
-        val addApartamentoResult = addApartamentoUseCase(addApartamentoForm)
+        val result = addApartamentoUseCase(addApartamentoForm)
 
-        assertTrue(addApartamentoResult.isSuccess)
-        assertTrue(addApartamentoResult.getOrNull() == validId)
+        assertTrue(result.isSuccess)
+        assertTrue(result.getOrNull() == validId)
     }
 
     @Test
-    fun `GIVEN error creating id WHEN adding apartment THEN should be not add apartment and fail`() =
-        runTest {
-            val addApartamentoForm = AddApartamentoForm.Companion.dummy
-            val condominioId = "condominioId"
-            val validId = "validId"
-            everySuspending { apartamentosRepository.createApartamentoId(addApartamentoForm.numero) } returns Result.success(
-                validId
+    fun `GIVEN repository fails WHEN adding apartment THEN should fail`() = runTest {
+        val addApartamentoForm = AddApartamentoForm.dummy
+
+        everySuspending {
+            apartamentosRepository.addApartamento(
+                condominioId = addApartamentoForm.condominioId,
+                apartamento = addApartamentoForm.toApartamento("")
             )
-            everySuspending {
-                apartamentosRepository.addApartamento(
-                    condominioId = condominioId,
-                    apartamento = addApartamentoForm.toApartamento(validId)
-                )
-            } returns Result.failure(ApartamentoException.DuplicatedApartmentException)
+        } returns Result.failure(ApartamentoException.DuplicatedApartmentException)
 
-            val addApartamentoResult = addApartamentoUseCase(addApartamentoForm)
+        val result = addApartamentoUseCase(addApartamentoForm)
 
-            assertTrue(addApartamentoResult.isFailure)
-            assertTrue(addApartamentoResult.exceptionOrNull() is ApartamentoException.DuplicatedApartmentException)
-        }
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is ApartamentoException.DuplicatedApartmentException)
+    }
 
     override fun setUpMocks() {
         mocker.injectMocks(this)

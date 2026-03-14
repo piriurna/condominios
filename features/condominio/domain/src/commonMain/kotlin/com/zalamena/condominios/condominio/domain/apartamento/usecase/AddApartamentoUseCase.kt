@@ -8,24 +8,9 @@ class AddApartamentoUseCase(
     private val apartamentosRepository: ApartamentosRepository
 ) {
     suspend operator fun invoke(apartamentoForm: AddApartamentoForm): Result<String> {
-        val apartamentoIdResult =
-            apartamentosRepository.createApartamentoId(apartamentoForm.numero)
-
-        return if (apartamentoIdResult.isSuccess) {
-            val id = apartamentoIdResult.getOrThrow()
-
-            val addResult = apartamentosRepository.addApartamento(
-                condominioId = apartamentoForm.condominioId,
-                apartamento = apartamentoForm.toApartamento(id)
-            )
-
-            if (addResult.isSuccess) {
-                Result.success(id)
-            } else {
-                Result.failure(addResult.exceptionOrNull()!!)
-            }
-        } else {
-            Result.failure(apartamentoIdResult.exceptionOrNull()!!)
-        }
+        return apartamentosRepository.addApartamento(
+            condominioId = apartamentoForm.condominioId,
+            apartamento = apartamentoForm.toApartamento(id = "")
+        )
     }
 }
