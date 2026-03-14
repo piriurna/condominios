@@ -42,6 +42,22 @@ data class MoradorEntity(
         )
     }
 }
+data class MoradorEntityWithPessoa(
+    @Embedded val morador: MoradorEntity,
+    @Relation(
+        parentColumn = "pessoaId",
+        entityColumn = "id"
+    )
+    val pessoa: PessoaEntity
+) {
+    companion object {
+        val dummy = MoradorEntityWithPessoa(
+            morador = MoradorEntity.dummy,
+            pessoa = PessoaEntity.dummy
+        )
+    }
+}
+
 
 data class MoradorWithPessoaAndApartamentoEntity(
     @Embedded val morador: MoradorEntity,

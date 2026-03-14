@@ -8,7 +8,7 @@ interface ApartamentosRepository {
 
     suspend fun getApartamentos(): Result<List<Apartamento>>
 
-    suspend fun addApartamento(apartamento: Apartamento): Result<Unit>
+    suspend fun addApartamento(condominioId: String, apartamento: Apartamento): Result<Unit>
 
     suspend fun createApartamentoId(numeroApartamento: String): Result<String>
 }

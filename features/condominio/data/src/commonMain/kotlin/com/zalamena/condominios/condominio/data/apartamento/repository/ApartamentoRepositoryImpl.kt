@@ -22,9 +22,9 @@ class ApartamentoRepositoryImpl(
         }
     }
 
-    override suspend fun addApartamento(apartamento: Apartamento): Result<Unit> {
+    override suspend fun addApartamento(condominioId: String, apartamento: Apartamento): Result<Unit> {
         return runCatching {
-            apartamentoDao.addApartamento(apartamento.toEntity())
+            apartamentoDao.addApartamento(apartamento.toEntity(condominioId))
         }
     }
 

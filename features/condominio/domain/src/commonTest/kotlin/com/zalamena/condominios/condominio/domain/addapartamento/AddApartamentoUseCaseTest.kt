@@ -23,13 +23,15 @@ class AddApartamentoUseCaseTest: TestsWithMocks() {
     fun `GIVEN create id is success WHEN adding apartment THEN should be success and return the created id`() = runTest {
         val addApartamentoForm = AddApartamentoForm.Companion.dummy
         val validId = "validId"
+        val condominioId = "condominioId"
 
         everySuspending { apartamentosRepository.createApartamentoId(AddApartamentoForm.Companion.dummy.numero) } returns Result.success(
             validId
         )
         everySuspending {
             apartamentosRepository.addApartamento(
-                addApartamentoForm.toApartamento(
+                condominioId = condominioId,
+                apartamento = addApartamentoForm.toApartamento(
                     validId
                 )
             )
@@ -48,13 +50,15 @@ class AddApartamentoUseCaseTest: TestsWithMocks() {
     fun `GIVEN error creating id WHEN adding apartment THEN should be not add apartment and fail`() =
         runTest {
             val addApartamentoForm = AddApartamentoForm.Companion.dummy
+            val condominioId = "condominioId"
             val validId = "validId"
             everySuspending { apartamentosRepository.createApartamentoId(addApartamentoForm.numero) } returns Result.success(
                 validId
             )
             everySuspending {
                 apartamentosRepository.addApartamento(
-                    addApartamentoForm.toApartamento(
+                    condominioId = condominioId,
+                    apartamento = addApartamentoForm.toApartamento(
                         validId
                     )
                 )

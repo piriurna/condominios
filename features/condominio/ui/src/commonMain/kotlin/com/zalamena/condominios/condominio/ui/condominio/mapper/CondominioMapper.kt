@@ -1,2 +1,2 @@
-package com.zalamena.condominios.condominio.ui.condominio
+package com.zalamena.condominios.condominio.ui.condominio.mapper
 

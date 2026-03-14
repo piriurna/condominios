@@ -1,7 +1,7 @@
 package com.zalamena.condominios.condominio.ui.moradores.list
 
 import androidx.lifecycle.ViewModel
-import com.zalamena.condominios.condominio.domain.moradores.usecase.GetMoradoresUseCase
+import com.zalamena.condominios.condominio.domain.condominio.usecase.GetMoradoresUseCase
 import com.zalamena.condominios.condominio.ui.moradores.mapper.toUi
 import com.zalamena.condominios.condominio.ui.moradores.models.MoradorUiData
 import kotlinx.coroutines.flow.Flow

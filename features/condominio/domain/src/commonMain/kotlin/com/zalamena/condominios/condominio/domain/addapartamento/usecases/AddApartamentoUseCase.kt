@@ -14,7 +14,10 @@ class AddApartamentoUseCase(
         return if(apartamentoIdResult.isSuccess) {
             val id = apartamentoIdResult.getOrThrow()
 
-            val addResult = apartamentosRepository.addApartamento(apartamentoForm.toApartamento(id))
+            val addResult = apartamentosRepository.addApartamento(
+                condominioId = apartamentoForm.condominioId,
+                apartamentoForm.toApartamento(id)
+            )
 
             if(addResult.isSuccess) {
                 Result.success(id)

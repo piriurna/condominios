@@ -7,5 +7,6 @@ fun AddApartamentoForm.toApartamento(id: String) =
     Apartamento(
         id = id,
         numero = numero,
-        andar = andar
+        andar = andar,
+        moradores = emptyList()
     )

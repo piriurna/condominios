@@ -6,7 +6,6 @@ import com.zalamena.condominios.condominio.data.apartamento.repository.Apartamen
 import com.zalamena.condominios.condominio.data.condominio.dao.CondominioDao
 import com.zalamena.condominios.condominio.data.condominio.repository.CondominioRepositoryImpl
 import com.zalamena.condominios.condominio.data.moradores.dao.MoradoresDao
-import com.zalamena.condominios.condominio.data.moradores.mapper.MoradorMapper
 import com.zalamena.condominios.condominio.data.moradores.repository.MoradoresRepositoryImpl
 import com.zalamena.condominios.condominio.domain.addapartamento.usecases.AddApartamentoUseCase
 import com.zalamena.condominios.condominio.domain.addmorador.usecase.AddMoradorUseCaseImpl
@@ -54,7 +53,7 @@ val repositoryModule = module {
     single<PessoaRepository> { PessoaRepositoryImpl(get()) }
     single<ApartamentosRepository> { ApartamentoRepositoryImpl(get()) }
     single<CondominioRepository> { CondominioRepositoryImpl(get()) }
-    single<MoradoresRepository> { MoradoresRepositoryImpl(get(), get(), MoradorMapper()) }
+    single<MoradoresRepository> { MoradoresRepositoryImpl(get()) }
     single<AddPessoaFormValidator> { AddPessoaFormValidatorImpl() }
 }
 
