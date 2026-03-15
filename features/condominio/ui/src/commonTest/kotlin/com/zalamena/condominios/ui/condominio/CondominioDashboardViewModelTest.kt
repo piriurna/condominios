@@ -180,6 +180,9 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
 
     @Test
     fun `WHEN add apartamento clicked THEN navigation event is AddApartamento`() = runTest {
+        loadCondominio(Condominio.dummy)
+        viewModel.selectCondominio(Condominio.dummy.id)
+
         viewModel.onAddApartamentoClick()
 
         assertIs<DashboardNavigationEvent.AddApartamento>(viewModel.uiState.value.navigationEvent)
@@ -196,6 +199,8 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
 
     @Test
     fun `GIVEN AddApartamento nav event WHEN handled THEN navigation event is cleared`() = runTest {
+        loadCondominio(Condominio.dummy)
+        viewModel.selectCondominio(Condominio.dummy.id)
         viewModel.onAddApartamentoClick()
         viewModel.onNavigationHandled()
 
@@ -208,6 +213,49 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
         viewModel.onNavigationHandled()
 
         assertNull(viewModel.uiState.value.navigationEvent)
+    }
+
+    // --- Root-cause test: condominioId must be carried by the navigation event ---
+    //
+    // In the real app, CondominioDashboardNavHost handles DashboardNavigationEvent.AddApartamento
+    // and calls navController.navigate(AddApartamentoRoute) — but it never calls
+    // addApartamentoViewModel.setCondominioId(...).  The only way the nav host can know
+    // WHICH condominio to pass is if the event itself carries the condominioId.
+    //
+    // Currently DashboardNavigationEvent.AddApartamento is a singleton `object` with no data,
+    // so this test fails to compile:
+    //   error: unresolved reference: condominioId
+
+    @Test
+    fun `WHEN add apartamento clicked with condominio selected THEN navigation event carries the condominioId`() = runTest {
+        loadCondominio(Condominio.dummy)
+        viewModel.selectCondominio(Condominio.dummy.id)
+
+        viewModel.onAddApartamentoClick()
+
+        val event = viewModel.uiState.value.navigationEvent
+        assertIs<DashboardNavigationEvent.AddApartamento>(event)
+        assertEquals(Condominio.dummy.id, event.condominioId) // compile error: unresolved reference 'condominioId'
+    }
+
+    // --- Stale data / refresh ---
+
+    @Test
+    fun `GIVEN condominio selected WHEN loadCondominios called after apartamento added THEN apartamento list is refreshed`() = runTest {
+        val condominioId = Condominio.dummy.id
+        val condominioEmpty = Condominio.dummy.copy(apartamentos = emptyList())
+
+        loadCondominio(condominioEmpty)
+        viewModel.selectCondominio(condominioId)
+        assertEquals(0, viewModel.uiState.value.apartamentos.size)
+
+        val newApt = Apartamento.dummy.copy(id = "new-apt", moradores = emptyList())
+        val condominioWithApt = condominioEmpty.copy(apartamentos = listOf(newApt))
+        everySuspending { condominioRepository.getCondominios() } returns Result.success(listOf(condominioWithApt))
+        viewModel.loadCondominios()
+
+        assertEquals(1, viewModel.uiState.value.apartamentos.size)
+        assertEquals("new-apt", viewModel.uiState.value.apartamentos.first().id)
     }
 
     // --- Helpers ---

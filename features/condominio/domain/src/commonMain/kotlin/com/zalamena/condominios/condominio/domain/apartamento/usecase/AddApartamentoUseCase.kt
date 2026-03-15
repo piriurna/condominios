@@ -8,6 +8,9 @@ class AddApartamentoUseCase(
     private val apartamentosRepository: ApartamentosRepository
 ) {
     suspend operator fun invoke(apartamentoForm: AddApartamentoForm): Result<String> {
+        if (apartamentoForm.condominioId.isBlank()) {
+            return Result.failure(IllegalArgumentException("condominioId is required"))
+        }
         return apartamentosRepository.addApartamento(
             condominioId = apartamentoForm.condominioId,
             apartamento = apartamentoForm.toApartamento(id = "")

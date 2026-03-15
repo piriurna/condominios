@@ -12,14 +12,18 @@ import com.zalamena.condominios.condominio.domain.apartamento.usecase.GetApartam
 import com.zalamena.condominios.condominio.domain.apartamento.usecase.GetApartamentoUseCaseImpl
 import com.zalamena.condominios.condominio.domain.apartamento.usecase.GetApartamentosUseCase
 import com.zalamena.condominios.condominio.domain.condominio.repository.CondominioRepository
+import com.zalamena.condominios.condominio.domain.condominio.usecase.AddCondominioUseCase
 import com.zalamena.condominios.condominio.domain.condominio.usecase.GetCondominioUseCase
+import com.zalamena.condominios.condominio.domain.condominio.usecase.GetCondominiosUseCase
 import com.zalamena.condominios.condominio.domain.condominio.usecase.GetMoradoresUseCase
 import com.zalamena.condominios.condominio.domain.morador.repository.MoradoresRepository
 import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCase
 import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCaseImpl
 import com.zalamena.condominios.condominio.ui.addapartamento.AddApartamentoViewModel
+import com.zalamena.condominios.condominio.ui.addcondominio.AddCondominioViewModel
 import com.zalamena.condominios.condominio.ui.addmorador.flowController.AddMoradorFlowViewModel
 import com.zalamena.condominios.condominio.ui.addmorador.overview.AddMoradorOverviewViewModel
+import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDashboardViewModel
 import com.zalamena.condominios.condominio.ui.condominio.overview.CondominioOverviewViewModel
 import com.zalamena.condominios.condominio.ui.moradores.add.AddMoradorViewModel
 import com.zalamena.condominios.condominio.ui.moradores.list.MoradoresListViewModel
@@ -63,8 +67,10 @@ val useCaseModule = module {
     factory<GetApartamentoUseCase> { GetApartamentoUseCaseImpl(get()) }
     factory { GetPessoasListUseCase(get()) }
     factory { GetCondominioUseCase(get()) }
+    factory { GetCondominiosUseCase(get()) }
     factory { GetMoradoresUseCase(get()) }
     factory { AddApartamentoUseCase(get()) }
+    factory { AddCondominioUseCase(get()) }
     factory { GetApartamentosUseCase(get()) }
     factory<AddMoradorUseCase> { AddMoradorUseCaseImpl(get()) }
 }
@@ -77,4 +83,6 @@ val viewModelModule = module {
     viewModelOf(::AddMoradorOverviewViewModel)
     viewModelOf(::AddMoradorFlowViewModel)
     viewModelOf(::CondominioOverviewViewModel)
+    viewModelOf(::CondominioDashboardViewModel)
+    viewModelOf(::AddCondominioViewModel)
 }

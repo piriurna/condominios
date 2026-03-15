@@ -38,6 +38,16 @@ class AddApartamentoUseCaseTest : TestsWithMocks() {
     }
 
     @Test
+    fun `GIVEN empty condominioId WHEN adding apartment THEN should fail without calling repository`() = runTest {
+        val form = AddApartamentoForm.dummy.copy(condominioId = "")
+
+        val result = addApartamentoUseCase(form)
+
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is IllegalArgumentException)
+    }
+
+    @Test
     fun `GIVEN repository fails WHEN adding apartment THEN should fail`() = runTest {
         val addApartamentoForm = AddApartamentoForm.dummy
 
