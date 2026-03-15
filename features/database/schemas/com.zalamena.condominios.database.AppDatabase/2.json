@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "0e199433e9a54378e6ae082b42a6b714",
+    "identityHash": "9d11ade917c522488b552ab6ee353ff5",
     "entities": [
       {
         "tableName": "Morador",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `pessoaId` TEXT NOT NULL, `apartamentoId` TEXT NOT NULL, FOREIGN KEY(`pessoaId`) REFERENCES `Pessoa`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`apartamentoId`) REFERENCES `Apartamento`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `pessoaId` TEXT NOT NULL, `apartamentoId` TEXT NOT NULL, `tipo` TEXT NOT NULL, FOREIGN KEY(`pessoaId`) REFERENCES `Pessoa`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`apartamentoId`) REFERENCES `Apartamento`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -23,6 +23,12 @@
           {
             "fieldPath": "apartamentoId",
             "columnName": "apartamentoId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipo",
+            "columnName": "tipo",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -60,7 +66,7 @@
       },
       {
         "tableName": "Apartamento",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `numero` TEXT NOT NULL, `andar` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `numero` TEXT NOT NULL, `andar` TEXT NOT NULL, `condominioId` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -77,6 +83,103 @@
           {
             "fieldPath": "andar",
             "columnName": "andar",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "condominioId",
+            "columnName": "condominioId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "Condominio",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `nome` TEXT NOT NULL, `enderecoId` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`enderecoId`) REFERENCES `EnderecoEntity`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nome",
+            "columnName": "nome",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "enderecoId",
+            "columnName": "enderecoId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "EnderecoEntity",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "enderecoId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "EnderecoEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `rua` TEXT NOT NULL, `numero` TEXT NOT NULL, `cep` TEXT NOT NULL, `cidade` TEXT NOT NULL, `estado` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rua",
+            "columnName": "rua",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numero",
+            "columnName": "numero",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cep",
+            "columnName": "cep",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cidade",
+            "columnName": "cidade",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "estado",
+            "columnName": "estado",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -133,7 +236,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0e199433e9a54378e6ae082b42a6b714')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9d11ade917c522488b552ab6ee353ff5')"
     ]
   }
 }

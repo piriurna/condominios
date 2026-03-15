@@ -6,13 +6,15 @@ import com.zalamena.condominios.pessoa.domain.models.PessoaProperties
 
 data class Morador(
     val pessoa: Pessoa,
-    val apartamento: Apartamento
+    val apartamento: Apartamento,
+    val tipo: MoradorTipo
 ) : PessoaProperties by pessoa {
 
     companion object {
         val dummy = Morador(
             pessoa = Pessoa.dummy,
-            apartamento = Apartamento.dummy
+            apartamento = Apartamento.dummy,
+            tipo = MoradorTipo.RESIDENTE
         )
     }
 }

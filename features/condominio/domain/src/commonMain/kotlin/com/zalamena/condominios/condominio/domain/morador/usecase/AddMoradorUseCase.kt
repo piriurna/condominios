@@ -1,17 +1,28 @@
 package com.zalamena.condominios.condominio.domain.morador.usecase
 
+import com.zalamena.condominios.condominio.domain.morador.model.MoradorException
+import com.zalamena.condominios.condominio.domain.morador.model.MoradorTipo
 import com.zalamena.condominios.condominio.domain.morador.repository.MoradoresRepository
 
 interface AddMoradorUseCase {
-    suspend operator fun invoke(pessoaId: String, apartamentoId: String): Result<Unit>
+    suspend operator fun invoke(pessoaId: String, apartamentoId: String, tipo: MoradorTipo): Result<Unit>
 }
 
 class AddMoradorUseCaseImpl(
     private val moradoresRepository: MoradoresRepository
 ) : AddMoradorUseCase {
-    override suspend operator fun invoke(pessoaId: String, apartamentoId: String): Result<Unit> {
-        return runCatching {
-            moradoresRepository.addMorador(pessoaId, apartamentoId)
+    override suspend operator fun invoke(
+        pessoaId: String,
+        apartamentoId: String,
+        tipo: MoradorTipo
+    ): Result<Unit> {
+        if (tipo == MoradorTipo.PROPRIETARIO) {
+            val existing = moradoresRepository.getMoradoresForApartamento(apartamentoId)
+                .getOrElse { emptyList() }
+            if (existing.count { it.tipo == MoradorTipo.PROPRIETARIO } >= 2) {
+                return Result.failure(MoradorException.MaxProprietariosExceededException)
+            }
         }
+        return moradoresRepository.addMorador(pessoaId, apartamentoId, tipo)
     }
 }

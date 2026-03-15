@@ -3,6 +3,10 @@ package com.zalamena.condominios.condominio.ui.apartamento.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zalamena.condominios.condominio.domain.apartamento.usecase.GetApartamentoUseCase
+import com.zalamena.condominios.condominio.domain.morador.usecase.GetMoradoresForApartamentoUseCase
+import com.zalamena.condominios.condominio.ui.apartamento.detail.models.MoradorDetailUiData
+import com.zalamena.condominios.condominio.ui.apartamento.detail.models.maskCpf
+import com.zalamena.condominios.condominio.ui.apartamento.detail.models.toLabel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,7 +17,7 @@ data class ApartamentoDetailUiState(
     val apartamentoId: String = "",
     val numero: String = "",
     val andar: String = "",
-    val moradores: List<String> = emptyList(),
+    val moradores: List<MoradorDetailUiData> = emptyList(),
     val isLoading: Boolean = false,
     val isError: Boolean = false,
     val navigationEvent: ApartamentoDetailNavEvent? = null
@@ -24,7 +28,8 @@ sealed class ApartamentoDetailNavEvent {
 }
 
 class ApartamentoDetailViewModel(
-    private val getApartamentoUseCase: GetApartamentoUseCase
+    private val getApartamentoUseCase: GetApartamentoUseCase,
+    private val getMoradoresForApartamentoUseCase: GetMoradoresForApartamentoUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ApartamentoDetailUiState())
@@ -41,21 +46,28 @@ class ApartamentoDetailViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, isError = false) }
 
-            val result = getApartamentoUseCase(apartamentoId)
+            val aptResult = getApartamentoUseCase(apartamentoId)
+            val moradoresResult = getMoradoresForApartamentoUseCase(apartamentoId)
 
             when {
-                result.isSuccess -> {
-                    val apt = result.getOrThrow()
+                aptResult.isSuccess && moradoresResult.isSuccess -> {
+                    val apt = aptResult.getOrThrow()
                     _uiState.update {
                         it.copy(
                             isLoading = false,
                             numero = apt.numero,
                             andar = apt.andar,
-                            moradores = apt.moradores.map { p -> p.nome }
+                            moradores = moradoresResult.getOrThrow().map { m ->
+                                MoradorDetailUiData(
+                                    nome = m.nome,
+                                    maskedCpf = maskCpf(m.cpf),
+                                    tipoLabel = m.tipo.toLabel()
+                                )
+                            }
                         )
                     }
                 }
-                result.isFailure -> {
+                else -> {
                     _uiState.update { it.copy(isLoading = false, isError = true) }
                 }
             }

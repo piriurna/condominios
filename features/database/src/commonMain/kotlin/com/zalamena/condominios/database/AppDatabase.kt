@@ -20,7 +20,7 @@ import com.zalamena.condominios.pessoa.data.entities.PessoaEntity
     CondominioEntity::class,
     EnderecoEntity::class,
     PessoaEntity::class
-], version = 1)
+], version = 2)
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getMoradoresDao(): MoradoresDao

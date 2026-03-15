@@ -19,6 +19,7 @@ import com.zalamena.condominios.condominio.domain.condominio.usecase.GetMoradore
 import com.zalamena.condominios.condominio.domain.morador.repository.MoradoresRepository
 import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCase
 import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCaseImpl
+import com.zalamena.condominios.condominio.domain.morador.usecase.GetMoradoresForApartamentoUseCase
 import com.zalamena.condominios.condominio.ui.addapartamento.AddApartamentoViewModel
 import com.zalamena.condominios.condominio.ui.addcondominio.AddCondominioViewModel
 import com.zalamena.condominios.condominio.ui.apartamento.detail.ApartamentoDetailViewModel
@@ -69,11 +70,12 @@ val useCaseModule = module {
     factory { GetPessoasListUseCase(get()) }
     factory { GetCondominioUseCase(get()) }
     factory { GetCondominiosUseCase(get()) }
-    factory { GetMoradoresUseCase(get()) }
+    factory { GetMoradoresUseCase(get<MoradoresRepository>()) }
     factory { AddApartamentoUseCase(get()) }
     factory { AddCondominioUseCase(get()) }
     factory { GetApartamentosUseCase(get()) }
     factory<AddMoradorUseCase> { AddMoradorUseCaseImpl(get()) }
+    factory { GetMoradoresForApartamentoUseCase(get()) }
 }
 
 val viewModelModule = module {

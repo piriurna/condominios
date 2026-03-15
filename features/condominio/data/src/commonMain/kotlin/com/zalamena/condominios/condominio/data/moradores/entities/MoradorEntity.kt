@@ -31,14 +31,15 @@ data class MoradorEntity(
     val id: Long = 0L,
     val pessoaId: String,
     val apartamentoId: String,
+    val tipo: String = "RESIDENTE",
 ) {
-
 
     companion object {
         val dummy = MoradorEntity(
             id = 1L,
             pessoaId = "id",
-            apartamentoId = "id"
+            apartamentoId = "id",
+            tipo = "RESIDENTE"
         )
     }
 }

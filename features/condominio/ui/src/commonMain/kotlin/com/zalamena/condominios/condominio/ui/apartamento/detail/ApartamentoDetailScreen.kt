@@ -2,6 +2,7 @@ package com.zalamena.condominios.condominio.ui.apartamento.detail
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,9 +19,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.zalamena.condominios.common.ui.components.loading.FullscreenLoading
+import com.zalamena.condominios.condominio.ui.apartamento.detail.models.MoradorDetailUiData
 
 @Composable
 fun ApartamentoDetailScreen(
@@ -73,14 +76,8 @@ private fun ApartamentoDetailContent(
             Text("Nenhum morador cadastrado.", style = MaterialTheme.typography.bodyMedium)
         } else {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(uiState.moradores) { nome ->
-                    Card(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = nome,
-                            modifier = Modifier.padding(16.dp),
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    }
+                items(uiState.moradores) { morador ->
+                    MoradorRow(morador)
                 }
             }
         }
@@ -88,6 +85,31 @@ private fun ApartamentoDetailContent(
         Spacer(Modifier.height(16.dp))
         Button(onClick = onAddMoradorClick, modifier = Modifier.fillMaxWidth()) {
             Text("+ Adicionar Morador")
+        }
+    }
+}
+
+@Composable
+private fun MoradorRow(morador: MoradorDetailUiData) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.padding(16.dp).fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(morador.nome, style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    text = morador.tipoLabel,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+            Text(
+                text = morador.maskedCpf,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }

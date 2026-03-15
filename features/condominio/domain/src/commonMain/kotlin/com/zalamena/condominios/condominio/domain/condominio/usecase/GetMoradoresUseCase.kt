@@ -1,25 +1,11 @@
 package com.zalamena.condominios.condominio.domain.condominio.usecase
 
-import com.zalamena.condominios.condominio.domain.condominio.repository.CondominioRepository
 import com.zalamena.condominios.condominio.domain.morador.model.Morador
+import com.zalamena.condominios.condominio.domain.morador.repository.MoradoresRepository
 
 class GetMoradoresUseCase(
-    private val condominioRepository: CondominioRepository
+    private val moradoresRepository: MoradoresRepository
 ) {
-    suspend operator fun invoke(condominioId: String): Result<List<Morador>> {
-        return runCatching {
-            condominioRepository
-                .getCondominio(condominioId)
-                .getOrThrow()
-                .apartamentos
-                .flatMap { apartamento ->
-                    apartamento.moradores.map { morador ->
-                        Morador(
-                            pessoa = morador,
-                            apartamento = apartamento
-                        )
-                    }
-                }
-        }
-    }
+    suspend operator fun invoke(condominioId: String): Result<List<Morador>> =
+        moradoresRepository.getMoradoresForCondominio(condominioId)
 }

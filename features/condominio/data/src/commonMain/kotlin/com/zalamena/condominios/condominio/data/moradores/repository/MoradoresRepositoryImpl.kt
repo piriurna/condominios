@@ -5,6 +5,7 @@ import com.zalamena.condominios.condominio.data.moradores.entities.MoradorEntity
 import com.zalamena.condominios.condominio.data.moradores.mapper.toDomain
 import com.zalamena.condominios.condominio.domain.morador.model.Morador
 import com.zalamena.condominios.condominio.domain.morador.model.MoradorException
+import com.zalamena.condominios.condominio.domain.morador.model.MoradorTipo
 import com.zalamena.condominios.condominio.domain.morador.repository.MoradoresRepository
 
 
@@ -12,13 +13,15 @@ class MoradoresRepositoryImpl(
     val moradoresDao: MoradoresDao
 ): MoradoresRepository {
     override suspend fun addMorador(
-        pessoa: String,
-        apartamento: String
+        pessoaId: String,
+        apartamentoId: String,
+        tipo: MoradorTipo
     ): Result<Unit> {
         return runCatching {
             val morador = MoradorEntity(
-                pessoaId = pessoa,
-                apartamentoId = apartamento,
+                pessoaId = pessoaId,
+                apartamentoId = apartamentoId,
+                tipo = tipo.name
             )
             moradoresDao.addMorador(morador)
         }
@@ -30,7 +33,19 @@ class MoradoresRepositoryImpl(
     ): Result<Morador> {
         return runCatching {
             moradoresDao.getMorador(id, apartamentoId)?.toDomain()
-                ?:throw MoradorException.MoradorNotFoundException
+                ?: throw MoradorException.MoradorNotFoundException
+        }
+    }
+
+    override suspend fun getMoradoresForApartamento(apartamentoId: String): Result<List<Morador>> {
+        return runCatching {
+            moradoresDao.getAllMoradoresForApartamento(apartamentoId).map { it.toDomain() }
+        }
+    }
+
+    override suspend fun getMoradoresForCondominio(condominioId: String): Result<List<Morador>> {
+        return runCatching {
+            moradoresDao.getAllMoradoresForCondominio(condominioId).map { it.toDomain() }
         }
     }
 }

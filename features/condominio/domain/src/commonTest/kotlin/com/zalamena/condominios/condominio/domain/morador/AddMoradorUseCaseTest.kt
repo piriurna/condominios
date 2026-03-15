@@ -1,6 +1,8 @@
 package com.zalamena.condominios.condominio.domain.morador
 
+import com.zalamena.condominios.condominio.domain.morador.model.Morador
 import com.zalamena.condominios.condominio.domain.morador.model.MoradorException
+import com.zalamena.condominios.condominio.domain.morador.model.MoradorTipo
 import com.zalamena.condominios.condominio.domain.morador.repository.MoradoresRepository
 import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCaseImpl
 import kotlinx.coroutines.test.runTest
@@ -8,6 +10,7 @@ import org.kodein.mock.Mock
 import org.kodein.mock.generated.injectMocks
 import org.kodein.mock.tests.TestsWithMocks
 import kotlin.test.Test
+import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 class AddMoradorUseCaseTest : TestsWithMocks() {
@@ -18,24 +21,68 @@ class AddMoradorUseCaseTest : TestsWithMocks() {
     private val addMoradorUseCase by lazy { AddMoradorUseCaseImpl(moradoresRepository) }
 
     @Test
-    fun `GIVEN valid pessoa and apartamento WHEN adding morador THEN should succeed`() = runTest {
-        everySuspending { moradoresRepository.addMorador("pessoaId", "apartamentoId") } returns Result.success(Unit)
+    fun `GIVEN valid pessoa and apartamento WHEN adding RESIDENTE THEN should succeed`() = runTest {
+        everySuspending { moradoresRepository.addMorador("pessoaId", "apartamentoId", MoradorTipo.RESIDENTE) } returns Result.success(Unit)
 
-        val result = addMoradorUseCase("pessoaId", "apartamentoId")
+        val result = addMoradorUseCase("pessoaId", "apartamentoId", MoradorTipo.RESIDENTE)
 
         assertTrue(result.isSuccess)
     }
 
     @Test
     fun `GIVEN repository throws WHEN adding morador THEN should fail`() = runTest {
-        everySuspending { moradoresRepository.addMorador("pessoaId", "apartamentoId") } runs {
+        everySuspending { moradoresRepository.addMorador("pessoaId", "apartamentoId", MoradorTipo.RESIDENTE) } runs {
             throw MoradorException.DuplicateMoradorException
         }
 
-        val result = addMoradorUseCase("pessoaId", "apartamentoId")
+        val result = addMoradorUseCase("pessoaId", "apartamentoId", MoradorTipo.RESIDENTE)
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is MoradorException.DuplicateMoradorException)
+        assertIs<MoradorException.DuplicateMoradorException>(result.exceptionOrNull())
+    }
+
+    @Test
+    fun `GIVEN 0 existing proprietarios WHEN adding PROPRIETARIO THEN should succeed`() = runTest {
+        everySuspending { moradoresRepository.getMoradoresForApartamento("apartamentoId") } returns Result.success(emptyList())
+        everySuspending { moradoresRepository.addMorador("pessoaId", "apartamentoId", MoradorTipo.PROPRIETARIO) } returns Result.success(Unit)
+
+        val result = addMoradorUseCase("pessoaId", "apartamentoId", MoradorTipo.PROPRIETARIO)
+
+        assertTrue(result.isSuccess)
+    }
+
+    @Test
+    fun `GIVEN 1 existing proprietario WHEN adding PROPRIETARIO THEN should succeed`() = runTest {
+        val existing = listOf(Morador.dummy.copy(tipo = MoradorTipo.PROPRIETARIO))
+        everySuspending { moradoresRepository.getMoradoresForApartamento("apartamentoId") } returns Result.success(existing)
+        everySuspending { moradoresRepository.addMorador("pessoaId", "apartamentoId", MoradorTipo.PROPRIETARIO) } returns Result.success(Unit)
+
+        val result = addMoradorUseCase("pessoaId", "apartamentoId", MoradorTipo.PROPRIETARIO)
+
+        assertTrue(result.isSuccess)
+    }
+
+    @Test
+    fun `GIVEN 2 existing proprietarios WHEN adding PROPRIETARIO THEN should fail with MaxProprietariosExceededException`() = runTest {
+        val existing = listOf(
+            Morador.dummy.copy(tipo = MoradorTipo.PROPRIETARIO),
+            Morador.dummy.copy(tipo = MoradorTipo.PROPRIETARIO)
+        )
+        everySuspending { moradoresRepository.getMoradoresForApartamento("apartamentoId") } returns Result.success(existing)
+
+        val result = addMoradorUseCase("pessoaId", "apartamentoId", MoradorTipo.PROPRIETARIO)
+
+        assertTrue(result.isFailure)
+        assertIs<MoradorException.MaxProprietariosExceededException>(result.exceptionOrNull())
+    }
+
+    @Test
+    fun `GIVEN 2 existing proprietarios WHEN adding RESIDENTE THEN should succeed`() = runTest {
+        everySuspending { moradoresRepository.addMorador("pessoaId", "apartamentoId", MoradorTipo.RESIDENTE) } returns Result.success(Unit)
+
+        val result = addMoradorUseCase("pessoaId", "apartamentoId", MoradorTipo.RESIDENTE)
+
+        assertTrue(result.isSuccess)
     }
 
     override fun setUpMocks() {
