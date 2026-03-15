@@ -33,7 +33,8 @@ data class ApartamentoWithAllData(
     val apartamento: ApartamentoEntity,
     @Relation(
         parentColumn = "id",
-        entityColumn = "apartamentoId"
+        entityColumn = "apartamentoId",
+        entity = MoradorEntity::class
     )
     val moradores: List<MoradorEntityWithPessoa>
 ) {

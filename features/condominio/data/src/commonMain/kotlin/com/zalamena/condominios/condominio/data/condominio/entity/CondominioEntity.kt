@@ -3,7 +3,9 @@ package com.zalamena.condominios.condominio.data.condominio.entity
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import androidx.room.Relation
+import com.zalamena.condominios.condominio.data.apartamento.entity.ApartamentoEntity
 import com.zalamena.condominios.condominio.data.apartamento.entity.ApartamentoWithAllData
 
 @Entity(
@@ -17,6 +19,7 @@ import com.zalamena.condominios.condominio.data.apartamento.entity.ApartamentoWi
     ]
 )
 data class CondominioEntity(
+    @PrimaryKey
     val id: String,
     val nome: String,
     val enderecoId: String,
@@ -42,7 +45,8 @@ data class CondominioWithAllData(
     val endereco: EnderecoEntity,
     @Relation(
         parentColumn = "id",
-        entityColumn = "condominioId"
+        entityColumn = "condominioId",
+        entity = ApartamentoEntity::class
     )
     val apartamentos: List<ApartamentoWithAllData>
 ) {

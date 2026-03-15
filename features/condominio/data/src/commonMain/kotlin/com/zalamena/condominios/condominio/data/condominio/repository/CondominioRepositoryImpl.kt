@@ -9,6 +9,10 @@ import com.zalamena.condominios.condominio.domain.condominio.repository.Condomin
 class CondominioRepositoryImpl constructor(
     private val condominioDao: CondominioDao
 ): CondominioRepository {
+    override suspend fun getCondominios(): Result<List<Condominio>> = runCatching {
+        condominioDao.getCondominios().map { it.toCondominio() }
+    }
+
     override suspend fun getCondominio(condominioId: String): Result<Condominio> {
         return runCatching {
             condominioDao.getCondominio(condominioId)?.toCondominio()?: throw Exception("Condominio not found")
