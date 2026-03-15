@@ -77,11 +77,16 @@ class ApartamentoRepositoryTest: TestsWithMocks() {
     @Test
     fun `GIVEN valid apartamento WHEN adding it THEN should be success`() = runTest {
         val condominioId = "condominioId"
-        everySuspending { apartamentoDao.addApartamento(ApartamentoEntity.dummy) } returns Unit
+        val inputApartamento = ApartamentoEntity.dummy.toDomain()
+        val expectedEntity = ApartamentoEntity(id = "0-${inputApartamento.numero}", numero = inputApartamento.numero, andar = inputApartamento.andar, condominioId = condominioId)
 
-        val result = apartamentoRepository.addApartamento(condominioId, ApartamentoEntity.dummy.toDomain())
+        everySuspending { apartamentoDao.getApartamentos() } returns emptyList()
+        everySuspending { apartamentoDao.addApartamento(expectedEntity) } returns Unit
+
+        val result = apartamentoRepository.addApartamento(condominioId, inputApartamento)
 
         assertTrue(result.isSuccess)
+        assertTrue(result.getOrNull() == "0-${inputApartamento.numero}")
     }
 
 
