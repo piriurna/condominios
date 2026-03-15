@@ -128,42 +128,35 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
     }
 
     @Test
-    fun `GIVEN condominio with apartamentos WHEN selecting THEN summary stats are correct`() = runTest {
-        val ocupado = Apartamento.dummy                          // has moradores
-        val vago = Apartamento.dummy.copy(id = "vago", moradores = emptyList())
-        val condominio = Condominio.dummy.copy(apartamentos = listOf(ocupado, vago))
+    fun `GIVEN condominio with apartamentos WHEN selecting THEN totalApartamentos is correct`() = runTest {
+        val apt1 = Apartamento.dummy
+        val apt2 = Apartamento.dummy.copy(id = "apt2", moradores = emptyList())
+        val condominio = Condominio.dummy.copy(apartamentos = listOf(apt1, apt2))
 
         loadCondominio(condominio)
         viewModel.selectCondominio(condominio.id)
 
-        val state = viewModel.uiState.value
-        assertEquals(2, state.totalApartamentos)
-        assertEquals(1, state.totalOcupados)
-        assertEquals(1, state.totalVagos)
+        assertEquals(2, viewModel.uiState.value.totalApartamentos)
     }
 
     @Test
-    fun `GIVEN apartment with moradores WHEN selecting condominio THEN isOcupado is true`() = runTest {
+    fun `GIVEN apartment with moradores WHEN selecting condominio THEN moradorCount is correct`() = runTest {
         loadCondominio(Condominio.dummy)
 
         viewModel.selectCondominio(Condominio.dummy.id)
 
         val apt = viewModel.uiState.value.apartamentos.first()
-        assertTrue(apt.isOcupado)
         assertEquals(Apartamento.dummy.moradores.size, apt.moradorCount)
     }
 
     @Test
-    fun `GIVEN apartment with no moradores WHEN selecting condominio THEN isOcupado is false`() = runTest {
-        val vago = Apartamento.dummy.copy(moradores = emptyList())
-        val condominio = Condominio.dummy.copy(apartamentos = listOf(vago))
-        loadCondominio(condominio)
+    fun `GIVEN apartment with no moradores WHEN selecting condominio THEN moradorCount is zero`() = runTest {
+        val empty = Apartamento.dummy.copy(moradores = emptyList())
+        loadCondominio(Condominio.dummy.copy(apartamentos = listOf(empty)))
 
-        viewModel.selectCondominio(condominio.id)
+        viewModel.selectCondominio(Condominio.dummy.id)
 
-        val apt = viewModel.uiState.value.apartamentos.first()
-        assertFalse(apt.isOcupado)
-        assertEquals(0, apt.moradorCount)
+        assertEquals(0, viewModel.uiState.value.apartamentos.first().moradorCount)
     }
 
     @Test

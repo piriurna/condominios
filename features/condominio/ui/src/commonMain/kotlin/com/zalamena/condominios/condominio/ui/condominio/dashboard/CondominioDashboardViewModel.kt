@@ -16,8 +16,6 @@ data class CondominioDashboardUiState(
     val selectedCondominioId: String? = null,
     val apartamentos: List<ApartamentoDashboardUiData> = emptyList(),
     val totalApartamentos: Int = 0,
-    val totalOcupados: Int = 0,
-    val totalVagos: Int = 0,
     val isLoading: Boolean = false,
     val isError: Boolean = false,
     val navigationEvent: DashboardNavigationEvent? = null
@@ -67,15 +65,12 @@ class CondominioDashboardViewModel(
     fun selectCondominio(condominioId: String) {
         val condominio = loadedCondominios.find { it.id == condominioId } ?: return
         val apartamentos = condominio.apartamentos.map { it.toDashboardUi() }
-        val ocupados = apartamentos.count { it.isOcupado }
 
         _uiState.update {
             it.copy(
                 selectedCondominioId = condominioId,
                 apartamentos = apartamentos,
-                totalApartamentos = apartamentos.size,
-                totalOcupados = ocupados,
-                totalVagos = apartamentos.size - ocupados
+                totalApartamentos = apartamentos.size
             )
         }
     }

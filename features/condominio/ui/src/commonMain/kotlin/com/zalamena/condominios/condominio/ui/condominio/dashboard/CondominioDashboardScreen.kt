@@ -88,11 +88,7 @@ private fun CondominioDashboardContent(
 
         if (uiState.selectedCondominioId != null) {
             Spacer(Modifier.height(12.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text("Total: ${uiState.totalApartamentos}")
-                Text("Ocupados: ${uiState.totalOcupados}")
-                Text("Vagos: ${uiState.totalVagos}")
-            }
+            Text("Total: ${uiState.totalApartamentos} apartamento(s)")
             Spacer(Modifier.height(8.dp))
             Button(onClick = onAddApartamentoClick, modifier = Modifier.fillMaxWidth()) {
                 Text("+ Adicionar Apartamento")
@@ -153,10 +149,7 @@ private fun ApartamentoCard(apt: ApartamentoDashboardUiData, onClick: () -> Unit
                 Text("Apt ${apt.numero}", style = MaterialTheme.typography.titleMedium)
                 Text("Andar ${apt.andar}", style = MaterialTheme.typography.bodySmall)
             }
-            Column(horizontalAlignment = androidx.compose.ui.Alignment.End) {
-                Text(if (apt.isOcupado) "Ocupado" else "Vago")
-                Text("${apt.moradorCount} morador(es)", style = MaterialTheme.typography.bodySmall)
-            }
+            Text("${apt.moradorCount} morador(es)", style = MaterialTheme.typography.bodySmall)
         }
     }
 }

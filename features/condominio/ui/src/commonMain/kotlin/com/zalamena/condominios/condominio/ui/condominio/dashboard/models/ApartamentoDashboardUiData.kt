@@ -4,6 +4,5 @@ data class ApartamentoDashboardUiData(
     val id: String,
     val numero: String,
     val andar: String,
-    val moradorCount: Int,
-    val isOcupado: Boolean
+    val moradorCount: Int
 )

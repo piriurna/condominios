@@ -15,6 +15,5 @@ fun Apartamento.toDashboardUi(): ApartamentoDashboardUiData = ApartamentoDashboa
     id = id,
     numero = numero,
     andar = andar,
-    moradorCount = moradores.size,
-    isOcupado = moradores.isNotEmpty()
+    moradorCount = moradores.size
 )
