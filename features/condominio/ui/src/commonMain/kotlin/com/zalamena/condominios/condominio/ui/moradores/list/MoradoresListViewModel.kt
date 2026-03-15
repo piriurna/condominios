@@ -20,17 +20,12 @@ class MoradoresListViewModel(
     private val _uiState: MutableStateFlow<MoradoresListUiState> = MutableStateFlow(MoradoresListUiState())
     val uiState: Flow<MoradoresListUiState> = _uiState
 
-    init {
-        println("LOGGING START")
-    }
-
-
-    suspend fun getMoradores() {
+    suspend fun getMoradores(condominioId: String) {
         _uiState.update {
             it.copy(isLoading = true)
         }
 
-        val moradoresResult = getMoradoresUseCase()
+        val moradoresResult = getMoradoresUseCase(condominioId)
 
         when {
             moradoresResult.isSuccess -> {

@@ -15,6 +15,7 @@ import kotlin.time.Duration.Companion.seconds
 
 
 data class AddApartamentoUiState(
+    val condominioId: String = "",
     val addApartamentoForm: AddApartamentoFormUiData = AddApartamentoFormUiData.BLANK,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
@@ -29,6 +30,10 @@ class AddApartamentoViewModel(
     private val _uiState: MutableStateFlow<AddApartamentoUiState> = MutableStateFlow(AddApartamentoUiState())
     val uiState: StateFlow<AddApartamentoUiState> = _uiState.asStateFlow()
 
+
+    fun setCondominioId(condominioId: String) {
+        _uiState.update { it.copy(condominioId = condominioId) }
+    }
 
     fun setNumeroApartamento(numeroApartamento: String) {
         val fixedNumero = numeroApartamento.trim().filter { it.isDigit() }
@@ -76,7 +81,7 @@ class AddApartamentoViewModel(
                 return@launch
             }
 
-            val form = _uiState.value.addApartamentoForm.toDomain()
+            val form = _uiState.value.addApartamentoForm.toDomain(_uiState.value.condominioId)
 
             val addResult = addApartamentoUseCase(form)
 
