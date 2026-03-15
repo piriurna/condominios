@@ -17,6 +17,7 @@ import com.zalamena.condominios.condominio.ui.addapartamento.navigation.addApart
 import com.zalamena.condominios.condominio.ui.addcondominio.AddCondominioViewModel
 import com.zalamena.condominios.condominio.ui.addcondominio.navigation.AddCondominioRoute
 import com.zalamena.condominios.condominio.ui.addcondominio.navigation.addCondominioNavHost
+import com.zalamena.condominios.condominio.ui.apartamento.detail.ApartamentoDetailViewModel
 import com.zalamena.condominios.condominio.ui.addmorador.flowController.AddMoradorFlowViewModel
 import com.zalamena.condominios.condominio.ui.addmorador.navigation.AddMoradorRoute
 import com.zalamena.condominios.condominio.ui.addmorador.navigation.addMoradorNavGraph
@@ -42,7 +43,8 @@ fun AppNavHost(
     addMoradorOverviewViewModel: AddMoradorOverviewViewModel,
     addMoradorFlowViewModel: AddMoradorFlowViewModel,
     condominioDashboardViewModel: CondominioDashboardViewModel,
-    addCondominioViewModel: AddCondominioViewModel
+    addCondominioViewModel: AddCondominioViewModel,
+    apartamentoDetailViewModel: ApartamentoDetailViewModel
 ) {
     NavHost(navController, startDestination = DebugRoute) {
 
@@ -85,7 +87,9 @@ fun AppNavHost(
         condominioDashboardNavHost(
             navController,
             condominioDashboardViewModel,
-            addApartamentoViewModel
+            addApartamentoViewModel,
+            apartamentoDetailViewModel,
+            addMoradorFlowViewModel
         )
 
         addCondominioNavHost(
