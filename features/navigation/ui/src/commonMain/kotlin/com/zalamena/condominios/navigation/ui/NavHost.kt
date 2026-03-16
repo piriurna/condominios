@@ -1,6 +1,7 @@
 package com.zalamena.condominios.navigation.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
@@ -26,7 +27,13 @@ import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDas
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.CondominioDashboardRoute
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.condominioDashboardNavHost
 import com.zalamena.condominios.pessoa.ui.addpessoa.AddPessoaViewModel
+import com.zalamena.login.ui.LoginViewModel
+import com.zalamena.login.ui.navigation.LoginRoute
+import com.zalamena.login.ui.navigation.loginNavHost
 import kotlinx.serialization.Serializable
+
+@Serializable
+object SplashRoute
 
 @Serializable
 object DebugRoute
@@ -44,9 +51,14 @@ fun AppNavHost(
     addMoradorFlowViewModel: AddMoradorFlowViewModel,
     condominioDashboardViewModel: CondominioDashboardViewModel,
     addCondominioViewModel: AddCondominioViewModel,
-    apartamentoDetailViewModel: ApartamentoDetailViewModel
+    apartamentoDetailViewModel: ApartamentoDetailViewModel,
+    loginViewModel: LoginViewModel
 ) {
-    NavHost(navController, startDestination = DebugRoute) {
+    NavHost(navController, startDestination = SplashRoute) {
+
+        composable<SplashRoute> {
+            Box(modifier = Modifier.fillMaxSize())
+        }
 
         navigation<DebugRoute>(startDestination = ButtonsRoute) {
             composable<ButtonsRoute> {
@@ -55,6 +67,9 @@ fun AppNavHost(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Button(onClick = { navController.navigate(LoginRoute) }) {
+                        Text("Login")
+                    }
                     Button(onClick = { navController.navigate(CondominioDashboardRoute) }) {
                         Text("Dashboard de Condomínio")
                     }
@@ -70,6 +85,16 @@ fun AppNavHost(
                 }
             }
         }
+
+        loginNavHost(
+            navController,
+            loginViewModel = loginViewModel,
+            onLoginSuccess = {
+                navController.navigate(ButtonsRoute) {
+                    popUpTo(LoginRoute) { inclusive = true }
+                }
+            }
+        )
 
         addMoradorNavGraph(
             navController,

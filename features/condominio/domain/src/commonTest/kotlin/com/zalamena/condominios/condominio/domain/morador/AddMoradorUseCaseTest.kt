@@ -31,9 +31,8 @@ class AddMoradorUseCaseTest : TestsWithMocks() {
 
     @Test
     fun `GIVEN repository throws WHEN adding morador THEN should fail`() = runTest {
-        everySuspending { moradoresRepository.addMorador("pessoaId", "apartamentoId", MoradorTipo.RESIDENTE) } runs {
-            throw MoradorException.DuplicateMoradorException
-        }
+        everySuspending { moradoresRepository.addMorador("pessoaId", "apartamentoId", MoradorTipo.RESIDENTE) } returns
+            Result.failure(MoradorException.DuplicateMoradorException)
 
         val result = addMoradorUseCase("pessoaId", "apartamentoId", MoradorTipo.RESIDENTE)
 

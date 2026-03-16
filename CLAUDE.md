@@ -42,18 +42,21 @@ A **condominium management tool** for **doormen** at residential buildings. The 
 
 ## Build commands
 
+Run all commands via PowerShell (batch files don't work from bash):
+
 ```shell
 # Android
-.\gradlew.bat :composeApp:assembleDebug
+powershell.exe -Command "Set-Location 'C:\Users\franc\Documents\Projetos Android\condominios'; .\gradlew.bat :composeApp:assembleDebug"
 
 # Desktop
-.\gradlew.bat :composeApp:run
+powershell.exe -Command "Set-Location 'C:\Users\franc\Documents\Projetos Android\condominios'; .\gradlew.bat :composeApp:run"
 
-# Tests
-.\gradlew.bat :features:condominio:domain:testDebugUnitTest
-.\gradlew.bat :features:condominio:data:testDebugUnitTest
-.\gradlew.bat :features:condominio:ui:testDebugUnitTest
+# Tests (platform-agnostic, JVM target — use jvmTest for KMP modules)
+powershell.exe -Command "Set-Location 'C:\Users\franc\Documents\Projetos Android\condominios'; .\gradlew.bat :features:login:ui:jvmTest :features:login:domain:jvmTest :features:login:data:jvmTest"
+powershell.exe -Command "Set-Location 'C:\Users\franc\Documents\Projetos Android\condominios'; .\gradlew.bat :features:condominio:domain:jvmTest :features:condominio:data:jvmTest"
 ```
+
+> **Note:** `org.gradle.java.home` is set in `local.properties` to use OpenJDK 25 (`~/.jdks/openjdk-25`). Gradle 9 requires JVM 17+; the system default is JDK 8.
 
 ## Key conventions
 

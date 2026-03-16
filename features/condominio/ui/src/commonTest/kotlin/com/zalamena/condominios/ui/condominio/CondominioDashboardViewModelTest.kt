@@ -8,7 +8,9 @@ import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDas
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.DashboardNavigationEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -30,12 +32,15 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
     @Mock
     lateinit var condominioRepository: CondominioRepository
 
+    private val testScheduler = TestCoroutineScheduler()
+    private val testDispatcher = UnconfinedTestDispatcher(testScheduler)
+
     private val getCondominiosUseCase by lazy { GetCondominiosUseCase(condominioRepository) }
     private val viewModel by lazy { CondominioDashboardViewModel(getCondominiosUseCase) }
 
     @BeforeTest
     fun setup() {
-        Dispatchers.setMain(UnconfinedTestDispatcher())
+        Dispatchers.setMain(testDispatcher)
     }
 
     @AfterTest
@@ -46,32 +51,33 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
     // --- Initial state ---
 
     @Test
-    fun `GIVEN initial state WHEN observing THEN isLoading is false`() = runTest {
+    fun `GIVEN initial state WHEN observing THEN isLoading is false`() = runTest(testScheduler) {
         assertFalse(viewModel.uiState.value.isLoading)
     }
 
     @Test
-    fun `GIVEN initial state WHEN observing THEN condominios list is empty`() = runTest {
+    fun `GIVEN initial state WHEN observing THEN condominios list is empty`() = runTest(testScheduler) {
         assertEquals(emptyList(), viewModel.uiState.value.condominios)
     }
 
     @Test
-    fun `GIVEN initial state WHEN observing THEN isError is false`() = runTest {
+    fun `GIVEN initial state WHEN observing THEN isError is false`() = runTest(testScheduler) {
         assertFalse(viewModel.uiState.value.isError)
     }
 
     @Test
-    fun `GIVEN initial state WHEN observing THEN no navigation event`() = runTest {
+    fun `GIVEN initial state WHEN observing THEN no navigation event`() = runTest(testScheduler) {
         assertNull(viewModel.uiState.value.navigationEvent)
     }
 
     // --- loadCondominios ---
 
     @Test
-    fun `GIVEN condominios available WHEN loading THEN populates condominios list`() = runTest {
+    fun `GIVEN condominios available WHEN loading THEN populates condominios list`() = runTest(testScheduler) {
         everySuspending { condominioRepository.getCondominios() } returns Result.success(listOf(Condominio.dummy))
 
         viewModel.loadCondominios()
+        advanceUntilIdle()
 
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
@@ -82,10 +88,11 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
     }
 
     @Test
-    fun `GIVEN fetch fails WHEN loading condominios THEN sets error state`() = runTest {
+    fun `GIVEN fetch fails WHEN loading condominios THEN sets error state`() = runTest(testScheduler) {
         everySuspending { condominioRepository.getCondominios() } returns Result.failure(Exception("DB error"))
 
         viewModel.loadCondominios()
+        advanceUntilIdle()
 
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
@@ -94,10 +101,11 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
     }
 
     @Test
-    fun `GIVEN no condominios WHEN loading THEN condominios list is empty`() = runTest {
+    fun `GIVEN no condominios WHEN loading THEN condominios list is empty`() = runTest(testScheduler) {
         everySuspending { condominioRepository.getCondominios() } returns Result.success(emptyList())
 
         viewModel.loadCondominios()
+        advanceUntilIdle()
 
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
@@ -108,7 +116,7 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
     // --- selectCondominio ---
 
     @Test
-    fun `GIVEN condominio loaded WHEN selecting it THEN updates selectedCondominioId`() = runTest {
+    fun `GIVEN condominio loaded WHEN selecting it THEN updates selectedCondominioId`() = runTest(testScheduler) {
         loadCondominio(Condominio.dummy)
 
         viewModel.selectCondominio(Condominio.dummy.id)
@@ -117,7 +125,7 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
     }
 
     @Test
-    fun `GIVEN condominio loaded WHEN selecting it THEN populates apartamentos list`() = runTest {
+    fun `GIVEN condominio loaded WHEN selecting it THEN populates apartamentos list`() = runTest(testScheduler) {
         loadCondominio(Condominio.dummy)
 
         viewModel.selectCondominio(Condominio.dummy.id)
@@ -128,7 +136,7 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
     }
 
     @Test
-    fun `GIVEN condominio with apartamentos WHEN selecting THEN totalApartamentos is correct`() = runTest {
+    fun `GIVEN condominio with apartamentos WHEN selecting THEN totalApartamentos is correct`() = runTest(testScheduler) {
         val apt1 = Apartamento.dummy
         val apt2 = Apartamento.dummy.copy(id = "apt2", moradores = emptyList())
         val condominio = Condominio.dummy.copy(apartamentos = listOf(apt1, apt2))
@@ -140,7 +148,7 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
     }
 
     @Test
-    fun `GIVEN apartment with moradores WHEN selecting condominio THEN moradorCount is correct`() = runTest {
+    fun `GIVEN apartment with moradores WHEN selecting condominio THEN moradorCount is correct`() = runTest(testScheduler) {
         loadCondominio(Condominio.dummy)
 
         viewModel.selectCondominio(Condominio.dummy.id)
@@ -150,7 +158,7 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
     }
 
     @Test
-    fun `GIVEN apartment with no moradores WHEN selecting condominio THEN moradorCount is zero`() = runTest {
+    fun `GIVEN apartment with no moradores WHEN selecting condominio THEN moradorCount is zero`() = runTest(testScheduler) {
         val empty = Apartamento.dummy.copy(moradores = emptyList())
         loadCondominio(Condominio.dummy.copy(apartamentos = listOf(empty)))
 
@@ -160,7 +168,7 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
     }
 
     @Test
-    fun `GIVEN unknown condominioId WHEN selecting THEN state does not change`() = runTest {
+    fun `GIVEN unknown condominioId WHEN selecting THEN state does not change`() = runTest(testScheduler) {
         loadCondominio(Condominio.dummy)
 
         viewModel.selectCondominio("unknown-id")
@@ -172,7 +180,7 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
     // --- Navigation events ---
 
     @Test
-    fun `WHEN add apartamento clicked THEN navigation event is AddApartamento`() = runTest {
+    fun `WHEN add apartamento clicked THEN navigation event is AddApartamento`() = runTest(testScheduler) {
         loadCondominio(Condominio.dummy)
         viewModel.selectCondominio(Condominio.dummy.id)
 
@@ -182,7 +190,7 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
     }
 
     @Test
-    fun `WHEN apartamento clicked THEN navigation event is ApartamentoDetails with correct id`() = runTest {
+    fun `WHEN apartamento clicked THEN navigation event is ApartamentoDetails with correct id`() = runTest(testScheduler) {
         viewModel.onApartamentoClick("apt-123")
 
         val event = viewModel.uiState.value.navigationEvent
@@ -191,7 +199,7 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
     }
 
     @Test
-    fun `GIVEN AddApartamento nav event WHEN handled THEN navigation event is cleared`() = runTest {
+    fun `GIVEN AddApartamento nav event WHEN handled THEN navigation event is cleared`() = runTest(testScheduler) {
         loadCondominio(Condominio.dummy)
         viewModel.selectCondominio(Condominio.dummy.id)
         viewModel.onAddApartamentoClick()
@@ -201,26 +209,15 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
     }
 
     @Test
-    fun `GIVEN ApartamentoDetails nav event WHEN handled THEN navigation event is cleared`() = runTest {
+    fun `GIVEN ApartamentoDetails nav event WHEN handled THEN navigation event is cleared`() = runTest(testScheduler) {
         viewModel.onApartamentoClick("apt-123")
         viewModel.onNavigationHandled()
 
         assertNull(viewModel.uiState.value.navigationEvent)
     }
 
-    // --- Root-cause test: condominioId must be carried by the navigation event ---
-    //
-    // In the real app, CondominioDashboardNavHost handles DashboardNavigationEvent.AddApartamento
-    // and calls navController.navigate(AddApartamentoRoute) — but it never calls
-    // addApartamentoViewModel.setCondominioId(...).  The only way the nav host can know
-    // WHICH condominio to pass is if the event itself carries the condominioId.
-    //
-    // Currently DashboardNavigationEvent.AddApartamento is a singleton `object` with no data,
-    // so this test fails to compile:
-    //   error: unresolved reference: condominioId
-
     @Test
-    fun `WHEN add apartamento clicked with condominio selected THEN navigation event carries the condominioId`() = runTest {
+    fun `WHEN add apartamento clicked with condominio selected THEN navigation event carries the condominioId`() = runTest(testScheduler) {
         loadCondominio(Condominio.dummy)
         viewModel.selectCondominio(Condominio.dummy.id)
 
@@ -228,24 +225,29 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
 
         val event = viewModel.uiState.value.navigationEvent
         assertIs<DashboardNavigationEvent.AddApartamento>(event)
-        assertEquals(Condominio.dummy.id, event.condominioId) // compile error: unresolved reference 'condominioId'
+        assertEquals(Condominio.dummy.id, event.condominioId)
     }
 
     // --- Stale data / refresh ---
 
     @Test
-    fun `GIVEN condominio selected WHEN loadCondominios called after apartamento added THEN apartamento list is refreshed`() = runTest {
+    fun `GIVEN condominio selected WHEN loadCondominios called after apartamento added THEN apartamento list is refreshed`() = runTest(testScheduler) {
         val condominioId = Condominio.dummy.id
         val condominioEmpty = Condominio.dummy.copy(apartamentos = emptyList())
+        val newApt = Apartamento.dummy.copy(id = "new-apt", moradores = emptyList())
+        val condominioWithApt = condominioEmpty.copy(apartamentos = listOf(newApt))
 
-        loadCondominio(condominioEmpty)
+        var response = Result.success(listOf(condominioEmpty))
+        everySuspending { condominioRepository.getCondominios() } runs { response }
+
+        viewModel.loadCondominios()
+        advanceUntilIdle()
         viewModel.selectCondominio(condominioId)
         assertEquals(0, viewModel.uiState.value.apartamentos.size)
 
-        val newApt = Apartamento.dummy.copy(id = "new-apt", moradores = emptyList())
-        val condominioWithApt = condominioEmpty.copy(apartamentos = listOf(newApt))
-        everySuspending { condominioRepository.getCondominios() } returns Result.success(listOf(condominioWithApt))
+        response = Result.success(listOf(condominioWithApt))
         viewModel.loadCondominios()
+        advanceUntilIdle()
 
         assertEquals(1, viewModel.uiState.value.apartamentos.size)
         assertEquals("new-apt", viewModel.uiState.value.apartamentos.first().id)
@@ -256,6 +258,7 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
     private suspend fun loadCondominio(condominio: Condominio) {
         everySuspending { condominioRepository.getCondominios() } returns Result.success(listOf(condominio))
         viewModel.loadCondominios()
+        testScheduler.advanceUntilIdle()
     }
 
     override fun setUpMocks() {

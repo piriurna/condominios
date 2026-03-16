@@ -41,7 +41,7 @@ class ApartamentoRepositoryTest: TestsWithMocks() {
         val result = apartamentoRepository.getApartamentos()
 
         assertTrue(result.isSuccess)
-        assertEquals(listOf(ApartamentoEntity.dummy.toDomain()), result.getOrThrow())
+        assertEquals(listOf(ApartamentoWithAllData.dummy.toDomain()), result.getOrThrow())
 
     }
 
@@ -54,7 +54,7 @@ class ApartamentoRepositoryTest: TestsWithMocks() {
 
 
             assertTrue(result.isSuccess)
-            assertEquals(ApartamentoEntity.dummy.toDomain(), result.getOrThrow())
+            assertEquals(ApartamentoWithAllData.dummy.toDomain(), result.getOrThrow())
 
         }
 

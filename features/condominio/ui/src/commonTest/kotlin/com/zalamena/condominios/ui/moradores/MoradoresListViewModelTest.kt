@@ -1,8 +1,8 @@
 package com.zalamena.condominios.ui.moradores
 
-import com.zalamena.condominios.condominio.domain.condominio.models.Condominio
-import com.zalamena.condominios.condominio.domain.condominio.repository.CondominioRepository
 import com.zalamena.condominios.condominio.domain.condominio.usecase.GetMoradoresUseCase
+import com.zalamena.condominios.condominio.domain.morador.model.Morador
+import com.zalamena.condominios.condominio.domain.morador.repository.MoradoresRepository
 import com.zalamena.condominios.condominio.ui.moradores.list.MoradoresListViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -17,9 +17,9 @@ import kotlin.test.assertTrue
 class MoradoresListViewModelTest : TestsWithMocks() {
 
     @Mock
-    lateinit var condominioRepository: CondominioRepository
+    lateinit var moradoresRepository: MoradoresRepository
 
-    private val getMoradoresUseCase by lazy { GetMoradoresUseCase(condominioRepository) }
+    private val getMoradoresUseCase by lazy { GetMoradoresUseCase(moradoresRepository) }
     private val viewModel by lazy { MoradoresListViewModel(getMoradoresUseCase) }
 
     @Test
@@ -29,7 +29,7 @@ class MoradoresListViewModelTest : TestsWithMocks() {
 
     @Test
     fun `GIVEN moradores exist WHEN getting moradores THEN should populate list`() = runTest {
-        everySuspending { condominioRepository.getCondominio("condominioId") } returns Result.success(Condominio.dummy)
+        everySuspending { moradoresRepository.getMoradoresForCondominio("condominioId") } returns Result.success(listOf(Morador.dummy))
 
         viewModel.getMoradores("condominioId")
 
@@ -40,10 +40,7 @@ class MoradoresListViewModelTest : TestsWithMocks() {
 
     @Test
     fun `GIVEN no moradores WHEN getting moradores THEN should return empty list`() = runTest {
-        val condominioNoMoradores = Condominio.dummy.copy(
-            apartamentos = Condominio.dummy.apartamentos.map { it.copy(moradores = emptyList()) }
-        )
-        everySuspending { condominioRepository.getCondominio("condominioId") } returns Result.success(condominioNoMoradores)
+        everySuspending { moradoresRepository.getMoradoresForCondominio("condominioId") } returns Result.success(emptyList())
 
         viewModel.getMoradores("condominioId")
 
@@ -54,19 +51,7 @@ class MoradoresListViewModelTest : TestsWithMocks() {
 
     @Test
     fun `GIVEN fetch fails WHEN getting moradores THEN should return empty list`() = runTest {
-        everySuspending { condominioRepository.getCondominio("condominioId") } returns Result.failure(Exception("Not found"))
-
-        viewModel.getMoradores("condominioId")
-
-        val state = viewModel.uiState.first()
-        assertFalse(state.isLoading)
-        assertEquals(emptyList(), state.moradores)
-    }
-
-    @Test
-    fun `GIVEN condominio with no apartamentos WHEN getting moradores THEN should return empty list`() = runTest {
-        val condominioNoApartamentos = Condominio.dummy.copy(apartamentos = emptyList())
-        everySuspending { condominioRepository.getCondominio("condominioId") } returns Result.success(condominioNoApartamentos)
+        everySuspending { moradoresRepository.getMoradoresForCondominio("condominioId") } returns Result.failure(Exception("Not found"))
 
         viewModel.getMoradores("condominioId")
 

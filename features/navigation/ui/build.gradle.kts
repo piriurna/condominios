@@ -65,13 +65,13 @@ kotlin {
 
             api(project(":features:condominio:ui"))
             api(project(":features:pessoa:ui"))
+            api(project(":features:login:ui"))
 
             implementation(libs.kotlinx.serialization.json)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.assertk)
-            implementation(compose.uiTest)
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)

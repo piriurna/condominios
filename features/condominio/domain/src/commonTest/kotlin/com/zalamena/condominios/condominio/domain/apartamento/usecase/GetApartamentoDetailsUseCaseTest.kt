@@ -10,7 +10,7 @@ import org.kodein.mock.tests.TestsWithMocks
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
-class GetApartamentoUseCaseTest : TestsWithMocks() {
+class GetApartamentoDetailsUseCaseTest : TestsWithMocks() {
 
     @Mock
     lateinit var apartamentosRepository: ApartamentosRepository

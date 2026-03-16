@@ -5,13 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.zalamena.condominios.condominio.domain.apartamento.usecase.AddApartamentoUseCase
 import com.zalamena.condominios.condominio.ui.addapartamento.mapper.toDomain
 import com.zalamena.condominios.condominio.ui.addapartamento.models.AddApartamentoFormUiData
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
 
 
 data class AddApartamentoUiState(
@@ -67,8 +65,6 @@ class AddApartamentoViewModel(
             _uiState.update {
                 it.copy(isLoading = true)
             }
-
-            delay(3.seconds)
 
             if(!formValid()) {
                 _uiState.update {

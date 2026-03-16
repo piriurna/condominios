@@ -1,10 +1,5 @@
 package com.zalamena.condominios.pessoa.ui.addpessoa
 
-import com.zalamena.condominios.addpessoa.domain.models.AddPessoaException
-import com.zalamena.condominios.addpessoa.domain.models.AddPessoaFormError
-import com.zalamena.condominios.addpessoa.domain.usecase.AddPessoaUseCase
-import com.zalamena.condominios.addpessoa.ui.mapper.toDomain
-import com.zalamena.condominios.addpessoa.ui.models.AddPessoaFormUiData
 import com.zalamena.condominios.pessoa.domain.addpessoa.models.AddPessoaException
 import com.zalamena.condominios.pessoa.domain.addpessoa.models.AddPessoaFormError
 import com.zalamena.condominios.pessoa.domain.addpessoa.usecase.AddPessoaUseCase

@@ -10,6 +10,9 @@ class LoginRepositoryImpl (
     private val loginApi: LoginApi,
     private val sessionRepository: SessionRepository
 ): LoginRepository {
+
+    override suspend fun isLoggedIn(): Boolean = sessionRepository.isLoggedIn()
+
     override suspend fun login(username: String, password: String): Result<User> {
         return try {
             if(username.isEmpty() || password.isEmpty()) {

@@ -5,6 +5,7 @@ import com.zalamena.condominios.condominio.data.moradores.entities.MoradorEntity
 import com.zalamena.condominios.condominio.domain.apartamento.models.Apartamento
 import com.zalamena.condominios.condominio.domain.apartamento.repository.ApartamentosRepository
 import com.zalamena.condominios.condominio.domain.morador.model.MoradorException
+import com.zalamena.condominios.condominio.domain.morador.model.MoradorTipo
 import com.zalamena.condominios.condominio.domain.morador.repository.MoradoresRepository
 import com.zalamena.condominios.pessoa.domain.models.Pessoa
 import kotlinx.coroutines.test.runTest
@@ -35,12 +36,13 @@ class MoradoresRepositoryTest: TestsWithMocks() {
         val morador = MoradorEntity.dummy.copy(
             id = 0L,
             pessoaId = Pessoa.dummy.id,
-            apartamentoId = Apartamento.dummy.id
+            apartamentoId = Apartamento.dummy.id,
+            tipo = MoradorTipo.RESIDENTE.name
         )
 
         everySuspending { moradoresDao.addMorador(morador) } runs {}
 
-        val addResult = moradoresRepository.addMorador(Pessoa.dummy.id, Apartamento.dummy.id)
+        val addResult = moradoresRepository.addMorador(Pessoa.dummy.id, Apartamento.dummy.id, MoradorTipo.RESIDENTE)
 
         assertTrue(addResult.isSuccess)
     }

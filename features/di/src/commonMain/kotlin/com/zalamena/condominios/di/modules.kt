@@ -41,6 +41,15 @@ import com.zalamena.condominios.pessoa.domain.usecase.GetPessoaUseCase
 import com.zalamena.condominios.pessoa.domain.usecase.GetPessoaUseCaseImpl
 import com.zalamena.condominios.pessoa.domain.usecase.GetPessoasListUseCase
 import com.zalamena.condominios.pessoa.ui.addpessoa.AddPessoaViewModel
+import com.zalamena.login.data.api.FakeLoginApi
+import com.zalamena.login.data.api.LoginApi
+import com.zalamena.login.data.repository.LoginRepositoryImpl
+import com.zalamena.login.data.repository.SessionRepository
+import com.zalamena.login.data.repository.SessionRepositoryImpl
+import com.zalamena.login.domain.repository.LoginRepository
+import com.zalamena.login.domain.usecase.LoginUseCase
+import com.zalamena.login.ui.LoginViewModel
+import com.zalamena.login.ui.SplashViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -61,9 +70,13 @@ val repositoryModule = module {
     single<CondominioRepository> { CondominioRepositoryImpl(get()) }
     single<MoradoresRepository> { MoradoresRepositoryImpl(get()) }
     single<AddPessoaFormValidator> { AddPessoaFormValidatorImpl() }
+    single<LoginApi> { FakeLoginApi() }
+    single<SessionRepository> { SessionRepositoryImpl() }
+    single<LoginRepository> { LoginRepositoryImpl(get(), get()) }
 }
 
 val useCaseModule = module {
+    factory { LoginUseCase(get()) }
     factory<AddPessoaUseCase> { AddPessoaUseCaseImpl(get(), get()) }
     factory<GetPessoaUseCase> { GetPessoaUseCaseImpl(get()) }
     factory<GetApartamentoUseCase> { GetApartamentoUseCaseImpl(get()) }
@@ -89,4 +102,6 @@ val viewModelModule = module {
     viewModelOf(::CondominioDashboardViewModel)
     viewModelOf(::AddCondominioViewModel)
     viewModelOf(::ApartamentoDetailViewModel)
+    viewModelOf(::LoginViewModel)
+    viewModelOf(::SplashViewModel)
 }

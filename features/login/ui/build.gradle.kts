@@ -1,15 +1,17 @@
 @file:OptIn(ExperimentalComposeLibrary::class, ExperimentalKotlinGradlePluginApi::class)
 
-import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.compose.ExperimentalComposeLibrary
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.composeHotReload)
     alias(libs.plugins.ksp)
+    kotlin("plugin.serialization") version "2.2.0"
     id("org.kodein.mock.mockmp") version "2.0.2"
 }
 
@@ -23,49 +25,56 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
-
     jvm()
 
     sourceSets {
         androidMain.dependencies {
+            implementation(compose.preview)
+            implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
         }
 
         androidUnitTest.dependencies {
             implementation(libs.core.ktx)
-            implementation(libs.androidx.room.testing)
             implementation(libs.androidx.core)
             implementation(libs.androidx.runner)
             implementation(libs.androidx.rules)
             implementation(libs.androidx.testExt.junit)
-
-            // Koin testing
             implementation(libs.koin.test)
             implementation(libs.koin.junit4)
         }
+
         commonMain.dependencies {
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.ui)
+            implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
+            implementation(libs.androidx.lifecycle.viewmodelCompose)
+            implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.koin.core)
+            implementation(libs.navigation.compose)
+            implementation(libs.kotlinx.serialization.json)
 
-            implementation(libs.kotlinx.datetime)
-
-            implementation(project(":features:login:domain"))
+            api(project(":features:login:domain"))
         }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.assertk)
-            implementation(project(":features:login:domain"))
-
             implementation(libs.kotlinx.coroutines.test)
         }
+
         jvmMain.dependencies {
+            implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
         }
     }
-
 }
 
 android {
-    namespace = "com.zalamena.condominios.login.data"
+    namespace = "com.zalamena.condominios.login.ui"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
@@ -77,4 +86,8 @@ mockmp {
     onTest {
         withHelper()
     }
+}
+
+dependencies {
+    debugImplementation(compose.uiTooling)
 }
