@@ -35,6 +35,7 @@ fun NavGraphBuilder.condominioDashboardNavHost(
             CondominioDashboardScreen(
                 viewModel = viewModel,
                 onNavigateToAddApartamento = { condominioId ->
+                    addApartamentoViewModel.reset()
                     addApartamentoViewModel.setCondominioId(condominioId)
                     navController.navigate(AddApartamentoRoute)
                 },

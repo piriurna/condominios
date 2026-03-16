@@ -1,6 +1,7 @@
 package com.zalamena.condominios.condominio.ui.apartamento.detail
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,17 +13,21 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.zalamena.condominios.common.ui.components.loading.FullscreenLoading
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.zalamena.condominios.condominio.ui.apartamento.detail.models.MoradorDetailUiData
 
 @Composable
@@ -32,8 +37,15 @@ fun ApartamentoDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(uiState.apartamentoId) {
-        viewModel.load()
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.load()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
     LaunchedEffect(uiState.navigationEvent) {
@@ -46,12 +58,25 @@ fun ApartamentoDetailScreen(
         }
     }
 
-    ApartamentoDetailContent(
-        uiState = uiState,
-        onAddMoradorClick = viewModel::onAddMoradorClick
-    )
-
-    FullscreenLoading(isLoading = uiState.isLoading)
+    Box(modifier = Modifier.fillMaxSize()) {
+        when {
+            uiState.isLoading -> {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+            uiState.isError -> {
+                Text(
+                    text = "Erro ao carregar apartamento",
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+            else -> {
+                ApartamentoDetailContent(
+                    uiState = uiState,
+                    onAddMoradorClick = viewModel::onAddMoradorClick
+                )
+            }
+        }
+    }
 }
 
 @Composable

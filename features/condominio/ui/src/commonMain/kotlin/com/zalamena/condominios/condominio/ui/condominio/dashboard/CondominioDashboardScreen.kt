@@ -2,6 +2,7 @@ package com.zalamena.condominios.condominio.ui.condominio.dashboard
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,25 +14,27 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.models.ApartamentoDashboardUiData
-import com.zalamena.condominios.condominio.ui.condominio.dashboard.models.CondominioSummaryUiData
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CondominioDashboardScreen(
     viewModel: CondominioDashboardViewModel,
@@ -40,8 +43,15 @@ fun CondominioDashboardScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModel.loadCondominios()
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.loadCondominios()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
     LaunchedEffect(uiState.navigationEvent) {
@@ -58,79 +68,56 @@ fun CondominioDashboardScreen(
         }
     }
 
-    CondominioDashboardContent(
-        uiState = uiState,
-        onCondominioSelected = viewModel::selectCondominio,
-        onAddApartamentoClick = viewModel::onAddApartamentoClick,
-        onApartamentoClick = viewModel::onApartamentoClick
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun CondominioDashboardContent(
-    uiState: CondominioDashboardUiState,
-    onCondominioSelected: (String) -> Unit = {},
-    onAddApartamentoClick: () -> Unit = {},
-    onApartamentoClick: (String) -> Unit = {}
-) {
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp)
-    ) {
-        Text("Dashboard", style = MaterialTheme.typography.headlineMedium)
-        Spacer(Modifier.height(16.dp))
-
-        CondominioSelector(
-            condominios = uiState.condominios,
-            selectedId = uiState.selectedCondominioId,
-            onSelected = onCondominioSelected
-        )
-
-        if (uiState.selectedCondominioId != null) {
-            Spacer(Modifier.height(12.dp))
-            Text("Total: ${uiState.totalApartamentos} apartamento(s)")
-            Spacer(Modifier.height(8.dp))
-            Button(onClick = onAddApartamentoClick, modifier = Modifier.fillMaxWidth()) {
-                Text("+ Adicionar Apartamento")
-            }
-            Spacer(Modifier.height(8.dp))
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(uiState.apartamentos) { apt ->
-                    ApartamentoCard(apt, onClick = { onApartamentoClick(apt.id) })
+    Scaffold(
+        topBar = {
+            TopAppBar(title = { Text(uiState.condominioNome.ifBlank { "Apartamentos" }) })
+        },
+        floatingActionButton = {
+            if (!uiState.isLoading && !uiState.isError) {
+                FloatingActionButton(onClick = { viewModel.onAddApartamentoClick() }) {
+                    Text("+")
                 }
             }
         }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun CondominioSelector(
-    condominios: List<CondominioSummaryUiData>,
-    selectedId: String?,
-    onSelected: (String) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-    val selectedLabel = condominios.find { it.id == selectedId }?.nome ?: "Selecione um condomínio"
-
-    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
-        TextField(
-            value = selectedLabel,
-            onValueChange = {},
-            readOnly = true,
-            label = { Text("Condomínio") },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
-            modifier = Modifier.menuAnchor().fillMaxWidth()
-        )
-        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            condominios.forEach { condominio ->
-                DropdownMenuItem(
-                    text = { Text(condominio.nome) },
-                    onClick = {
-                        onSelected(condominio.id)
-                        expanded = false
+    ) { padding ->
+        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
+            when {
+                uiState.isLoading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+                uiState.isError -> {
+                    Text(
+                        text = "Erro ao carregar apartamentos",
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+                uiState.apartamentos.isEmpty() -> {
+                    Column(
+                        modifier = Modifier.align(Alignment.Center),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text("Nenhum apartamento cadastrado")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Button(onClick = { viewModel.onAddApartamentoClick() }) {
+                            Text("Criar primeiro apartamento")
+                        }
                     }
-                )
+                }
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        item { Spacer(Modifier.height(8.dp)) }
+                        item {
+                            Text("Total: ${uiState.totalApartamentos} apartamento(s)")
+                            Spacer(Modifier.height(8.dp))
+                        }
+                        items(uiState.apartamentos) { apt ->
+                            ApartamentoCard(apt, onClick = { viewModel.onApartamentoClick(apt.id) })
+                        }
+                    }
+                }
             }
         }
     }

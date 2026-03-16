@@ -29,6 +29,10 @@ class AddApartamentoViewModel(
     val uiState: StateFlow<AddApartamentoUiState> = _uiState.asStateFlow()
 
 
+    fun reset() {
+        _uiState.update { AddApartamentoUiState() }
+    }
+
     fun setCondominioId(condominioId: String) {
         _uiState.update { it.copy(condominioId = condominioId) }
     }

@@ -115,6 +115,29 @@ class AddApartamentoViewModelTest : TestsWithMocks() {
         assertFalse(viewModel.uiState.value.isLoading)
     }
 
+    // --- reset ---
+
+    @Test
+    fun `GIVEN form filled and apartamento created WHEN reset THEN state is cleared`() = runTest(testScheduler) {
+        viewModel.setCondominioId("condominioId")
+        viewModel.setNumeroApartamento("101")
+        viewModel.setAndarApartamento("1")
+
+        everySuspending { apartamentosRepository.addApartamento(isAny(), isAny()) } returns Result.success("newId")
+        viewModel.addApartamento()
+        advanceUntilIdle()
+
+        viewModel.reset()
+
+        val state = viewModel.uiState.value
+        assertEquals("", state.condominioId)
+        assertNull(state.createdApartamentoId)
+        assertNull(state.errorMessage)
+        assertFalse(state.isLoading)
+        assertEquals("", state.addApartamentoForm.numero)
+        assertEquals("", state.addApartamentoForm.andar)
+    }
+
     override fun setUpMocks() {
         mocker.injectMocks(this)
     }
