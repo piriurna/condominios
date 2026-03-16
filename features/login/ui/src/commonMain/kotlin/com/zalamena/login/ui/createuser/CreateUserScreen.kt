@@ -2,7 +2,6 @@ package com.zalamena.login.ui.createuser
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,11 +32,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.zalamena.login.domain.models.UserRole
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -112,7 +109,7 @@ fun CreateUserScreen(
                 onRoleSelected = viewModel::setRole
             )
 
-            if (state.selectedRole == UserRole.PORTEIRO) {
+            if (state.selectedRole == RoleOption.PORTEIRO) {
                 OutlinedTextField(
                     value = state.condominioId,
                     onValueChange = viewModel::setCondominioId,
@@ -200,14 +197,14 @@ fun CreateUserScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun RoleDropdown(
-    selectedRole: UserRole,
-    onRoleSelected: (UserRole) -> Unit
+    selectedRole: RoleOption,
+    onRoleSelected: (RoleOption) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     val roleLabel = when (selectedRole) {
-        UserRole.ADMIN -> "Administrador"
-        UserRole.PORTEIRO -> "Porteiro"
+        RoleOption.ADMIN -> "Administrador"
+        RoleOption.PORTEIRO -> "Porteiro"
     }
 
     ExposedDropdownMenuBox(
@@ -231,14 +228,14 @@ private fun RoleDropdown(
             DropdownMenuItem(
                 text = { Text("Administrador") },
                 onClick = {
-                    onRoleSelected(UserRole.ADMIN)
+                    onRoleSelected(RoleOption.ADMIN)
                     expanded = false
                 }
             )
             DropdownMenuItem(
                 text = { Text("Porteiro") },
                 onClick = {
-                    onRoleSelected(UserRole.PORTEIRO)
+                    onRoleSelected(RoleOption.PORTEIRO)
                     expanded = false
                 }
             )

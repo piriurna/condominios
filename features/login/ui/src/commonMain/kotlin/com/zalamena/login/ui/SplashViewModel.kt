@@ -26,8 +26,9 @@ class SplashViewModel(
             if (loginRepository.isLoggedIn()) {
                 val role = loginRepository.getRole()
                 _navEvent.value = when (role) {
-                    UserRole.PORTEIRO -> SplashNavigationEvent.NavigateToDoormanHome
-                    else -> SplashNavigationEvent.NavigateToAdminHome
+                    is UserRole.Porteiro -> SplashNavigationEvent.NavigateToDoormanHome
+                    is UserRole.Admin -> SplashNavigationEvent.NavigateToAdminHome
+                    null -> SplashNavigationEvent.NavigateToLogin
                 }
             } else {
                 _navEvent.value = SplashNavigationEvent.NavigateToLogin

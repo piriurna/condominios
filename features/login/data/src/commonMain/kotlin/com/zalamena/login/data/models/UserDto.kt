@@ -5,4 +5,5 @@ data class UserDto(
     val cpf: String,
     val email: String,
     val role: String,
+    val condominioId: String? = null
 )

@@ -43,7 +43,7 @@ class SplashViewModelTest : TestsWithMocks() {
     @Test
     fun `GIVEN logged in as admin WHEN splash starts THEN NavigateToAdminHome is emitted`() = runTest {
         everySuspending { loginRepository.isLoggedIn() } returns true
-        everySuspending { loginRepository.getRole() } returns UserRole.ADMIN
+        everySuspending { loginRepository.getRole() } returns UserRole.Admin
 
         val viewModel = SplashViewModel(loginRepository)
         advanceUntilIdle()
@@ -54,7 +54,7 @@ class SplashViewModelTest : TestsWithMocks() {
     @Test
     fun `GIVEN logged in as porteiro WHEN splash starts THEN NavigateToDoormanHome is emitted`() = runTest {
         everySuspending { loginRepository.isLoggedIn() } returns true
-        everySuspending { loginRepository.getRole() } returns UserRole.PORTEIRO
+        everySuspending { loginRepository.getRole() } returns UserRole.Porteiro("condo-1")
 
         val viewModel = SplashViewModel(loginRepository)
         advanceUntilIdle()

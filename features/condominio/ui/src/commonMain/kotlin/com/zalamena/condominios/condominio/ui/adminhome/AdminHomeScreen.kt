@@ -78,6 +78,7 @@ fun AdminHomeScreen(
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(state.condominios) { condominio ->
                     ListItem(
+                        overlineContent = { Text(condominio.id) },
                         headlineContent = { Text(condominio.nome) },
                         supportingContent = { Text(condominio.enderecoDescription) },
                         modifier = Modifier.clickable {

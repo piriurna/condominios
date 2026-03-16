@@ -1,3 +1,6 @@
 package com.zalamena.login.domain.models
 
-enum class UserRole { ADMIN, PORTEIRO }
+sealed class UserRole {
+    data object Admin : UserRole()
+    data class Porteiro(val condominioId: String) : UserRole()
+}

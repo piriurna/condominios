@@ -9,8 +9,7 @@ interface UserRepository {
         name: String,
         cpf: String,
         email: String,
-        role: UserRole,
-        condominioId: String?
+        role: UserRole
     ): Result<User>
 
     suspend fun getUsers(): Result<List<User>>

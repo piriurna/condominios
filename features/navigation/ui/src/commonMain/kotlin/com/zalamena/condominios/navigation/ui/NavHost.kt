@@ -150,8 +150,8 @@ fun AppNavHost(
             loginViewModel = loginViewModel,
             onLoginSuccess = { role ->
                 val destination = when (role) {
-                    UserRole.ADMIN -> AdminHomeRoute
-                    UserRole.PORTEIRO -> DoormanHomeRoute
+                    is UserRole.Admin -> AdminHomeRoute
+                    is UserRole.Porteiro -> DoormanHomeRoute
                 }
                 navController.navigate(destination) {
                     popUpTo(LoginRoute) { inclusive = true }
@@ -177,7 +177,8 @@ fun AppNavHost(
             condominioDashboardViewModel,
             addApartamentoViewModel,
             apartamentoDetailViewModel,
-            addMoradorFlowViewModel
+            addMoradorFlowViewModel,
+            createUserViewModel
         )
 
         addCondominioNavHost(

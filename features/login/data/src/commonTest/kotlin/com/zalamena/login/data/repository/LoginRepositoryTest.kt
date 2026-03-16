@@ -99,10 +99,11 @@ class LoginRepositoryTest: TestsWithMocks() {
     @Test
     fun `GIVEN role is saved WHEN getRole called THEN returns correct UserRole`() = runTest {
         everySuspending { sessionRepository.getRole() } returns "PORTEIRO"
+        everySuspending { sessionRepository.getCondominioId() } returns "condo-1"
 
         val role = loginRepository.getRole()
 
-        assertEquals(UserRole.PORTEIRO, role)
+        assertEquals(UserRole.Porteiro("condo-1"), role)
     }
 
     @Test

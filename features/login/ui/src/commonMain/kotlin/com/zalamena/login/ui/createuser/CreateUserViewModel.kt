@@ -10,11 +10,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+enum class RoleOption { ADMIN, PORTEIRO }
+
 data class CreateUserUiState(
     val name: String = "",
     val cpf: String = "",
     val email: String = "",
-    val selectedRole: UserRole = UserRole.PORTEIRO,
+    val selectedRole: RoleOption = RoleOption.PORTEIRO,
     val condominioId: String = "",
     val isLoading: Boolean = false,
     val nameError: String? = null,
@@ -49,7 +51,7 @@ class CreateUserViewModel(
         _uiState.update { it.copy(email = email, emailError = null) }
     }
 
-    fun setRole(role: UserRole) {
+    fun setRole(role: RoleOption) {
         _uiState.update { it.copy(selectedRole = role, condominioIdError = null) }
     }
 
@@ -62,14 +64,29 @@ class CreateUserViewModel(
             _uiState.update { it.copy(isLoading = true, error = null, generatedPassword = null) }
 
             val state = _uiState.value
-            val condominioId = state.condominioId.takeIf { it.isNotBlank() }
+
+            val role = when (state.selectedRole) {
+                RoleOption.ADMIN -> UserRole.Admin
+                RoleOption.PORTEIRO -> {
+                    val condoId = state.condominioId.trim()
+                    if (condoId.isBlank()) {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                condominioIdError = "Porteiro deve estar associado a um condomínio"
+                            )
+                        }
+                        return@launch
+                    }
+                    UserRole.Porteiro(condoId)
+                }
+            }
 
             val result = createUserUseCase(
                 name = state.name,
                 cpf = state.cpf,
                 email = state.email,
-                role = state.selectedRole,
-                condominioId = condominioId
+                role = role
             )
 
             result
@@ -90,8 +107,6 @@ class CreateUserViewModel(
                             _uiState.update { it.copy(isLoading = false, cpfError = error.message) }
                         is CreateUserError.EmptyEmail ->
                             _uiState.update { it.copy(isLoading = false, emailError = error.message) }
-                        is CreateUserError.PorteiroRequiresCondominio ->
-                            _uiState.update { it.copy(isLoading = false, condominioIdError = error.message) }
                         else ->
                             _uiState.update { it.copy(isLoading = false, error = error.message ?: "Erro ao criar usuário") }
                     }

@@ -63,6 +63,7 @@ kotlin {
             api(project(":features:condominio:domain"))
             api(project(":features:common:ui"))
             api(project(":features:pessoa:ui"))
+            api(project(":features:login:ui"))
 
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.0-beta05")
 

@@ -49,6 +49,7 @@ import com.zalamena.login.data.repository.SessionRepository
 import com.zalamena.login.data.repository.SessionRepositoryImpl
 import com.zalamena.login.data.repository.UserRepositoryImpl
 import com.zalamena.login.domain.repository.LoginRepository
+import com.zalamena.login.domain.repository.CondominioValidator
 import com.zalamena.login.domain.repository.UserRepository
 import com.zalamena.login.domain.usecase.CreateUserUseCase
 import com.zalamena.login.domain.usecase.LoginUseCase
@@ -79,6 +80,7 @@ val repositoryModule = module {
     single<SessionRepository> { SessionRepositoryImpl() }
     single<LoginRepository> { LoginRepositoryImpl(get(), get()) }
     single<UserRepository> { UserRepositoryImpl() }
+    single<CondominioValidator> { CondominioValidator { id -> get<CondominioRepository>().getCondominio(id).isSuccess } }
 }
 
 val useCaseModule = module {
@@ -95,7 +97,7 @@ val useCaseModule = module {
     factory { GetApartamentosUseCase(get()) }
     factory<AddMoradorUseCase> { AddMoradorUseCaseImpl(get()) }
     factory { GetMoradoresForApartamentoUseCase(get()) }
-    factory { CreateUserUseCase(get()) }
+    factory { CreateUserUseCase(get(), get()) }
 }
 
 val viewModelModule = module {

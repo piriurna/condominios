@@ -2,6 +2,7 @@ package com.zalamena.login.ui.createuser
 
 import com.zalamena.login.domain.models.User
 import com.zalamena.login.domain.models.UserRole
+import com.zalamena.login.domain.repository.CondominioValidator
 import com.zalamena.login.domain.repository.UserRepository
 import com.zalamena.login.domain.usecase.CreateUserUseCase
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +33,10 @@ class CreateUserViewModelTest : TestsWithMocks() {
     @Mock
     lateinit var userRepository: UserRepository
 
-    private val createUserUseCase by lazy { CreateUserUseCase(userRepository) }
+    @Mock
+    lateinit var condominioValidator: CondominioValidator
+
+    private val createUserUseCase by lazy { CreateUserUseCase(userRepository, condominioValidator) }
     private val viewModel by lazy { CreateUserViewModel(createUserUseCase) }
 
     private val testDispatcher = StandardTestDispatcher()
@@ -53,7 +57,7 @@ class CreateUserViewModelTest : TestsWithMocks() {
         assertEquals("", state.name)
         assertEquals("", state.cpf)
         assertEquals("", state.email)
-        assertEquals(UserRole.PORTEIRO, state.selectedRole)
+        assertEquals(RoleOption.PORTEIRO, state.selectedRole)
         assertEquals("", state.condominioId)
         assertTrue(!state.isLoading)
         assertNull(state.nameError)
@@ -85,8 +89,8 @@ class CreateUserViewModelTest : TestsWithMocks() {
 
     @Test
     fun `GIVEN setRole called THEN role is updated`() {
-        viewModel.setRole(UserRole.ADMIN)
-        assertEquals(UserRole.ADMIN, viewModel.uiState.value.selectedRole)
+        viewModel.setRole(RoleOption.ADMIN)
+        assertEquals(RoleOption.ADMIN, viewModel.uiState.value.selectedRole)
     }
 
     @Test
@@ -97,13 +101,15 @@ class CreateUserViewModelTest : TestsWithMocks() {
 
     @Test
     fun `GIVEN valid porteiro data WHEN createUser THEN generatedPassword is set`() = runTest {
-        val user = User(name = "Porteiro", cpf = "11111111111", email = "p@test.com", role = UserRole.PORTEIRO, condominioId = "condo-1")
-        everySuspending { userRepository.createUser("Porteiro", "11111111111", "p@test.com", UserRole.PORTEIRO, "condo-1") } returns Result.success(user)
+        val role = UserRole.Porteiro("condo-1")
+        val user = User(name = "Porteiro", cpf = "11111111111", email = "p@test.com", role = role)
+        everySuspending { condominioValidator.exists("condo-1") } returns true
+        everySuspending { userRepository.createUser("Porteiro", "11111111111", "p@test.com", role) } returns Result.success(user)
 
         viewModel.setName("Porteiro")
         viewModel.setCpf("11111111111")
         viewModel.setEmail("p@test.com")
-        viewModel.setRole(UserRole.PORTEIRO)
+        viewModel.setRole(RoleOption.PORTEIRO)
         viewModel.setCondominioId("condo-1")
         viewModel.createUser()
         advanceUntilIdle()
@@ -117,13 +123,14 @@ class CreateUserViewModelTest : TestsWithMocks() {
 
     @Test
     fun `GIVEN valid admin data WHEN createUser THEN generatedPassword is set`() = runTest {
-        val user = User(name = "Admin", cpf = "12345678900", email = "a@test.com", role = UserRole.ADMIN)
-        everySuspending { userRepository.createUser("Admin", "12345678900", "a@test.com", UserRole.ADMIN, null) } returns Result.success(user)
+        val role = UserRole.Admin
+        val user = User(name = "Admin", cpf = "12345678900", email = "a@test.com", role = role)
+        everySuspending { userRepository.createUser("Admin", "12345678900", "a@test.com", role) } returns Result.success(user)
 
         viewModel.setName("Admin")
         viewModel.setCpf("12345678900")
         viewModel.setEmail("a@test.com")
-        viewModel.setRole(UserRole.ADMIN)
+        viewModel.setRole(RoleOption.ADMIN)
         viewModel.createUser()
         advanceUntilIdle()
 
@@ -136,7 +143,7 @@ class CreateUserViewModelTest : TestsWithMocks() {
     fun `GIVEN empty name WHEN createUser THEN nameError is set`() = runTest {
         viewModel.setCpf("12345678900")
         viewModel.setEmail("a@test.com")
-        viewModel.setRole(UserRole.ADMIN)
+        viewModel.setRole(RoleOption.ADMIN)
         viewModel.createUser()
         advanceUntilIdle()
 
@@ -150,7 +157,7 @@ class CreateUserViewModelTest : TestsWithMocks() {
     fun `GIVEN empty cpf WHEN createUser THEN cpfError is set`() = runTest {
         viewModel.setName("Admin")
         viewModel.setEmail("a@test.com")
-        viewModel.setRole(UserRole.ADMIN)
+        viewModel.setRole(RoleOption.ADMIN)
         viewModel.createUser()
         advanceUntilIdle()
 
@@ -163,7 +170,7 @@ class CreateUserViewModelTest : TestsWithMocks() {
     fun `GIVEN empty email WHEN createUser THEN emailError is set`() = runTest {
         viewModel.setName("Admin")
         viewModel.setCpf("12345678900")
-        viewModel.setRole(UserRole.ADMIN)
+        viewModel.setRole(RoleOption.ADMIN)
         viewModel.createUser()
         advanceUntilIdle()
 
@@ -177,7 +184,7 @@ class CreateUserViewModelTest : TestsWithMocks() {
         viewModel.setName("Porteiro")
         viewModel.setCpf("11111111111")
         viewModel.setEmail("p@test.com")
-        viewModel.setRole(UserRole.PORTEIRO)
+        viewModel.setRole(RoleOption.PORTEIRO)
         viewModel.createUser()
         advanceUntilIdle()
 
@@ -219,7 +226,7 @@ class CreateUserViewModelTest : TestsWithMocks() {
     fun `GIVEN nameError exists WHEN setName THEN error is cleared`() = runTest {
         viewModel.setCpf("12345678900")
         viewModel.setEmail("a@test.com")
-        viewModel.setRole(UserRole.ADMIN)
+        viewModel.setRole(RoleOption.ADMIN)
         viewModel.createUser()
         advanceUntilIdle()
         assertNotNull(viewModel.uiState.value.nameError)

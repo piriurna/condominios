@@ -16,7 +16,14 @@ class LoginRepositoryImpl (
 
     override suspend fun getRole(): UserRole? {
         val roleStr = sessionRepository.getRole() ?: return null
-        return try { UserRole.valueOf(roleStr) } catch (_: Exception) { null }
+        return when (roleStr.uppercase()) {
+            "ADMIN" -> UserRole.Admin
+            "PORTEIRO" -> {
+                val condominioId = sessionRepository.getCondominioId() ?: ""
+                UserRole.Porteiro(condominioId)
+            }
+            else -> null
+        }
     }
 
     override suspend fun login(username: String, password: String): Result<User> {
@@ -30,6 +37,11 @@ class LoginRepositoryImpl (
             }
 
             sessionRepository.saveSession(session.token, session.expiresIn, userResult.role)
+
+            if (userResult.condominioId != null) {
+                sessionRepository.saveCondominioId(userResult.condominioId)
+            }
+
             Result.success(userResult.toDomain())
         } catch (e: LoginException) {
             Result.failure(e)

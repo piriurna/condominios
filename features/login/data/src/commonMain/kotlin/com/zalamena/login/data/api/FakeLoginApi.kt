@@ -19,7 +19,7 @@ class FakeLoginApi : LoginApi {
     override suspend fun getUser(userId: String): UserDto? {
         return when (userId) {
             "user-1" -> UserDto(username = "Administrador", cpf = "00000000000", email = "admin@condominio.com", role = "ADMIN")
-            "user-2" -> UserDto(username = "Porteiro", cpf = "11111111111", email = "porteiro@condominio.com", role = "PORTEIRO")
+            "user-2" -> UserDto(username = "Porteiro", cpf = "11111111111", email = "porteiro@condominio.com", role = "PORTEIRO", condominioId = "condo-default")
             else -> null
         }
     }

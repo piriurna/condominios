@@ -39,7 +39,8 @@ import com.zalamena.condominios.condominio.ui.condominio.dashboard.models.Aparta
 fun CondominioDashboardScreen(
     viewModel: CondominioDashboardViewModel,
     onNavigateToAddApartamento: (condominioId: String) -> Unit = {},
-    onNavigateToApartamento: (apartamentoId: String) -> Unit = {}
+    onNavigateToApartamento: (apartamentoId: String) -> Unit = {},
+    onNavigateToCreatePorteiro: (condominioId: String) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -64,13 +65,35 @@ fun CondominioDashboardScreen(
                 onNavigateToApartamento(event.apartamentoId)
                 viewModel.onNavigationHandled()
             }
+            is DashboardNavigationEvent.CreatePorteiro -> {
+                onNavigateToCreatePorteiro(event.condominioId)
+                viewModel.onNavigationHandled()
+            }
             null -> Unit
         }
     }
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(uiState.condominioNome.ifBlank { "Apartamentos" }) })
+            TopAppBar(
+                title = {
+                    Column {
+                        Text(uiState.condominioNome.ifBlank { "Apartamentos" })
+                        if (uiState.condominioId.isNotBlank()) {
+                            Text(
+                                text = uiState.condominioId,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                },
+                actions = {
+                    Button(onClick = { viewModel.onCreatePorteiroClick() }) {
+                        Text("Criar Porteiro")
+                    }
+                }
+            )
         },
         floatingActionButton = {
             if (!uiState.isLoading && !uiState.isError) {
