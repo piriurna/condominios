@@ -2,6 +2,7 @@ package com.zalamena.condominios.condominio.data.apartamento.repository
 
 import com.zalamena.condominios.condominio.data.apartamento.dao.ApartamentoDao
 import com.zalamena.condominios.condominio.data.apartamento.entity.ApartamentoEntity
+import com.zalamena.condominios.condominio.data.apartamento.entity.ApartamentoWithAllData
 import com.zalamena.condominios.condominio.data.apartamento.mapper.toDomain
 import com.zalamena.condominios.condominio.domain.apartamento.models.ApartamentoException
 import kotlinx.coroutines.test.runTest
@@ -35,25 +36,25 @@ class ApartamentoRepositoryTest: TestsWithMocks() {
 
     @Test
     fun `GIVEN apartamento added WHEN getting apartamentos THEN should return list with apartamento`() = runTest {
-        everySuspending { apartamentoDao.getApartamentos() } returns listOf(ApartamentoEntity.dummy)
+        everySuspending { apartamentoDao.getApartamentos() } returns listOf(ApartamentoWithAllData.dummy)
 
         val result = apartamentoRepository.getApartamentos()
 
         assertTrue(result.isSuccess)
-        assertEquals(listOf(ApartamentoEntity.dummy.toDomain()), result.getOrThrow())
+        assertEquals(listOf(ApartamentoWithAllData.dummy.toDomain()), result.getOrThrow())
 
     }
 
     @Test
     fun `GIVEN apartamento exists WHEN getting apartamento THEN should return apartamento`() =
         runTest {
-            everySuspending { apartamentoDao.getApartamento("apartamentoId") } returns ApartamentoEntity.dummy
+            everySuspending { apartamentoDao.getApartamento("apartamentoId") } returns ApartamentoWithAllData.dummy
 
             val result = apartamentoRepository.getApartamento("apartamentoId")
 
 
             assertTrue(result.isSuccess)
-            assertEquals(ApartamentoEntity.dummy.toDomain(), result.getOrThrow())
+            assertEquals(ApartamentoWithAllData.dummy.toDomain(), result.getOrThrow())
 
         }
 
@@ -75,11 +76,17 @@ class ApartamentoRepositoryTest: TestsWithMocks() {
 
     @Test
     fun `GIVEN valid apartamento WHEN adding it THEN should be success`() = runTest {
-        everySuspending { apartamentoDao.addApartamento(ApartamentoEntity.dummy) } returns Unit
+        val condominioId = "condominioId"
+        val inputApartamento = ApartamentoEntity.dummy.toDomain()
+        val expectedEntity = ApartamentoEntity(id = "0-${inputApartamento.numero}", numero = inputApartamento.numero, andar = inputApartamento.andar, condominioId = condominioId)
 
-        val result = apartamentoRepository.addApartamento(ApartamentoEntity.dummy.toDomain())
+        everySuspending { apartamentoDao.getApartamentos() } returns emptyList()
+        everySuspending { apartamentoDao.addApartamento(expectedEntity) } returns Unit
+
+        val result = apartamentoRepository.addApartamento(condominioId, inputApartamento)
 
         assertTrue(result.isSuccess)
+        assertTrue(result.getOrNull() == "0-${inputApartamento.numero}")
     }
 
 

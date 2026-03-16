@@ -10,41 +10,35 @@ import org.kodein.mock.tests.TestsWithMocks
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
-class GetApartamentoDetailsUseCaseTest: TestsWithMocks() {
+class GetApartamentoDetailsUseCaseTest : TestsWithMocks() {
 
     @Mock
     lateinit var apartamentosRepository: ApartamentosRepository
 
-    private val getDetailsForApartamento by lazy { GetDetailsForApartamentoUseCase(apartamentosRepository) }
+    private val getApartamentoUseCase by lazy { GetApartamentoUseCaseImpl(apartamentosRepository) }
 
     @Test
     fun `GIVEN apartment is found WHEN getting details THEN should return apartment`() = runTest {
         everySuspending { apartamentosRepository.getApartamento("id") } returns Result.success(
-            Apartamento.dummy)
+            Apartamento.dummy
+        )
 
+        val result = getApartamentoUseCase("id")
 
-        val apartamentoDetails = getDetailsForApartamento("id")
-
-
-        assertTrue(apartamentoDetails.isSuccess)
-        assertTrue(apartamentoDetails.getOrNull() == Apartamento.dummy)
+        assertTrue(result.isSuccess)
+        assertTrue(result.getOrNull() == Apartamento.dummy)
     }
-
 
     @Test
     fun `GIVEN no apartment is found WHEN getting details THEN should fail with no apartment found error`() = runTest {
         everySuspending { apartamentosRepository.getApartamento("id") } returns
                 Result.failure(ApartamentoException.NoApartmentFoundException)
 
+        val result = getApartamentoUseCase("id")
 
-        val apartamentoDetails = getDetailsForApartamento("id")
-
-
-        assertTrue(apartamentoDetails.isFailure)
-        assertTrue(apartamentoDetails.exceptionOrNull() is ApartamentoException.NoApartmentFoundException)
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is ApartamentoException.NoApartmentFoundException)
     }
-
-
 
     override fun setUpMocks() {
         mocker.injectMocks(this)

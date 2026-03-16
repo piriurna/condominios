@@ -31,17 +31,34 @@ data class MoradorEntity(
     val id: Long = 0L,
     val pessoaId: String,
     val apartamentoId: String,
+    val tipo: String = "RESIDENTE",
 ) {
-
 
     companion object {
         val dummy = MoradorEntity(
             id = 1L,
             pessoaId = "id",
-            apartamentoId = "id"
+            apartamentoId = "id",
+            tipo = "RESIDENTE"
         )
     }
 }
+data class MoradorEntityWithPessoa(
+    @Embedded val morador: MoradorEntity,
+    @Relation(
+        parentColumn = "pessoaId",
+        entityColumn = "id"
+    )
+    val pessoa: PessoaEntity
+) {
+    companion object {
+        val dummy = MoradorEntityWithPessoa(
+            morador = MoradorEntity.dummy,
+            pessoa = PessoaEntity.dummy
+        )
+    }
+}
+
 
 data class MoradorWithPessoaAndApartamentoEntity(
     @Embedded val morador: MoradorEntity,

@@ -40,6 +40,7 @@ include(":features:condominio:domain")
 
 include(":features:login:data")
 include(":features:login:domain")
+include(":features:login:ui")
 
 include(":features:database")
 

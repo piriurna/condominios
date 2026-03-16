@@ -1,24 +1,32 @@
 package com.zalamena.condominios.di
 
-import com.zalamena.condominios.addmorador.domain.usecase.AddMoradorUseCase
 import com.zalamena.condominios.condominio.data.apartamento.dao.ApartamentoDao
 import com.zalamena.condominios.condominio.data.apartamento.repository.ApartamentoRepositoryImpl
+import com.zalamena.condominios.condominio.data.condominio.dao.CondominioDao
+import com.zalamena.condominios.condominio.data.condominio.repository.CondominioRepositoryImpl
 import com.zalamena.condominios.condominio.data.moradores.dao.MoradoresDao
-import com.zalamena.condominios.condominio.data.moradores.mapper.MoradorMapper
 import com.zalamena.condominios.condominio.data.moradores.repository.MoradoresRepositoryImpl
-import com.zalamena.condominios.condominio.domain.addapartamento.usecases.AddApartamentoUseCase
-import com.zalamena.condominios.condominio.domain.addmorador.usecase.AddMoradorUseCaseImpl
 import com.zalamena.condominios.condominio.domain.apartamento.repository.ApartamentosRepository
+import com.zalamena.condominios.condominio.domain.apartamento.usecase.AddApartamentoUseCase
 import com.zalamena.condominios.condominio.domain.apartamento.usecase.GetApartamentoUseCase
 import com.zalamena.condominios.condominio.domain.apartamento.usecase.GetApartamentoUseCaseImpl
 import com.zalamena.condominios.condominio.domain.apartamento.usecase.GetApartamentosUseCase
-import com.zalamena.condominios.condominio.domain.moradores.repository.MoradoresRepository
-import com.zalamena.condominios.condominio.domain.moradores.usecase.GetApartamentoWithMoradoresUseCase
-import com.zalamena.condominios.condominio.domain.moradores.usecase.GetMoradoresForApartamentoUseCase
-import com.zalamena.condominios.condominio.domain.moradores.usecase.GetMoradoresUseCase
+import com.zalamena.condominios.condominio.domain.condominio.repository.CondominioRepository
+import com.zalamena.condominios.condominio.domain.condominio.usecase.AddCondominioUseCase
+import com.zalamena.condominios.condominio.domain.condominio.usecase.GetCondominioUseCase
+import com.zalamena.condominios.condominio.domain.condominio.usecase.GetCondominiosUseCase
+import com.zalamena.condominios.condominio.domain.condominio.usecase.GetMoradoresUseCase
+import com.zalamena.condominios.condominio.domain.morador.repository.MoradoresRepository
+import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCase
+import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCaseImpl
+import com.zalamena.condominios.condominio.domain.morador.usecase.GetMoradoresForApartamentoUseCase
 import com.zalamena.condominios.condominio.ui.addapartamento.AddApartamentoViewModel
+import com.zalamena.condominios.condominio.ui.addcondominio.AddCondominioViewModel
+import com.zalamena.condominios.condominio.ui.apartamento.detail.ApartamentoDetailViewModel
 import com.zalamena.condominios.condominio.ui.addmorador.flowController.AddMoradorFlowViewModel
 import com.zalamena.condominios.condominio.ui.addmorador.overview.AddMoradorOverviewViewModel
+import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDashboardViewModel
+import com.zalamena.condominios.condominio.ui.condominio.overview.CondominioOverviewViewModel
 import com.zalamena.condominios.condominio.ui.moradores.add.AddMoradorViewModel
 import com.zalamena.condominios.condominio.ui.moradores.list.MoradoresListViewModel
 import com.zalamena.condominios.database.AppDatabase
@@ -33,6 +41,15 @@ import com.zalamena.condominios.pessoa.domain.usecase.GetPessoaUseCase
 import com.zalamena.condominios.pessoa.domain.usecase.GetPessoaUseCaseImpl
 import com.zalamena.condominios.pessoa.domain.usecase.GetPessoasListUseCase
 import com.zalamena.condominios.pessoa.ui.addpessoa.AddPessoaViewModel
+import com.zalamena.login.data.api.FakeLoginApi
+import com.zalamena.login.data.api.LoginApi
+import com.zalamena.login.data.repository.LoginRepositoryImpl
+import com.zalamena.login.data.repository.SessionRepository
+import com.zalamena.login.data.repository.SessionRepositoryImpl
+import com.zalamena.login.domain.repository.LoginRepository
+import com.zalamena.login.domain.usecase.LoginUseCase
+import com.zalamena.login.ui.LoginViewModel
+import com.zalamena.login.ui.SplashViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -43,28 +60,35 @@ expect val platformModule: Module
 val daoModule = module {
     single<PessoaDao> { get<AppDatabase>().getPessoaDao() }
     single<ApartamentoDao> { get<AppDatabase>().getApartamentosDao() }
+    single<CondominioDao> { get<AppDatabase>().getCondominioDao() }
     single<MoradoresDao> { get<AppDatabase>().getMoradoresDao() }
 }
 
-// You can also create separate modules for better organization
 val repositoryModule = module {
     single<PessoaRepository> { PessoaRepositoryImpl(get()) }
     single<ApartamentosRepository> { ApartamentoRepositoryImpl(get()) }
-    single<MoradoresRepository> { MoradoresRepositoryImpl(get(), get(), MoradorMapper()) }
+    single<CondominioRepository> { CondominioRepositoryImpl(get()) }
+    single<MoradoresRepository> { MoradoresRepositoryImpl(get()) }
     single<AddPessoaFormValidator> { AddPessoaFormValidatorImpl() }
+    single<LoginApi> { FakeLoginApi() }
+    single<SessionRepository> { SessionRepositoryImpl() }
+    single<LoginRepository> { LoginRepositoryImpl(get(), get()) }
 }
 
 val useCaseModule = module {
+    factory { LoginUseCase(get()) }
     factory<AddPessoaUseCase> { AddPessoaUseCaseImpl(get(), get()) }
     factory<GetPessoaUseCase> { GetPessoaUseCaseImpl(get()) }
     factory<GetApartamentoUseCase> { GetApartamentoUseCaseImpl(get()) }
     factory { GetPessoasListUseCase(get()) }
-    factory { GetMoradoresUseCase(get()) }
-    factory { GetMoradoresForApartamentoUseCase(get()) }
-    factory { GetApartamentoWithMoradoresUseCase(get()) }
+    factory { GetCondominioUseCase(get()) }
+    factory { GetCondominiosUseCase(get()) }
+    factory { GetMoradoresUseCase(get<MoradoresRepository>()) }
     factory { AddApartamentoUseCase(get()) }
+    factory { AddCondominioUseCase(get()) }
     factory { GetApartamentosUseCase(get()) }
     factory<AddMoradorUseCase> { AddMoradorUseCaseImpl(get()) }
+    factory { GetMoradoresForApartamentoUseCase(get()) }
 }
 
 val viewModelModule = module {
@@ -74,4 +98,10 @@ val viewModelModule = module {
     viewModelOf(::AddPessoaViewModel)
     viewModelOf(::AddMoradorOverviewViewModel)
     viewModelOf(::AddMoradorFlowViewModel)
+    viewModelOf(::CondominioOverviewViewModel)
+    viewModelOf(::CondominioDashboardViewModel)
+    viewModelOf(::AddCondominioViewModel)
+    viewModelOf(::ApartamentoDetailViewModel)
+    viewModelOf(::LoginViewModel)
+    viewModelOf(::SplashViewModel)
 }

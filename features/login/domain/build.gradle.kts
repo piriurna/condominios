@@ -59,11 +59,6 @@ kotlin {
         }
     }
 
-    dependencies {
-        // KSP support for Room Compiler.
-        add("kspAndroid", libs.room.compiler)
-
-    }
 }
 
 android {

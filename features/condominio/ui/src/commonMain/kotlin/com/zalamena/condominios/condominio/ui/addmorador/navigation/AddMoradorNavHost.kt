@@ -38,7 +38,11 @@ fun NavGraphBuilder.addMoradorNavGraph( // TODO: Improve this flow to make it le
         composable<AddMoradorPessoaRoute> {
             AddPessoaScreen(addPessoaViewModel) {
                 addMoradorFlowViewModel.setCreatedPessoaId(addPessoaViewModel.uiState.value.createdPessoaId!!)
-                navController.navigate(AddMoradorApartamentoRoute)
+                if (addMoradorFlowViewModel.uiState.value.createdApartamentoId != null) {
+                    navController.navigate(AddMoradorOverviewRoute)
+                } else {
+                    navController.navigate(AddMoradorApartamentoRoute)
+                }
             }
         }
 

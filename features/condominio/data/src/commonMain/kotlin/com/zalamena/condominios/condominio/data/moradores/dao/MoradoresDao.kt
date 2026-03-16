@@ -2,6 +2,7 @@ package com.zalamena.condominios.condominio.data.moradores.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy.Companion.ABORT
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Transaction
@@ -27,11 +28,20 @@ interface MoradoresDao {
     @RewriteQueriesToDropUnusedColumns
     suspend fun getMorador(id: String, apartamentoId: String): MoradorWithPessoaAndApartamentoEntity?
 
-    @Insert
+    @Insert(onConflict = ABORT)
     suspend fun addMorador(morador: MoradorEntity)
 
     @Transaction
     @Query("SELECT * FROM Morador WHERE apartamentoId =:apartamentoId")
     @RewriteQueriesToDropUnusedColumns
     suspend fun getAllMoradoresForApartamento(apartamentoId: String): List<MoradorWithPessoaAndApartamentoEntity>
+
+    @Transaction
+    @Query("""
+        SELECT Morador.* FROM Morador
+        LEFT JOIN Apartamento ON Morador.apartamentoId = Apartamento.id
+        WHERE Apartamento.condominioId = :condominioId
+    """)
+    @RewriteQueriesToDropUnusedColumns
+    suspend fun getAllMoradoresForCondominio(condominioId: String): List<MoradorWithPessoaAndApartamentoEntity>
 }

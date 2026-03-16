@@ -1,6 +1,6 @@
 package com.zalamena.condominios.ui.addmorador
 
-import com.zalamena.condominios.addmorador.domain.usecase.AddMoradorUseCase
+import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCase
 import com.zalamena.condominios.condominio.domain.apartamento.models.Apartamento
 import com.zalamena.condominios.condominio.domain.apartamento.models.ApartamentoException
 import com.zalamena.condominios.condominio.domain.apartamento.usecase.GetApartamentoUseCase

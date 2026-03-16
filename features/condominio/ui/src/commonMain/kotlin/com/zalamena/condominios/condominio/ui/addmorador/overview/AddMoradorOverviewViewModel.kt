@@ -5,7 +5,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zalamena.condominios.addmorador.domain.usecase.AddMoradorUseCase
+import com.zalamena.condominios.condominio.domain.morador.model.MoradorTipo
+import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCase
 import com.zalamena.condominios.condominio.domain.apartamento.usecase.GetApartamentoUseCase
 import com.zalamena.condominios.condominio.ui.moradores.mapper.toSelectUi
 import com.zalamena.condominios.condominio.ui.moradores.models.SelectApartamentoUiData
@@ -17,6 +18,7 @@ data class AddMoradorOverviewUiState(
     val isLoading: Boolean = false,
     val pessoa: SelectPessoaUiData? = null,
     val apartamento: SelectApartamentoUiData? = null,
+    val selectedTipo: MoradorTipo = MoradorTipo.RESIDENTE,
     val error: String? = null,
     val isCompleted: Boolean = false
 )
@@ -66,6 +68,10 @@ class AddMoradorOverviewViewModel(
     }
 
 
+    fun setTipo(tipo: MoradorTipo) {
+        _uiState.value = _uiState.value.copy(selectedTipo = tipo)
+    }
+
     fun addMorador() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
@@ -84,7 +90,7 @@ class AddMoradorOverviewViewModel(
                 return@launch
             }
 
-            val addResult = addMoradorUseCase.invoke(pessoaId, apartamentoId)
+            val addResult = addMoradorUseCase.invoke(pessoaId, apartamentoId, uiState.value.selectedTipo)
 
             if(addResult.isFailure) {
                 _uiState.value = _uiState.value.copy(

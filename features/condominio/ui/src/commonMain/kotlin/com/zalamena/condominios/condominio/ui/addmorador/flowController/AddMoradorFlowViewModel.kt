@@ -29,4 +29,8 @@ class AddMoradorFlowViewModel: ViewModel() {
         )
     }
 
+    fun reset() {
+        _uiState.value = AddMoradorFlowUiState()
+    }
+
 }

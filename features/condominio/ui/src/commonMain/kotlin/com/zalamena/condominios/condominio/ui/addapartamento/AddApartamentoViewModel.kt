@@ -2,19 +2,18 @@ package com.zalamena.condominios.condominio.ui.addapartamento
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zalamena.condominios.condominio.domain.addapartamento.usecases.AddApartamentoUseCase
+import com.zalamena.condominios.condominio.domain.apartamento.usecase.AddApartamentoUseCase
 import com.zalamena.condominios.condominio.ui.addapartamento.mapper.toDomain
 import com.zalamena.condominios.condominio.ui.addapartamento.models.AddApartamentoFormUiData
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
 
 
 data class AddApartamentoUiState(
+    val condominioId: String = "",
     val addApartamentoForm: AddApartamentoFormUiData = AddApartamentoFormUiData.BLANK,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
@@ -29,6 +28,10 @@ class AddApartamentoViewModel(
     private val _uiState: MutableStateFlow<AddApartamentoUiState> = MutableStateFlow(AddApartamentoUiState())
     val uiState: StateFlow<AddApartamentoUiState> = _uiState.asStateFlow()
 
+
+    fun setCondominioId(condominioId: String) {
+        _uiState.update { it.copy(condominioId = condominioId) }
+    }
 
     fun setNumeroApartamento(numeroApartamento: String) {
         val fixedNumero = numeroApartamento.trim().filter { it.isDigit() }
@@ -63,8 +66,6 @@ class AddApartamentoViewModel(
                 it.copy(isLoading = true)
             }
 
-            delay(3.seconds)
-
             if(!formValid()) {
                 _uiState.update {
                     it.copy(
@@ -76,7 +77,7 @@ class AddApartamentoViewModel(
                 return@launch
             }
 
-            val form = _uiState.value.addApartamentoForm.toDomain()
+            val form = _uiState.value.addApartamentoForm.toDomain(_uiState.value.condominioId)
 
             val addResult = addApartamentoUseCase(form)
 

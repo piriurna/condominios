@@ -1,7 +1,7 @@
 package com.zalamena.condominios.condominio.ui.moradores.list
 
 import androidx.lifecycle.ViewModel
-import com.zalamena.condominios.condominio.domain.moradores.usecase.GetMoradoresUseCase
+import com.zalamena.condominios.condominio.domain.condominio.usecase.GetMoradoresUseCase
 import com.zalamena.condominios.condominio.ui.moradores.mapper.toUi
 import com.zalamena.condominios.condominio.ui.moradores.models.MoradorUiData
 import kotlinx.coroutines.flow.Flow
@@ -20,17 +20,12 @@ class MoradoresListViewModel(
     private val _uiState: MutableStateFlow<MoradoresListUiState> = MutableStateFlow(MoradoresListUiState())
     val uiState: Flow<MoradoresListUiState> = _uiState
 
-    init {
-        println("LOGGING START")
-    }
-
-
-    suspend fun getMoradores() {
+    suspend fun getMoradores(condominioId: String) {
         _uiState.update {
             it.copy(isLoading = true)
         }
 
-        val moradoresResult = getMoradoresUseCase()
+        val moradoresResult = getMoradoresUseCase(condominioId)
 
         when {
             moradoresResult.isSuccess -> {

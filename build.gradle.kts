@@ -14,20 +14,19 @@ plugins {
 // Root build.gradle.kts
 tasks.register("runCommonTests") {
     group = "verification"
-    description = "Runs common tests for JVM target"
+    description = "Runs jvmTest for all feature modules (platform-agnostic)"
 
-    // Then run the JVM tests
     dependsOn(subprojects.flatMap { subproject ->
-        if(subproject.name == "database"
-            || subproject.name == "ui"
+        if (subproject.name == "database"
             || subproject.name == "di"
             || subproject.name == "mock-data"
-            ) return@flatMap emptyList()
+            || subproject.path.contains(":common:")
+            || subproject.path.contains(":navigation:")
+        ) return@flatMap emptyList()
 
         subproject.tasks.matching { task ->
-            println("TASK NAME: ${subproject.name}")
             task.name.endsWith("Test")
-                    && task.name.contains("jvm", ignoreCase = true)
+                && task.name.contains("jvm", ignoreCase = true)
         }
     })
 }
