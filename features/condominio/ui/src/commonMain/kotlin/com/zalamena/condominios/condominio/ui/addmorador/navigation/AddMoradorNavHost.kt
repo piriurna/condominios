@@ -61,9 +61,7 @@ fun NavGraphBuilder.addMoradorNavGraph( // TODO: Improve this flow to make it le
                 pessoaId,
                 apartamentoId
             ) {
-                navController.popBackStack()
-                navController.popBackStack()
-                navController.popBackStack()
+                navController.popBackStack(AddMoradorRoute, inclusive = true)
             }
         }
     }

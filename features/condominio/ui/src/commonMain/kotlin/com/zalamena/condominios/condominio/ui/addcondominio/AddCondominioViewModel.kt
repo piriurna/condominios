@@ -25,6 +25,10 @@ class AddCondominioViewModel(
     private val _uiState = MutableStateFlow(AddCondominioUiState())
     val uiState: StateFlow<AddCondominioUiState> = _uiState.asStateFlow()
 
+    fun reset() {
+        _uiState.update { AddCondominioUiState() }
+    }
+
     fun setNome(nome: String) {
         _uiState.update { it.copy(form = it.form.copy(nome = nome), errorMessage = null) }
     }

@@ -118,9 +118,11 @@ fun AppNavHost(
             AdminHomeScreen(
                 viewModel = adminHomeViewModel,
                 onCondominioClick = { condominioId ->
+                    condominioDashboardViewModel.setCondominioId(condominioId)
                     navController.navigate(CondominioDashboardRoute)
                 },
                 onAddCondominioClick = {
+                    addCondominioViewModel.reset()
                     navController.navigate(AddCondominioRoute)
                 }
             )

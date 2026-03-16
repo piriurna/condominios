@@ -5,18 +5,21 @@ import androidx.lifecycle.viewModelScope
 import com.zalamena.condominios.condominio.domain.condominio.models.Condominio
 import com.zalamena.condominios.condominio.domain.condominio.usecase.GetCondominiosUseCase
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.models.ApartamentoDashboardUiData
-import com.zalamena.condominios.condominio.ui.condominio.dashboard.models.CondominioSummaryUiData
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+private const val MIN_LOADING_MS = 1000L
+
 data class CondominioDashboardUiState(
-    val condominios: List<CondominioSummaryUiData> = emptyList(),
-    val selectedCondominioId: String? = null,
+    val condominioId: String = "",
+    val condominioNome: String = "",
     val apartamentos: List<ApartamentoDashboardUiData> = emptyList(),
     val totalApartamentos: Int = 0,
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val isError: Boolean = false,
     val navigationEvent: DashboardNavigationEvent? = null
 )
@@ -33,26 +36,37 @@ class CondominioDashboardViewModel(
     private val _uiState = MutableStateFlow(CondominioDashboardUiState())
     val uiState: StateFlow<CondominioDashboardUiState> = _uiState
 
-    private var loadedCondominios: List<Condominio> = emptyList()
+    fun setCondominioId(condominioId: String) {
+        _uiState.update { it.copy(condominioId = condominioId) }
+    }
 
     fun loadCondominios() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, isError = false) }
+        val condominioId = _uiState.value.condominioId
+        if (condominioId.isBlank()) return
 
+        viewModelScope.launch {
+            val showSpinner = _uiState.value.apartamentos.isEmpty()
+            _uiState.update { it.copy(isLoading = showSpinner, isError = false) }
+
+            val minDelay = if (showSpinner) async { delay(MIN_LOADING_MS) } else null
             val result = getCondominiosUseCase()
+            minDelay?.await()
 
             when {
                 result.isSuccess -> {
-                    loadedCondominios = result.getOrThrow()
-                    val currentSelectedId = _uiState.value.selectedCondominioId
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            condominios = loadedCondominios.map { c -> c.toSummaryUi() }
-                        )
-                    }
-                    if (currentSelectedId != null) {
-                        selectCondominio(currentSelectedId)
+                    val condominio = result.getOrThrow().find { it.id == condominioId }
+                    if (condominio != null) {
+                        val apartamentos = condominio.apartamentos.map { it.toDashboardUi() }
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                condominioNome = condominio.nome,
+                                apartamentos = apartamentos,
+                                totalApartamentos = apartamentos.size
+                            )
+                        }
+                    } else {
+                        _uiState.update { it.copy(isLoading = false, isError = true) }
                     }
                 }
                 result.isFailure -> {
@@ -62,21 +76,9 @@ class CondominioDashboardViewModel(
         }
     }
 
-    fun selectCondominio(condominioId: String) {
-        val condominio = loadedCondominios.find { it.id == condominioId } ?: return
-        val apartamentos = condominio.apartamentos.map { it.toDashboardUi() }
-
-        _uiState.update {
-            it.copy(
-                selectedCondominioId = condominioId,
-                apartamentos = apartamentos,
-                totalApartamentos = apartamentos.size
-            )
-        }
-    }
-
     fun onAddApartamentoClick() {
-        val condominioId = _uiState.value.selectedCondominioId ?: return
+        val condominioId = _uiState.value.condominioId
+        if (condominioId.isBlank()) return
         _uiState.update { it.copy(navigationEvent = DashboardNavigationEvent.AddApartamento(condominioId)) }
     }
 

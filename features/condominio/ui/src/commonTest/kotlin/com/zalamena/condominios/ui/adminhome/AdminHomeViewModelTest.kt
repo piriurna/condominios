@@ -55,8 +55,8 @@ class AdminHomeViewModelTest : TestsWithMocks() {
     }
 
     @Test
-    fun `GIVEN initial state THEN not loading`() = runTest(testScheduler) {
-        assertFalse(viewModel.uiState.value.isLoading)
+    fun `GIVEN initial state THEN is loading`() = runTest(testScheduler) {
+        assertTrue(viewModel.uiState.value.isLoading)
     }
 
     @Test

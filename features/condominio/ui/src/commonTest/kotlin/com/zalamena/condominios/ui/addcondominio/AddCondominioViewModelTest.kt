@@ -132,6 +132,25 @@ class AddCondominioViewModelTest : TestsWithMocks() {
         assertNull(viewModel.uiState.value.errorMessage)
     }
 
+    // --- reset ---
+
+    @Test
+    fun `GIVEN form filled and condominio created WHEN reset THEN state is cleared`() = runTest {
+        fillValidForm()
+        everySuspending { condominioRepository.getCondominios() } returns Result.success(emptyList())
+        everySuspending { condominioRepository.addCondominio(isAny()) } returns Result.success(Unit)
+        viewModel.addCondominio()
+
+        viewModel.reset()
+
+        val state = viewModel.uiState.value
+        assertNull(state.createdCondominioId)
+        assertNull(state.errorMessage)
+        assertFalse(state.isLoading)
+        assertTrue(state.form.nome.isBlank())
+        assertTrue(state.form.rua.isBlank())
+    }
+
     // --- Helpers ---
 
     private fun fillValidForm() {
