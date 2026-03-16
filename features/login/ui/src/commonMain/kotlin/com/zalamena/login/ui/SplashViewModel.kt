@@ -2,6 +2,7 @@ package com.zalamena.login.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zalamena.login.domain.models.UserRole
 import com.zalamena.login.domain.repository.LoginRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -9,7 +10,8 @@ import kotlinx.coroutines.launch
 
 sealed class SplashNavigationEvent {
     object NavigateToLogin : SplashNavigationEvent()
-    object NavigateToHome : SplashNavigationEvent()
+    object NavigateToAdminHome : SplashNavigationEvent()
+    object NavigateToDoormanHome : SplashNavigationEvent()
 }
 
 class SplashViewModel(
@@ -21,10 +23,15 @@ class SplashViewModel(
 
     init {
         viewModelScope.launch {
-            _navEvent.value = if (loginRepository.isLoggedIn())
-                SplashNavigationEvent.NavigateToHome
-            else
-                SplashNavigationEvent.NavigateToLogin
+            if (loginRepository.isLoggedIn()) {
+                val role = loginRepository.getRole()
+                _navEvent.value = when (role) {
+                    UserRole.PORTEIRO -> SplashNavigationEvent.NavigateToDoormanHome
+                    else -> SplashNavigationEvent.NavigateToAdminHome
+                }
+            } else {
+                _navEvent.value = SplashNavigationEvent.NavigateToLogin
+            }
         }
     }
 

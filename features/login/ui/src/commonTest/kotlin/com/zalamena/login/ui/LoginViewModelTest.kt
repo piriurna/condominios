@@ -1,6 +1,7 @@
 package com.zalamena.login.ui
 
 import com.zalamena.login.domain.models.User
+import com.zalamena.login.domain.models.UserRole
 import com.zalamena.login.domain.repository.LoginException
 import com.zalamena.login.domain.repository.LoginRepository
 import com.zalamena.login.domain.usecase.LoginUseCase
@@ -53,6 +54,8 @@ class LoginViewModelTest : TestsWithMocks() {
         assertEquals("", state.password)
         assertTrue(!state.isLoading)
         assertNull(state.error)
+        assertNull(state.usernameError)
+        assertNull(state.passwordError)
         assertNull(state.navigationEvent)
     }
 
@@ -69,8 +72,8 @@ class LoginViewModelTest : TestsWithMocks() {
     }
 
     @Test
-    fun `GIVEN login succeeds THEN navigationEvent is LoginSuccess and isLoading is false`() = runTest {
-        val user = User(name = "Admin", cpf = "00000000000", email = "admin@test.com")
+    fun `GIVEN admin login succeeds THEN navigationEvent is NavigateToAdminHome and isLoading is false`() = runTest {
+        val user = User(name = "Admin", cpf = "00000000000", email = "admin@test.com", role = UserRole.ADMIN)
         everySuspending { loginRepository.login(isAny(), isAny()) } returns Result.success(user)
 
         viewModel.setUsername("admin")
@@ -79,9 +82,24 @@ class LoginViewModelTest : TestsWithMocks() {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertEquals(LoginNavigationEvent.LoginSuccess, state.navigationEvent)
+        assertEquals(LoginNavigationEvent.NavigateToAdminHome, state.navigationEvent)
         assertTrue(!state.isLoading)
         assertNull(state.error)
+    }
+
+    @Test
+    fun `GIVEN porteiro login succeeds THEN navigationEvent is NavigateToDoormanHome`() = runTest {
+        val user = User(name = "Porteiro", cpf = "11111111111", email = "porteiro@test.com", role = UserRole.PORTEIRO)
+        everySuspending { loginRepository.login(isAny(), isAny()) } returns Result.success(user)
+
+        viewModel.setUsername("porteiro")
+        viewModel.setPassword("porteiro")
+        viewModel.login()
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals(LoginNavigationEvent.NavigateToDoormanHome, state.navigationEvent)
+        assertTrue(!state.isLoading)
     }
 
     @Test
@@ -89,6 +107,8 @@ class LoginViewModelTest : TestsWithMocks() {
         everySuspending { loginRepository.login(isAny(), isAny()) } returns
             Result.failure(LoginException.InvalidCredentialsException)
 
+        viewModel.setUsername("wrong")
+        viewModel.setPassword("wrong")
         viewModel.login()
         advanceUntilIdle()
 
@@ -103,6 +123,8 @@ class LoginViewModelTest : TestsWithMocks() {
         everySuspending { loginRepository.login(isAny(), isAny()) } returns
             Result.failure(LoginException.NonExistentUserException)
 
+        viewModel.setUsername("someone")
+        viewModel.setPassword("pass")
         viewModel.login()
         advanceUntilIdle()
 
@@ -111,14 +133,73 @@ class LoginViewModelTest : TestsWithMocks() {
 
     @Test
     fun `GIVEN onNavigationHandled called after success THEN navigationEvent is cleared`() = runTest {
-        val user = User(name = "Admin", cpf = "00000000000", email = "admin@test.com")
+        val user = User(name = "Admin", cpf = "00000000000", email = "admin@test.com", role = UserRole.ADMIN)
         everySuspending { loginRepository.login(isAny(), isAny()) } returns Result.success(user)
 
+        viewModel.setUsername("admin")
+        viewModel.setPassword("admin")
         viewModel.login()
         advanceUntilIdle()
 
         viewModel.onNavigationHandled()
 
         assertNull(viewModel.uiState.value.navigationEvent)
+    }
+
+    @Test
+    fun `GIVEN empty username WHEN login THEN usernameError is set and no API call`() = runTest {
+        viewModel.setPassword("admin")
+        viewModel.login()
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals("Campo obrigatório", state.usernameError)
+        assertNull(state.navigationEvent)
+        assertTrue(!state.isLoading)
+    }
+
+    @Test
+    fun `GIVEN empty password WHEN login THEN passwordError is set and no API call`() = runTest {
+        viewModel.setUsername("admin")
+        viewModel.login()
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals("Campo obrigatório", state.passwordError)
+        assertNull(state.navigationEvent)
+        assertTrue(!state.isLoading)
+    }
+
+    @Test
+    fun `GIVEN both empty WHEN login THEN both errors are set`() = runTest {
+        viewModel.login()
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals("Campo obrigatório", state.usernameError)
+        assertEquals("Campo obrigatório", state.passwordError)
+        assertNull(state.navigationEvent)
+    }
+
+    @Test
+    fun `GIVEN usernameError exists WHEN setUsername THEN error is cleared`() {
+        // Trigger error first
+        viewModel.login()
+        assertEquals("Campo obrigatório", viewModel.uiState.value.usernameError)
+
+        // Now set username should clear the error
+        viewModel.setUsername("admin")
+        assertNull(viewModel.uiState.value.usernameError)
+    }
+
+    @Test
+    fun `GIVEN passwordError exists WHEN setPassword THEN error is cleared`() {
+        // Trigger error first
+        viewModel.login()
+        assertEquals("Campo obrigatório", viewModel.uiState.value.passwordError)
+
+        // Now set password should clear the error
+        viewModel.setPassword("admin")
+        assertNull(viewModel.uiState.value.passwordError)
     }
 }

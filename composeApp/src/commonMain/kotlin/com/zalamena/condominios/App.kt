@@ -6,8 +6,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.compose.rememberNavController
+import com.zalamena.condominios.navigation.ui.AdminHomeRoute
 import com.zalamena.condominios.navigation.ui.AppNavHost
-import com.zalamena.condominios.navigation.ui.ButtonsRoute
+import com.zalamena.condominios.navigation.ui.DoormanHomeRoute
 import com.zalamena.condominios.navigation.ui.SplashRoute
 import com.zalamena.login.ui.SplashNavigationEvent
 import com.zalamena.login.ui.SplashViewModel
@@ -31,9 +32,14 @@ fun App() {
                     }
                     splashViewModel.onNavigationHandled()
                 }
-                is SplashNavigationEvent.NavigateToHome -> {
-                    // T2 will route to real home screens based on role
-                    navController.navigate(ButtonsRoute) {
+                is SplashNavigationEvent.NavigateToAdminHome -> {
+                    navController.navigate(AdminHomeRoute) {
+                        popUpTo(SplashRoute) { inclusive = true }
+                    }
+                    splashViewModel.onNavigationHandled()
+                }
+                is SplashNavigationEvent.NavigateToDoormanHome -> {
+                    navController.navigate(DoormanHomeRoute) {
                         popUpTo(SplashRoute) { inclusive = true }
                     }
                     splashViewModel.onNavigationHandled()

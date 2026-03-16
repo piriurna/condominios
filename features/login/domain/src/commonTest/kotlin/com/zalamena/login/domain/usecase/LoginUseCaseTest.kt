@@ -1,6 +1,7 @@
 package com.zalamena.login.domain.usecase
 
 import com.zalamena.login.domain.models.User
+import com.zalamena.login.domain.models.UserRole
 import com.zalamena.login.domain.repository.LoginException
 import com.zalamena.login.domain.repository.LoginRepository
 import kotlinx.coroutines.test.runTest
@@ -32,7 +33,8 @@ class LoginUseCaseTest: TestsWithMocks() {
         everySuspending { loginRepository.login(username, password) } returns Result.success(User(
             name = username,
             cpf = cpf,
-            email = email
+            email = email,
+            role = UserRole.ADMIN
         ))
 
 

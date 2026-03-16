@@ -3,6 +3,7 @@ package com.zalamena.login.data.repository
 import com.zalamena.login.data.api.LoginApi
 import com.zalamena.login.data.mapper.toDomain
 import com.zalamena.login.domain.models.User
+import com.zalamena.login.domain.models.UserRole
 import com.zalamena.login.domain.repository.LoginException
 import com.zalamena.login.domain.repository.LoginRepository
 
@@ -13,20 +14,22 @@ class LoginRepositoryImpl (
 
     override suspend fun isLoggedIn(): Boolean = sessionRepository.isLoggedIn()
 
+    override suspend fun getRole(): UserRole? {
+        val roleStr = sessionRepository.getRole() ?: return null
+        return try { UserRole.valueOf(roleStr) } catch (_: Exception) { null }
+    }
+
     override suspend fun login(username: String, password: String): Result<User> {
         return try {
-            if(username.isEmpty() || password.isEmpty()) {
-                throw LoginException.InvalidCredentialsException
-            }
             val session = loginApi.login(username, password)
 
-            val userResult =  loginApi.getUser(session.userId)
+            val userResult = loginApi.getUser(session.userId)
 
             if(userResult == null) {
                 throw LoginException.NonExistentUserException
             }
 
-            sessionRepository.saveSession(session.token, session.expiresIn)
+            sessionRepository.saveSession(session.token, session.expiresIn, userResult.role)
             Result.success(userResult.toDomain())
         } catch (e: LoginException) {
             Result.failure(e)

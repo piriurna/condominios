@@ -21,18 +21,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.zalamena.login.domain.models.UserRole
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
-    onLoginSuccess: () -> Unit
+    onLoginSuccess: (UserRole) -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
     LaunchedEffect(state.navigationEvent) {
-        if (state.navigationEvent is LoginNavigationEvent.LoginSuccess) {
-            onLoginSuccess()
-            viewModel.onNavigationHandled()
+        when (state.navigationEvent) {
+            is LoginNavigationEvent.NavigateToAdminHome -> {
+                onLoginSuccess(UserRole.ADMIN)
+                viewModel.onNavigationHandled()
+            }
+            is LoginNavigationEvent.NavigateToDoormanHome -> {
+                onLoginSuccess(UserRole.PORTEIRO)
+                viewModel.onNavigationHandled()
+            }
+            null -> {}
         }
     }
 
@@ -52,7 +60,9 @@ fun LoginScreen(
             onValueChange = viewModel::setUsername,
             label = { Text("Usuário") },
             modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            singleLine = true,
+            isError = state.usernameError != null,
+            supportingText = { state.usernameError?.let { Text(it) } }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -63,7 +73,9 @@ fun LoginScreen(
             label = { Text("Senha") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            visualTransformation = PasswordVisualTransformation()
+            visualTransformation = PasswordVisualTransformation(),
+            isError = state.passwordError != null,
+            supportingText = { state.passwordError?.let { Text(it) } }
         )
 
         Spacer(modifier = Modifier.height(8.dp))

@@ -4,4 +4,5 @@ data class UserDto(
     val username: String,
     val cpf: String,
     val email: String,
+    val role: String,
 )
