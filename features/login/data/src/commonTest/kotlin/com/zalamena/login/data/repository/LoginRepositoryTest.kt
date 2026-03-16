@@ -3,6 +3,7 @@ package com.zalamena.login.data.repository
 import com.zalamena.login.data.api.LoginApi
 import com.zalamena.login.data.models.LoginSessionDto
 import com.zalamena.login.data.models.UserDto
+import com.zalamena.login.domain.models.UserRole
 import com.zalamena.login.domain.repository.LoginException
 import com.zalamena.login.domain.repository.LoginRepository
 import kotlinx.coroutines.test.runTest
@@ -11,6 +12,7 @@ import org.kodein.mock.generated.injectMocks
 import org.kodein.mock.tests.TestsWithMocks
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class LoginRepositoryTest: TestsWithMocks() {
 
@@ -55,33 +57,6 @@ class LoginRepositoryTest: TestsWithMocks() {
     }
 
     @Test
-    fun `GIVEN an empty username WHEN logging in THEN it should be a failed login with Invalid Credentials error message`() = runTest {
-        val username = ""
-        val password = "incorrectPassword"
-
-
-        val result = loginRepository.login(username, password)
-
-        assertEquals(
-            LoginException.InvalidCredentialsException,
-            result.exceptionOrNull()
-        )
-    }
-
-    @Test
-    fun `GIVEN an empty password WHEN logging in THEN it should be a failed login with Invalid Credentials error message`() = runTest {
-        val username = "username"
-        val password = ""
-
-        val result = loginRepository.login(username, password)
-
-        assertEquals(
-            LoginException.InvalidCredentialsException,
-            result.exceptionOrNull()
-        )
-    }
-
-    @Test
     fun `GIVEN a successful login is made WHEN a session is returned THEN should save the session`() = runTest {
         val sessionToken = "sessionToken"
         val expiresIn = 10L
@@ -96,7 +71,7 @@ class LoginRepositoryTest: TestsWithMocks() {
 
         loginRepository.login(username, password)
 
-        verifyWithSuspend(exhaustive = false) { sessionRepository.saveSession(sessionToken, expiresIn) }
+        verifyWithSuspend(exhaustive = false) { sessionRepository.saveSession(sessionToken, expiresIn, "ADMIN") }
     }
 
     @Test
@@ -121,6 +96,24 @@ class LoginRepositoryTest: TestsWithMocks() {
         )
     }
 
+    @Test
+    fun `GIVEN role is saved WHEN getRole called THEN returns correct UserRole`() = runTest {
+        everySuspending { sessionRepository.getRole() } returns "PORTEIRO"
+
+        val role = loginRepository.getRole()
+
+        assertEquals(UserRole.PORTEIRO, role)
+    }
+
+    @Test
+    fun `GIVEN no role saved WHEN getRole called THEN returns null`() = runTest {
+        everySuspending { sessionRepository.getRole() } returns null
+
+        val role = loginRepository.getRole()
+
+        assertNull(role)
+    }
+
 
     private suspend fun mockSuccessfulApiLogin() {
         val sessionToken = "sessionToken"
@@ -139,7 +132,7 @@ class LoginRepositoryTest: TestsWithMocks() {
     private suspend fun justRunsSaveSession() {
         val sessionToken = "sessionToken"
         val expiresIn = 10L
-        everySuspending { sessionRepository.saveSession(sessionToken, expiresIn) } runs { }
+        everySuspending { sessionRepository.saveSession(sessionToken, expiresIn, "ADMIN") } runs { }
     }
 
     private suspend fun mockSuccessGetUserApiCall() {
@@ -148,7 +141,7 @@ class LoginRepositoryTest: TestsWithMocks() {
         val cpf = "cpf"
         val email = "email"
 
-        everySuspending { loginApi.getUser(userId) } returns UserDto(nome, cpf, email)
+        everySuspending { loginApi.getUser(userId) } returns UserDto(nome, cpf, email, "ADMIN")
     }
 
     private suspend fun mockNotFoundGetUserApiCall() {

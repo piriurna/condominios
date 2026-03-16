@@ -2,6 +2,7 @@ package com.zalamena.login.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zalamena.login.domain.models.UserRole
 import com.zalamena.login.domain.usecase.LoginUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,11 +14,14 @@ data class LoginUiState(
     val password: String = "",
     val isLoading: Boolean = false,
     val error: String? = null,
+    val usernameError: String? = null,
+    val passwordError: String? = null,
     val navigationEvent: LoginNavigationEvent? = null
 )
 
 sealed class LoginNavigationEvent {
-    object LoginSuccess : LoginNavigationEvent()
+    object NavigateToAdminHome : LoginNavigationEvent()
+    object NavigateToDoormanHome : LoginNavigationEvent()
 }
 
 class LoginViewModel(
@@ -28,20 +32,33 @@ class LoginViewModel(
     val uiState: StateFlow<LoginUiState> = _uiState
 
     fun setUsername(username: String) {
-        _uiState.update { it.copy(username = username) }
+        _uiState.update { it.copy(username = username, usernameError = null) }
     }
 
     fun setPassword(password: String) {
-        _uiState.update { it.copy(password = password) }
+        _uiState.update { it.copy(password = password, passwordError = null) }
     }
 
     fun login() {
+        val currentState = _uiState.value
+        val usernameError = if (currentState.username.isEmpty()) "Campo obrigatório" else null
+        val passwordError = if (currentState.password.isEmpty()) "Campo obrigatório" else null
+
+        if (usernameError != null || passwordError != null) {
+            _uiState.update { it.copy(usernameError = usernameError, passwordError = passwordError) }
+            return
+        }
+
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             loginUseCase(_uiState.value.username, _uiState.value.password)
-                .onSuccess {
+                .onSuccess { user ->
+                    val navEvent = when (user.role) {
+                        UserRole.ADMIN -> LoginNavigationEvent.NavigateToAdminHome
+                        UserRole.PORTEIRO -> LoginNavigationEvent.NavigateToDoormanHome
+                    }
                     _uiState.update {
-                        it.copy(isLoading = false, navigationEvent = LoginNavigationEvent.LoginSuccess)
+                        it.copy(isLoading = false, navigationEvent = navEvent)
                     }
                 }
                 .onFailure { e ->

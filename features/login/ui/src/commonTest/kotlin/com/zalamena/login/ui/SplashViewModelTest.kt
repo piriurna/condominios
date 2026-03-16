@@ -1,7 +1,7 @@
 package com.zalamena.login.ui
 
+import com.zalamena.login.domain.models.UserRole
 import com.zalamena.login.domain.repository.LoginRepository
-import com.zalamena.login.domain.usecase.LoginUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -41,13 +41,25 @@ class SplashViewModelTest : TestsWithMocks() {
     }
 
     @Test
-    fun `GIVEN user is logged in WHEN splash starts THEN NavigateToHome is emitted`() = runTest {
+    fun `GIVEN logged in as admin WHEN splash starts THEN NavigateToAdminHome is emitted`() = runTest {
         everySuspending { loginRepository.isLoggedIn() } returns true
+        everySuspending { loginRepository.getRole() } returns UserRole.ADMIN
 
         val viewModel = SplashViewModel(loginRepository)
         advanceUntilIdle()
 
-        assertEquals(SplashNavigationEvent.NavigateToHome, viewModel.navEvent.value)
+        assertEquals(SplashNavigationEvent.NavigateToAdminHome, viewModel.navEvent.value)
+    }
+
+    @Test
+    fun `GIVEN logged in as porteiro WHEN splash starts THEN NavigateToDoormanHome is emitted`() = runTest {
+        everySuspending { loginRepository.isLoggedIn() } returns true
+        everySuspending { loginRepository.getRole() } returns UserRole.PORTEIRO
+
+        val viewModel = SplashViewModel(loginRepository)
+        advanceUntilIdle()
+
+        assertEquals(SplashNavigationEvent.NavigateToDoormanHome, viewModel.navEvent.value)
     }
 
     @Test

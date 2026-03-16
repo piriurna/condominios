@@ -27,6 +27,7 @@ import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDas
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.CondominioDashboardRoute
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.condominioDashboardNavHost
 import com.zalamena.condominios.pessoa.ui.addpessoa.AddPessoaViewModel
+import com.zalamena.login.domain.models.UserRole
 import com.zalamena.login.ui.LoginViewModel
 import com.zalamena.login.ui.navigation.LoginRoute
 import com.zalamena.login.ui.navigation.loginNavHost
@@ -40,6 +41,12 @@ object DebugRoute
 
 @Serializable
 object ButtonsRoute
+
+@Serializable
+object AdminHomeRoute
+
+@Serializable
+object DoormanHomeRoute
 
 
 @Composable
@@ -86,11 +93,27 @@ fun AppNavHost(
             }
         }
 
+        composable<AdminHomeRoute> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("Admin Home")
+            }
+        }
+
+        composable<DoormanHomeRoute> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("Porteiro Home")
+            }
+        }
+
         loginNavHost(
             navController,
             loginViewModel = loginViewModel,
-            onLoginSuccess = {
-                navController.navigate(ButtonsRoute) {
+            onLoginSuccess = { role ->
+                val destination = when (role) {
+                    UserRole.ADMIN -> AdminHomeRoute
+                    UserRole.PORTEIRO -> DoormanHomeRoute
+                }
+                navController.navigate(destination) {
                     popUpTo(LoginRoute) { inclusive = true }
                 }
             }
