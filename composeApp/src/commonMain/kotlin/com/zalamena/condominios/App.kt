@@ -57,6 +57,7 @@ fun App() {
             koinViewModel(),
             koinViewModel(),
             koinViewModel(),
+            koinViewModel(),
             koinViewModel()
         )
     }
