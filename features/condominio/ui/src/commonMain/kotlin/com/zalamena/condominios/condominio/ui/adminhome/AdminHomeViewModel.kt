@@ -31,7 +31,7 @@ class AdminHomeViewModel(
 
     fun loadCondominios() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, isError = false) }
+            _uiState.update { it.copy(isLoading = it.condominios.isEmpty(), isError = false) }
 
             val result = getCondominiosUseCase()
 
