@@ -20,6 +20,7 @@ import com.zalamena.condominios.condominio.domain.morador.repository.MoradoresRe
 import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCase
 import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCaseImpl
 import com.zalamena.condominios.condominio.domain.morador.usecase.GetMoradoresForApartamentoUseCase
+import com.zalamena.condominios.condominio.ui.adminhome.AdminHomeViewModel
 import com.zalamena.condominios.condominio.ui.addapartamento.AddApartamentoViewModel
 import com.zalamena.condominios.condominio.ui.addcondominio.AddCondominioViewModel
 import com.zalamena.condominios.condominio.ui.apartamento.detail.ApartamentoDetailViewModel
@@ -102,6 +103,7 @@ val viewModelModule = module {
     viewModelOf(::CondominioDashboardViewModel)
     viewModelOf(::AddCondominioViewModel)
     viewModelOf(::ApartamentoDetailViewModel)
+    viewModelOf(::AdminHomeViewModel)
     viewModelOf(::LoginViewModel)
     viewModelOf(::SplashViewModel)
 }

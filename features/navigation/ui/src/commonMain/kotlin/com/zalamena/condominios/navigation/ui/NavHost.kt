@@ -13,11 +13,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import androidx.compose.runtime.DisposableEffect
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.zalamena.condominios.condominio.ui.addapartamento.AddApartamentoViewModel
 import com.zalamena.condominios.condominio.ui.addapartamento.navigation.addApartamentoNavHost
 import com.zalamena.condominios.condominio.ui.addcondominio.AddCondominioViewModel
 import com.zalamena.condominios.condominio.ui.addcondominio.navigation.AddCondominioRoute
 import com.zalamena.condominios.condominio.ui.addcondominio.navigation.addCondominioNavHost
+import com.zalamena.condominios.condominio.ui.adminhome.AdminHomeScreen
+import com.zalamena.condominios.condominio.ui.adminhome.AdminHomeViewModel
 import com.zalamena.condominios.condominio.ui.apartamento.detail.ApartamentoDetailViewModel
 import com.zalamena.condominios.condominio.ui.addmorador.flowController.AddMoradorFlowViewModel
 import com.zalamena.condominios.condominio.ui.addmorador.navigation.AddMoradorRoute
@@ -59,7 +65,8 @@ fun AppNavHost(
     condominioDashboardViewModel: CondominioDashboardViewModel,
     addCondominioViewModel: AddCondominioViewModel,
     apartamentoDetailViewModel: ApartamentoDetailViewModel,
-    loginViewModel: LoginViewModel
+    loginViewModel: LoginViewModel,
+    adminHomeViewModel: AdminHomeViewModel
 ) {
     NavHost(navController, startDestination = SplashRoute) {
 
@@ -74,6 +81,9 @@ fun AppNavHost(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Button(onClick = { navController.navigate(AdminHomeRoute) }) {
+                        Text("Admin Home")
+                    }
                     Button(onClick = { navController.navigate(LoginRoute) }) {
                         Text("Login")
                     }
@@ -94,9 +104,26 @@ fun AppNavHost(
         }
 
         composable<AdminHomeRoute> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Admin Home")
+            val lifecycleOwner = LocalLifecycleOwner.current
+            DisposableEffect(lifecycleOwner) {
+                val observer = LifecycleEventObserver { _, event ->
+                    if (event == Lifecycle.Event.ON_RESUME) {
+                        adminHomeViewModel.loadCondominios()
+                    }
+                }
+                lifecycleOwner.lifecycle.addObserver(observer)
+                onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
             }
+
+            AdminHomeScreen(
+                viewModel = adminHomeViewModel,
+                onCondominioClick = { condominioId ->
+                    navController.navigate(CondominioDashboardRoute)
+                },
+                onAddCondominioClick = {
+                    navController.navigate(AddCondominioRoute)
+                }
+            )
         }
 
         composable<DoormanHomeRoute> {
