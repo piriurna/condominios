@@ -10,6 +10,7 @@ fun UserDto.toDomain(): User {
         name = username,
         cpf = cpf,
         email = email,
-        role = UserRole.valueOf(role)
+        role = UserRole.valueOf(role),
+        condominioId = null
     )
 }

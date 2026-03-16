@@ -4,5 +4,6 @@ data class User(
     val name: String,
     val cpf: String,
     val email: String,
-    val role: UserRole
+    val role: UserRole,
+    val condominioId: String? = null
 )

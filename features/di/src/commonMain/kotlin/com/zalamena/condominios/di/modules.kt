@@ -47,10 +47,14 @@ import com.zalamena.login.data.api.LoginApi
 import com.zalamena.login.data.repository.LoginRepositoryImpl
 import com.zalamena.login.data.repository.SessionRepository
 import com.zalamena.login.data.repository.SessionRepositoryImpl
+import com.zalamena.login.data.repository.UserRepositoryImpl
 import com.zalamena.login.domain.repository.LoginRepository
+import com.zalamena.login.domain.repository.UserRepository
+import com.zalamena.login.domain.usecase.CreateUserUseCase
 import com.zalamena.login.domain.usecase.LoginUseCase
 import com.zalamena.login.ui.LoginViewModel
 import com.zalamena.login.ui.SplashViewModel
+import com.zalamena.login.ui.createuser.CreateUserViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -74,6 +78,7 @@ val repositoryModule = module {
     single<LoginApi> { FakeLoginApi() }
     single<SessionRepository> { SessionRepositoryImpl() }
     single<LoginRepository> { LoginRepositoryImpl(get(), get()) }
+    single<UserRepository> { UserRepositoryImpl() }
 }
 
 val useCaseModule = module {
@@ -90,6 +95,7 @@ val useCaseModule = module {
     factory { GetApartamentosUseCase(get()) }
     factory<AddMoradorUseCase> { AddMoradorUseCaseImpl(get()) }
     factory { GetMoradoresForApartamentoUseCase(get()) }
+    factory { CreateUserUseCase(get()) }
 }
 
 val viewModelModule = module {
@@ -106,4 +112,5 @@ val viewModelModule = module {
     viewModelOf(::AdminHomeViewModel)
     viewModelOf(::LoginViewModel)
     viewModelOf(::SplashViewModel)
+    viewModelOf(::CreateUserViewModel)
 }

@@ -24,7 +24,8 @@ import com.zalamena.condominios.common.ui.components.scaffold.LoadingScaffold
 fun AdminHomeScreen(
     viewModel: AdminHomeViewModel,
     onCondominioClick: (String) -> Unit,
-    onAddCondominioClick: () -> Unit
+    onAddCondominioClick: () -> Unit,
+    onCreateUserClick: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -38,6 +39,10 @@ fun AdminHomeScreen(
                 onAddCondominioClick()
                 viewModel.onNavigationHandled()
             }
+            is AdminHomeNavigationEvent.CreateUser -> {
+                onCreateUserClick()
+                viewModel.onNavigationHandled()
+            }
         }
     }
 
@@ -46,6 +51,11 @@ fun AdminHomeScreen(
         isError = state.isError,
         title = "Condominios",
         errorMessage = "Erro ao carregar condominios",
+        actions = {
+            Button(onClick = { viewModel.onCreateUserClick() }) {
+                Text("Criar Usuário")
+            }
+        },
         floatingActionButton = {
             FloatingActionButton(onClick = { viewModel.onAddCondominioClick() }) {
                 Text("+")
