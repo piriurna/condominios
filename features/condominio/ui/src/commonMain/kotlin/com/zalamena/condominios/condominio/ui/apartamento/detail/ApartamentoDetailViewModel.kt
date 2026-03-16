@@ -7,15 +7,12 @@ import com.zalamena.condominios.condominio.domain.morador.usecase.GetMoradoresFo
 import com.zalamena.condominios.condominio.ui.apartamento.detail.models.MoradorDetailUiData
 import com.zalamena.condominios.condominio.ui.apartamento.detail.models.maskCpf
 import com.zalamena.condominios.condominio.ui.apartamento.detail.models.toLabel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
+import com.zalamena.condominios.common.ui.withMinLoading
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-private const val MIN_LOADING_MS = 1000L
 
 data class ApartamentoDetailUiState(
     val apartamentoId: String = "",
@@ -51,10 +48,9 @@ class ApartamentoDetailViewModel(
             val showSpinner = _uiState.value.numero.isBlank()
             _uiState.update { it.copy(isLoading = showSpinner, isError = false) }
 
-            val minDelay = if (showSpinner) async { delay(MIN_LOADING_MS) } else null
-            val aptResult = getApartamentoUseCase(apartamentoId)
-            val moradoresResult = getMoradoresForApartamentoUseCase(apartamentoId)
-            minDelay?.await()
+            val (aptResult, moradoresResult) = withMinLoading(showSpinner) {
+                Pair(getApartamentoUseCase(apartamentoId), getMoradoresForApartamentoUseCase(apartamentoId))
+            }
 
             when {
                 aptResult.isSuccess && moradoresResult.isSuccess -> {

@@ -5,14 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.zalamena.condominios.condominio.domain.condominio.usecase.GetCondominiosUseCase
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.models.CondominioSummaryUiData
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.toSummaryUi
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
+import com.zalamena.condominios.common.ui.withMinLoading
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-private const val MIN_LOADING_MS = 1000L
 
 data class AdminHomeUiState(
     val condominios: List<CondominioSummaryUiData> = emptyList(),
@@ -38,9 +35,7 @@ class AdminHomeViewModel(
             val showSpinner = _uiState.value.condominios.isEmpty()
             _uiState.update { it.copy(isLoading = showSpinner, isError = false) }
 
-            val minDelay = if (showSpinner) async { delay(MIN_LOADING_MS) } else null
-            val result = getCondominiosUseCase()
-            minDelay?.await()
+            val result = withMinLoading(showSpinner) { getCondominiosUseCase() }
 
             when {
                 result.isSuccess -> {
