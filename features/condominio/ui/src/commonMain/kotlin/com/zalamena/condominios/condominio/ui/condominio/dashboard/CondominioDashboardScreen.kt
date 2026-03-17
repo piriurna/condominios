@@ -41,7 +41,8 @@ fun CondominioDashboardScreen(
     onNavigateToAddApartamento: (condominioId: String) -> Unit = {},
     onNavigateToApartamento: (apartamentoId: String) -> Unit = {},
     onNavigateToCreatePorteiro: (condominioId: String) -> Unit = {},
-    onNavigateToPorteiroList: (condominioId: String) -> Unit = {}
+    onNavigateToPorteiroList: (condominioId: String) -> Unit = {},
+    onLogout: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -74,6 +75,10 @@ fun CondominioDashboardScreen(
                 onNavigateToPorteiroList(event.condominioId)
                 viewModel.onNavigationHandled()
             }
+            is DashboardNavigationEvent.Logout -> {
+                onLogout()
+                viewModel.onNavigationHandled()
+            }
             null -> Unit
         }
     }
@@ -94,17 +99,23 @@ fun CondominioDashboardScreen(
                     }
                 },
                 actions = {
-                    Button(onClick = { viewModel.onPorteiroListClick() }) {
-                        Text("Porteiros")
-                    }
-                    Button(onClick = { viewModel.onCreatePorteiroClick() }) {
-                        Text("Criar Porteiro")
+                    if (uiState.isAdminMode) {
+                        Button(onClick = { viewModel.onPorteiroListClick() }) {
+                            Text("Porteiros")
+                        }
+                        Button(onClick = { viewModel.onCreatePorteiroClick() }) {
+                            Text("Criar Porteiro")
+                        }
+                    } else {
+                        Button(onClick = onLogout) {
+                            Text("Sair")
+                        }
                     }
                 }
             )
         },
         floatingActionButton = {
-            if (!uiState.isLoading && !uiState.isError) {
+            if (uiState.isAdminMode && !uiState.isLoading && !uiState.isError) {
                 FloatingActionButton(onClick = { viewModel.onAddApartamentoClick() }) {
                     Text("+")
                 }
@@ -128,9 +139,11 @@ fun CondominioDashboardScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text("Nenhum apartamento cadastrado")
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Button(onClick = { viewModel.onAddApartamentoClick() }) {
-                            Text("Criar primeiro apartamento")
+                        if (uiState.isAdminMode) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Button(onClick = { viewModel.onAddApartamentoClick() }) {
+                                Text("Criar primeiro apartamento")
+                            }
                         }
                     }
                 }

@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import kotlinx.coroutines.launch
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,9 +31,12 @@ import com.zalamena.condominios.condominio.ui.addmorador.flowController.AddMorad
 import com.zalamena.condominios.condominio.ui.addmorador.navigation.AddMoradorRoute
 import com.zalamena.condominios.condominio.ui.addmorador.navigation.addMoradorNavGraph
 import com.zalamena.condominios.condominio.ui.addmorador.overview.AddMoradorOverviewViewModel
+import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDashboardScreen
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDashboardViewModel
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.CondominioDashboardRoute
+import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.DoormanApartamentoDetailRoute
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.condominioDashboardNavHost
+import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.doormanApartamentoDetail
 import com.zalamena.condominios.condominio.ui.porteiro.list.PorteiroListViewModel
 import com.zalamena.condominios.pessoa.ui.addpessoa.AddPessoaViewModel
 import com.zalamena.login.domain.models.UserRole
@@ -72,7 +77,8 @@ fun AppNavHost(
     loginViewModel: LoginViewModel,
     adminHomeViewModel: AdminHomeViewModel,
     createUserViewModel: CreateUserViewModel,
-    porteiroListViewModel: PorteiroListViewModel
+    porteiroListViewModel: PorteiroListViewModel,
+    onLogout: suspend () -> Unit = {}
 ) {
     NavHost(navController, startDestination = SplashRoute) {
 
@@ -113,6 +119,7 @@ fun AppNavHost(
         }
 
         composable<AdminHomeRoute> {
+            val coroutineScope = rememberCoroutineScope()
             val lifecycleOwner = LocalLifecycleOwner.current
             DisposableEffect(lifecycleOwner) {
                 val observer = LifecycleEventObserver { _, event ->
@@ -128,6 +135,7 @@ fun AppNavHost(
                 viewModel = adminHomeViewModel,
                 onCondominioClick = { condominioId ->
                     condominioDashboardViewModel.setCondominioId(condominioId)
+                    condominioDashboardViewModel.setAdminMode(true)
                     navController.navigate(CondominioDashboardRoute)
                 },
                 onAddCondominioClick = {
@@ -137,26 +145,68 @@ fun AppNavHost(
                 onCreateUserClick = {
                     createUserViewModel.reset()
                     navController.navigate(CreateUserRoute)
+                },
+                onLogout = {
+                    coroutineScope.launch {
+                        onLogout()
+                        navController.navigate(LoginRoute) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
                 }
             )
         }
 
         composable<DoormanHomeRoute> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Porteiro Home")
+            val coroutineScope = rememberCoroutineScope()
+
+            val lifecycleOwner = LocalLifecycleOwner.current
+            DisposableEffect(lifecycleOwner) {
+                val observer = LifecycleEventObserver { _, event ->
+                    if (event == Lifecycle.Event.ON_RESUME) {
+                        condominioDashboardViewModel.loadCondominios()
+                    }
+                }
+                lifecycleOwner.lifecycle.addObserver(observer)
+                onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
             }
+
+            CondominioDashboardScreen(
+                viewModel = condominioDashboardViewModel,
+                onNavigateToApartamento = { apartamentoId ->
+                    apartamentoDetailViewModel.setApartamentoId(apartamentoId)
+                    navController.navigate(DoormanApartamentoDetailRoute)
+                },
+                onLogout = {
+                    coroutineScope.launch {
+                        onLogout()
+                        navController.navigate(LoginRoute) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                }
+            )
         }
+
+        doormanApartamentoDetail(apartamentoDetailViewModel)
 
         loginNavHost(
             navController,
             loginViewModel = loginViewModel,
             onLoginSuccess = { role ->
-                val destination = when (role) {
-                    is UserRole.Admin -> AdminHomeRoute
-                    is UserRole.Porteiro -> DoormanHomeRoute
-                }
-                navController.navigate(destination) {
-                    popUpTo(LoginRoute) { inclusive = true }
+                when (role) {
+                    is UserRole.Admin -> {
+                        navController.navigate(AdminHomeRoute) {
+                            popUpTo(LoginRoute) { inclusive = true }
+                        }
+                    }
+                    is UserRole.Porteiro -> {
+                        condominioDashboardViewModel.setCondominioId(role.condominioId)
+                        condominioDashboardViewModel.setAdminMode(false)
+                        navController.navigate(DoormanHomeRoute) {
+                            popUpTo(LoginRoute) { inclusive = true }
+                        }
+                    }
                 }
             }
         )

@@ -204,6 +204,48 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
         assertNull(viewModel.uiState.value.navigationEvent)
     }
 
+    // --- Admin mode ---
+
+    @Test
+    fun `GIVEN initial state WHEN observing THEN isAdminMode is true`() = runTest(testScheduler) {
+        assertTrue(viewModel.uiState.value.isAdminMode)
+    }
+
+    @Test
+    fun `GIVEN setAdminMode false WHEN observing THEN isAdminMode is false`() = runTest(testScheduler) {
+        viewModel.setAdminMode(false)
+        assertFalse(viewModel.uiState.value.isAdminMode)
+    }
+
+    // --- Doorman mode: condominio deleted = auto-logout ---
+
+    @Test
+    fun `GIVEN doorman mode WHEN condominio not found THEN emits Logout event`() = runTest(testScheduler) {
+        everySuspending { condominioRepository.getCondominios() } returns Result.success(emptyList())
+
+        viewModel.setAdminMode(false)
+        viewModel.setCondominioId("deleted-condo")
+        viewModel.loadCondominios()
+        advanceUntilIdle()
+
+        val event = viewModel.uiState.value.navigationEvent
+        assertIs<DashboardNavigationEvent.Logout>(event)
+    }
+
+    @Test
+    fun `GIVEN admin mode WHEN condominio not found THEN sets error state not logout`() = runTest(testScheduler) {
+        everySuspending { condominioRepository.getCondominios() } returns Result.success(emptyList())
+
+        viewModel.setAdminMode(true)
+        viewModel.setCondominioId("deleted-condo")
+        viewModel.loadCondominios()
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertTrue(state.isError)
+        assertNull(state.navigationEvent)
+    }
+
     // --- Stale data / refresh ---
 
     @Test

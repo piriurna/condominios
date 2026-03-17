@@ -62,6 +62,7 @@ import com.zalamena.login.domain.repository.CondominioValidator
 import com.zalamena.login.domain.repository.UserRepository
 import com.zalamena.login.domain.usecase.CreateUserUseCase
 import com.zalamena.login.domain.usecase.LoginUseCase
+import com.zalamena.login.domain.usecase.LogoutUseCase
 import com.zalamena.login.ui.LoginViewModel
 import com.zalamena.login.ui.SplashViewModel
 import com.zalamena.login.ui.createuser.CreateUserViewModel
@@ -85,7 +86,7 @@ val repositoryModule = module {
     single<CondominioRepository> { CondominioRepositoryImpl(get()) }
     single<MoradoresRepository> { MoradoresRepositoryImpl(get()) }
     single<AddPessoaFormValidator> { AddPessoaFormValidatorImpl() }
-    single<LoginApi> { FakeLoginApi() }
+    single<LoginApi> { FakeLoginApi(get()) }
     single<SessionRepository> { SessionRepositoryImpl() }
     single<LoginRepository> { LoginRepositoryImpl(get(), get()) }
     single<UserRepository> { UserRepositoryImpl() }
@@ -119,6 +120,7 @@ val repositoryModule = module {
 
 val useCaseModule = module {
     factory { LoginUseCase(get()) }
+    factory { LogoutUseCase(get()) }
     factory<AddPessoaUseCase> { AddPessoaUseCaseImpl(get(), get()) }
     factory<GetPessoaUseCase> { GetPessoaUseCaseImpl(get()) }
     factory<GetApartamentoUseCase> { GetApartamentoUseCaseImpl(get()) }

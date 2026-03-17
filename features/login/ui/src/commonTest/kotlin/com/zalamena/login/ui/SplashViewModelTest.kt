@@ -16,6 +16,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -52,14 +53,16 @@ class SplashViewModelTest : TestsWithMocks() {
     }
 
     @Test
-    fun `GIVEN logged in as porteiro WHEN splash starts THEN NavigateToDoormanHome is emitted`() = runTest {
+    fun `GIVEN logged in as porteiro WHEN splash starts THEN NavigateToDoormanHome is emitted with condominioId`() = runTest {
         everySuspending { loginRepository.isLoggedIn() } returns true
         everySuspending { loginRepository.getRole() } returns UserRole.Porteiro("condo-1")
 
         val viewModel = SplashViewModel(loginRepository)
         advanceUntilIdle()
 
-        assertEquals(SplashNavigationEvent.NavigateToDoormanHome, viewModel.navEvent.value)
+        val event = viewModel.navEvent.value
+        assertIs<SplashNavigationEvent.NavigateToDoormanHome>(event)
+        assertEquals("condo-1", event.condominioId)
     }
 
     @Test

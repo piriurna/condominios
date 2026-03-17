@@ -10,12 +10,14 @@ import kotlin.uuid.Uuid
 class UserRepositoryImpl : UserRepository {
 
     private val users = mutableListOf<User>()
+    private val passwords = mutableMapOf<String, String>()
 
     override suspend fun createUser(
         name: String,
         cpf: String,
         email: String,
-        role: UserRole
+        role: UserRole,
+        password: String
     ): Result<User> {
         return try {
             val user = User(
@@ -26,9 +28,21 @@ class UserRepositoryImpl : UserRepository {
                 role = role
             )
             users.add(user)
+            passwords[user.id] = password
             Result.success(user)
         } catch (e: Exception) {
             Result.failure(e)
+        }
+    }
+
+    override suspend fun authenticate(email: String, password: String): Result<User> {
+        val user = users.find { it.email == email }
+            ?: return Result.failure(NoSuchElementException("User not found"))
+        val storedPassword = passwords[user.id]
+        return if (storedPassword == password) {
+            Result.success(user)
+        } else {
+            Result.failure(IllegalArgumentException("Invalid password"))
         }
     }
 

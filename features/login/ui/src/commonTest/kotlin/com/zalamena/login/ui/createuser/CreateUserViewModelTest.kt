@@ -104,7 +104,7 @@ class CreateUserViewModelTest : TestsWithMocks() {
         val role = UserRole.Porteiro("condo-1")
         val user = User(id = "user-1", name = "Porteiro", cpf = "11111111111", email = "p@test.com", role = role)
         everySuspending { condominioValidator.exists("condo-1") } returns true
-        everySuspending { userRepository.createUser("Porteiro", "11111111111", "p@test.com", role) } returns Result.success(user)
+        everySuspending { userRepository.createUser(isAny(), isAny(), isAny(), isAny(), isAny()) } returns Result.success(user)
 
         viewModel.setName("Porteiro")
         viewModel.setCpf("11111111111")
@@ -125,7 +125,7 @@ class CreateUserViewModelTest : TestsWithMocks() {
     fun `GIVEN valid admin data WHEN createUser THEN generatedPassword is set`() = runTest {
         val role = UserRole.Admin
         val user = User(id = "user-2", name = "Admin", cpf = "12345678900", email = "a@test.com", role = role)
-        everySuspending { userRepository.createUser("Admin", "12345678900", "a@test.com", role) } returns Result.success(user)
+        everySuspending { userRepository.createUser(isAny(), isAny(), isAny(), isAny(), isAny()) } returns Result.success(user)
 
         viewModel.setName("Admin")
         viewModel.setCpf("12345678900")

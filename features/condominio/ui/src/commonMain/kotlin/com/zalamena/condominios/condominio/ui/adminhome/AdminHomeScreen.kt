@@ -25,7 +25,8 @@ fun AdminHomeScreen(
     viewModel: AdminHomeViewModel,
     onCondominioClick: (String) -> Unit,
     onAddCondominioClick: () -> Unit,
-    onCreateUserClick: () -> Unit = {}
+    onCreateUserClick: () -> Unit = {},
+    onLogout: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -54,6 +55,9 @@ fun AdminHomeScreen(
         actions = {
             Button(onClick = { viewModel.onCreateUserClick() }) {
                 Text("Criar Usuário")
+            }
+            Button(onClick = onLogout) {
+                Text("Sair")
             }
         },
         floatingActionButton = {

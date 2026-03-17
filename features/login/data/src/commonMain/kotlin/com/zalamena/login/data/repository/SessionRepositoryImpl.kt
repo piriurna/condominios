@@ -26,4 +26,11 @@ class SessionRepositoryImpl : SessionRepository {
     }
 
     override suspend fun getCondominioId(): String? = condominioId
+
+    override suspend fun clearSession() {
+        token = null
+        expiresIn = 0L
+        role = null
+        condominioId = null
+    }
 }

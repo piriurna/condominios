@@ -10,4 +10,6 @@ interface LoginRepository {
     suspend fun isLoggedIn(): Boolean
 
     suspend fun getRole(): UserRole?
+
+    suspend fun logout()
 }

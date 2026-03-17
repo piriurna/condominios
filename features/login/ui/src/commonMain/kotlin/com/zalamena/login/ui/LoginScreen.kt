@@ -37,7 +37,7 @@ fun LoginScreen(
                 viewModel.onNavigationHandled()
             }
             is LoginNavigationEvent.NavigateToDoormanHome -> {
-                onLoginSuccess(UserRole.Porteiro(""))
+                onLoginSuccess(UserRole.Porteiro((state.navigationEvent as LoginNavigationEvent.NavigateToDoormanHome).condominioId))
                 viewModel.onNavigationHandled()
             }
             null -> {}
@@ -58,7 +58,7 @@ fun LoginScreen(
         OutlinedTextField(
             value = state.username,
             onValueChange = viewModel::setUsername,
-            label = { Text("Usuário") },
+            label = { Text("Email") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             isError = state.usernameError != null,

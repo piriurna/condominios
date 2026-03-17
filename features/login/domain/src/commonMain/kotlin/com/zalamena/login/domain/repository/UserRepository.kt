@@ -9,7 +9,8 @@ interface UserRepository {
         name: String,
         cpf: String,
         email: String,
-        role: UserRole
+        role: UserRole,
+        password: String
     ): Result<User>
 
     suspend fun getUsers(): Result<List<User>>
@@ -19,4 +20,6 @@ interface UserRepository {
     suspend fun deleteUser(userId: String): Result<Unit>
 
     suspend fun updateUserRole(userId: String, newRole: UserRole): Result<Unit>
+
+    suspend fun authenticate(email: String, password: String): Result<User>
 }

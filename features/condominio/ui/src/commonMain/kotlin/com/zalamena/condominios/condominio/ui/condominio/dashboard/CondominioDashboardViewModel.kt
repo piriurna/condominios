@@ -18,6 +18,7 @@ data class CondominioDashboardUiState(
     val totalApartamentos: Int = 0,
     val isLoading: Boolean = true,
     val isError: Boolean = false,
+    val isAdminMode: Boolean = true,
     val navigationEvent: DashboardNavigationEvent? = null
 )
 
@@ -26,6 +27,7 @@ sealed class DashboardNavigationEvent {
     data class ApartamentoDetails(val apartamentoId: String) : DashboardNavigationEvent()
     data class CreatePorteiro(val condominioId: String) : DashboardNavigationEvent()
     data class PorteiroList(val condominioId: String) : DashboardNavigationEvent()
+    object Logout : DashboardNavigationEvent()
 }
 
 class CondominioDashboardViewModel(
@@ -37,6 +39,10 @@ class CondominioDashboardViewModel(
 
     fun setCondominioId(condominioId: String) {
         _uiState.update { it.copy(condominioId = condominioId) }
+    }
+
+    fun setAdminMode(isAdmin: Boolean) {
+        _uiState.update { it.copy(isAdminMode = isAdmin) }
     }
 
     fun loadCondominios() {
@@ -63,7 +69,11 @@ class CondominioDashboardViewModel(
                             )
                         }
                     } else {
-                        _uiState.update { it.copy(isLoading = false, isError = true) }
+                        if (!_uiState.value.isAdminMode) {
+                            _uiState.update { it.copy(isLoading = false, navigationEvent = DashboardNavigationEvent.Logout) }
+                        } else {
+                            _uiState.update { it.copy(isLoading = false, isError = true) }
+                        }
                     }
                 }
                 result.isFailure -> {
