@@ -31,6 +31,7 @@ class LoginUseCaseTest: TestsWithMocks() {
         val email = "email"
 
         everySuspending { loginRepository.login(username, password) } returns Result.success(User(
+            id = "user-1",
             name = username,
             cpf = cpf,
             email = email,

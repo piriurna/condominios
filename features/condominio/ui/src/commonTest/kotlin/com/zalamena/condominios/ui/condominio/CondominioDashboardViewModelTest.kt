@@ -179,6 +179,24 @@ class CondominioDashboardViewModelTest : TestsWithMocks() {
     }
 
     @Test
+    fun `GIVEN condominioId set WHEN onPorteiroListClick THEN emits PorteiroList event with condominioId`() = runTest(testScheduler) {
+        loadCondominio(Condominio.dummy)
+
+        viewModel.onPorteiroListClick()
+
+        val event = viewModel.uiState.value.navigationEvent
+        assertIs<DashboardNavigationEvent.PorteiroList>(event)
+        assertEquals(Condominio.dummy.id, event.condominioId)
+    }
+
+    @Test
+    fun `GIVEN blank condominioId WHEN onPorteiroListClick THEN does not emit event`() = runTest(testScheduler) {
+        viewModel.onPorteiroListClick()
+
+        assertNull(viewModel.uiState.value.navigationEvent)
+    }
+
+    @Test
     fun `GIVEN nav event WHEN handled THEN navigation event is cleared`() = runTest(testScheduler) {
         viewModel.onApartamentoClick("apt-123")
         viewModel.onNavigationHandled()

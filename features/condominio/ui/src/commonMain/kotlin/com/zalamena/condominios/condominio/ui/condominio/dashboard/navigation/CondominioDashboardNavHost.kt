@@ -12,6 +12,8 @@ import com.zalamena.condominios.condominio.ui.apartamento.detail.ApartamentoDeta
 import com.zalamena.condominios.condominio.ui.apartamento.detail.ApartamentoDetailViewModel
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDashboardScreen
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDashboardViewModel
+import com.zalamena.condominios.condominio.ui.porteiro.list.PorteiroListScreen
+import com.zalamena.condominios.condominio.ui.porteiro.list.PorteiroListViewModel
 import com.zalamena.login.ui.createuser.CreateUserViewModel
 import com.zalamena.login.ui.createuser.RoleOption
 import com.zalamena.login.ui.createuser.navigation.CreateUserRoute
@@ -26,13 +28,17 @@ object CondominioDashboardScreenRoute
 @Serializable
 object ApartamentoDetailScreenRoute
 
+@Serializable
+object PorteiroListRoute
+
 fun NavGraphBuilder.condominioDashboardNavHost(
     navController: NavController,
     viewModel: CondominioDashboardViewModel,
     addApartamentoViewModel: AddApartamentoViewModel,
     apartamentoDetailViewModel: ApartamentoDetailViewModel,
     addMoradorFlowViewModel: AddMoradorFlowViewModel,
-    createUserViewModel: CreateUserViewModel
+    createUserViewModel: CreateUserViewModel,
+    porteiroListViewModel: PorteiroListViewModel
 ) {
     navigation<CondominioDashboardRoute>(startDestination = CondominioDashboardScreenRoute) {
         composable<CondominioDashboardScreenRoute> {
@@ -52,6 +58,10 @@ fun NavGraphBuilder.condominioDashboardNavHost(
                     createUserViewModel.setRole(RoleOption.PORTEIRO)
                     createUserViewModel.setCondominioId(condominioId)
                     navController.navigate(CreateUserRoute)
+                },
+                onNavigateToPorteiroList = { condominioId ->
+                    porteiroListViewModel.setCondominioId(condominioId)
+                    navController.navigate(PorteiroListRoute)
                 }
             )
         }
@@ -65,6 +75,10 @@ fun NavGraphBuilder.condominioDashboardNavHost(
                     navController.navigate(AddMoradorRoute)
                 }
             )
+        }
+
+        composable<PorteiroListRoute> {
+            PorteiroListScreen(viewModel = porteiroListViewModel)
         }
     }
 }

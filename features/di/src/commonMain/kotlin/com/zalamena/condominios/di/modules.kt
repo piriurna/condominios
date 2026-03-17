@@ -28,6 +28,15 @@ import com.zalamena.condominios.condominio.ui.addmorador.flowController.AddMorad
 import com.zalamena.condominios.condominio.ui.addmorador.overview.AddMoradorOverviewViewModel
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDashboardViewModel
 import com.zalamena.condominios.condominio.ui.condominio.overview.CondominioOverviewViewModel
+import com.zalamena.condominios.condominio.ui.porteiro.list.PorteiroListViewModel
+import com.zalamena.condominios.condominio.domain.porteiro.models.PorteiroInfo
+import com.zalamena.condominios.condominio.domain.porteiro.repository.PorteiroDeleter
+import com.zalamena.condominios.condominio.domain.porteiro.repository.PorteiroProvider
+import com.zalamena.condominios.condominio.domain.porteiro.repository.PorteiroReassigner
+import com.zalamena.condominios.condominio.domain.porteiro.usecase.DeletePorteiroUseCase
+import com.zalamena.condominios.condominio.domain.porteiro.usecase.GetPorteirosByCondominioUseCase
+import com.zalamena.condominios.condominio.domain.porteiro.usecase.ReassignPorteiroUseCase
+import com.zalamena.login.domain.models.UserRole
 import com.zalamena.condominios.condominio.ui.moradores.add.AddMoradorViewModel
 import com.zalamena.condominios.condominio.ui.moradores.list.MoradoresListViewModel
 import com.zalamena.condominios.database.AppDatabase
@@ -81,6 +90,31 @@ val repositoryModule = module {
     single<LoginRepository> { LoginRepositoryImpl(get(), get()) }
     single<UserRepository> { UserRepositoryImpl() }
     single<CondominioValidator> { CondominioValidator { id -> get<CondominioRepository>().getCondominio(id).isSuccess } }
+    single<PorteiroProvider> {
+        PorteiroProvider { condominioId ->
+            get<UserRepository>().getUsersByCondominioId(condominioId).map { users ->
+                users.map { user ->
+                    PorteiroInfo(
+                        id = user.id,
+                        name = user.name,
+                        cpf = user.cpf,
+                        email = user.email,
+                        condominioId = (user.role as UserRole.Porteiro).condominioId
+                    )
+                }
+            }
+        }
+    }
+    single<PorteiroDeleter> {
+        PorteiroDeleter { porteiroId ->
+            get<UserRepository>().deleteUser(porteiroId)
+        }
+    }
+    single<PorteiroReassigner> {
+        PorteiroReassigner { porteiroId, newCondominioId ->
+            get<UserRepository>().updateUserRole(porteiroId, UserRole.Porteiro(newCondominioId))
+        }
+    }
 }
 
 val useCaseModule = module {
@@ -98,6 +132,9 @@ val useCaseModule = module {
     factory<AddMoradorUseCase> { AddMoradorUseCaseImpl(get()) }
     factory { GetMoradoresForApartamentoUseCase(get()) }
     factory { CreateUserUseCase(get(), get()) }
+    factory { GetPorteirosByCondominioUseCase(get()) }
+    factory { DeletePorteiroUseCase(get()) }
+    factory { ReassignPorteiroUseCase(get(), get()) }
 }
 
 val viewModelModule = module {
@@ -115,4 +152,5 @@ val viewModelModule = module {
     viewModelOf(::LoginViewModel)
     viewModelOf(::SplashViewModel)
     viewModelOf(::CreateUserViewModel)
+    viewModelOf(::PorteiroListViewModel)
 }
