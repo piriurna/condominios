@@ -26,6 +26,10 @@ class LoginRepositoryImpl (
         }
     }
 
+    override suspend fun logout() {
+        sessionRepository.clearSession()
+    }
+
     override suspend fun login(username: String, password: String): Result<User> {
         return try {
             val session = loginApi.login(username, password)

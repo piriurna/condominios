@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 sealed class SplashNavigationEvent {
     object NavigateToLogin : SplashNavigationEvent()
     object NavigateToAdminHome : SplashNavigationEvent()
-    object NavigateToDoormanHome : SplashNavigationEvent()
+    data class NavigateToDoormanHome(val condominioId: String) : SplashNavigationEvent()
 }
 
 class SplashViewModel(
@@ -26,7 +26,7 @@ class SplashViewModel(
             if (loginRepository.isLoggedIn()) {
                 val role = loginRepository.getRole()
                 _navEvent.value = when (role) {
-                    is UserRole.Porteiro -> SplashNavigationEvent.NavigateToDoormanHome
+                    is UserRole.Porteiro -> SplashNavigationEvent.NavigateToDoormanHome(role.condominioId)
                     is UserRole.Admin -> SplashNavigationEvent.NavigateToAdminHome
                     null -> SplashNavigationEvent.NavigateToLogin
                 }

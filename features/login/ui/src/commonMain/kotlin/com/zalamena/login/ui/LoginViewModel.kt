@@ -21,7 +21,7 @@ data class LoginUiState(
 
 sealed class LoginNavigationEvent {
     object NavigateToAdminHome : LoginNavigationEvent()
-    object NavigateToDoormanHome : LoginNavigationEvent()
+    data class NavigateToDoormanHome(val condominioId: String) : LoginNavigationEvent()
 }
 
 class LoginViewModel(
@@ -53,9 +53,9 @@ class LoginViewModel(
             _uiState.update { it.copy(isLoading = true, error = null) }
             loginUseCase(_uiState.value.username, _uiState.value.password)
                 .onSuccess { user ->
-                    val navEvent = when (user.role) {
+                    val navEvent = when (val role = user.role) {
                         is UserRole.Admin -> LoginNavigationEvent.NavigateToAdminHome
-                        is UserRole.Porteiro -> LoginNavigationEvent.NavigateToDoormanHome
+                        is UserRole.Porteiro -> LoginNavigationEvent.NavigateToDoormanHome(role.condominioId)
                     }
                     _uiState.update {
                         it.copy(isLoading = false, navigationEvent = navEvent)

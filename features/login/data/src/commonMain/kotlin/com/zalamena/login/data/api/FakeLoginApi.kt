@@ -2,25 +2,53 @@ package com.zalamena.login.data.api
 
 import com.zalamena.login.data.models.LoginSessionDto
 import com.zalamena.login.data.models.UserDto
+import com.zalamena.login.domain.models.UserRole
 import com.zalamena.login.domain.repository.LoginException
+import com.zalamena.login.domain.repository.UserRepository
 
-class FakeLoginApi : LoginApi {
+class FakeLoginApi(
+    private val userRepository: UserRepository
+) : LoginApi {
 
     override suspend fun login(username: String, password: String): LoginSessionDto {
-        return when {
-            username == "admin" && password == "admin" ->
-                LoginSessionDto(token = "fake-token-admin", userId = "user-1", expiresIn = 86400L)
-            username == "porteiro" && password == "porteiro" ->
-                LoginSessionDto(token = "fake-token-porteiro", userId = "user-2", expiresIn = 86400L)
-            else -> throw LoginException.InvalidCredentialsException
+        if (username == "admin" && password == "admin") {
+            return LoginSessionDto(token = "fake-token-admin", userId = "user-1", expiresIn = 86400L)
         }
+
+        val result = userRepository.authenticate(username, password)
+        if (result.isSuccess) {
+            val user = result.getOrThrow()
+            return LoginSessionDto(
+                token = "fake-token-${user.id}",
+                userId = user.id,
+                expiresIn = 86400L
+            )
+        }
+
+        throw LoginException.InvalidCredentialsException
     }
 
     override suspend fun getUser(userId: String): UserDto? {
-        return when (userId) {
-            "user-1" -> UserDto(username = "Administrador", cpf = "00000000000", email = "admin@condominio.com", role = "ADMIN")
-            "user-2" -> UserDto(username = "Porteiro", cpf = "11111111111", email = "porteiro@condominio.com", role = "PORTEIRO", condominioId = "condo-default")
-            else -> null
+        if (userId == "user-1") {
+            return UserDto(username = "Administrador", cpf = "00000000000", email = "admin@condominio.com", role = "ADMIN")
         }
+
+        val user = userRepository.getUsers().getOrNull()?.find { it.id == userId } ?: return null
+
+        val condominioId = when (val role = user.role) {
+            is UserRole.Porteiro -> role.condominioId
+            is UserRole.Admin -> null
+        }
+
+        return UserDto(
+            username = user.name,
+            cpf = user.cpf,
+            email = user.email,
+            role = when (user.role) {
+                is UserRole.Admin -> "ADMIN"
+                is UserRole.Porteiro -> "PORTEIRO"
+            },
+            condominioId = condominioId
+        )
     }
 }

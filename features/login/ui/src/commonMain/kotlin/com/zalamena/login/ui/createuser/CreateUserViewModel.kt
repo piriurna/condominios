@@ -82,16 +82,18 @@ class CreateUserViewModel(
                 }
             }
 
+            val password = generatePassword()
+
             val result = createUserUseCase(
                 name = state.name,
                 cpf = state.cpf,
                 email = state.email,
-                role = role
+                role = role,
+                password = password
             )
 
             result
                 .onSuccess {
-                    val password = generatePassword()
                     _uiState.update {
                         it.copy(
                             isLoading = false,

@@ -21,7 +21,8 @@ class CreateUserUseCase(
         name: String,
         cpf: String,
         email: String,
-        role: UserRole
+        role: UserRole,
+        password: String
     ): Result<User> {
         if (name.isBlank()) return Result.failure(CreateUserError.EmptyName)
         if (cpf.isBlank()) return Result.failure(CreateUserError.EmptyCpf)
@@ -35,7 +36,8 @@ class CreateUserUseCase(
             name = name.trim(),
             cpf = cpf.trim(),
             email = email.trim(),
-            role = role
+            role = role,
+            password = password
         )
     }
 }

@@ -33,6 +33,7 @@ import com.zalamena.condominios.condominio.ui.apartamento.detail.models.MoradorD
 @Composable
 fun ApartamentoDetailScreen(
     viewModel: ApartamentoDetailViewModel,
+    isAdminMode: Boolean = true,
     onNavigateToAddMorador: (apartamentoId: String) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -72,6 +73,7 @@ fun ApartamentoDetailScreen(
             else -> {
                 ApartamentoDetailContent(
                     uiState = uiState,
+                    isAdminMode = isAdminMode,
                     onAddMoradorClick = viewModel::onAddMoradorClick
                 )
             }
@@ -82,6 +84,7 @@ fun ApartamentoDetailScreen(
 @Composable
 private fun ApartamentoDetailContent(
     uiState: ApartamentoDetailUiState,
+    isAdminMode: Boolean = true,
     onAddMoradorClick: () -> Unit = {}
 ) {
     Column(
@@ -107,9 +110,11 @@ private fun ApartamentoDetailContent(
             }
         }
 
-        Spacer(Modifier.height(16.dp))
-        Button(onClick = onAddMoradorClick, modifier = Modifier.fillMaxWidth()) {
-            Text("+ Adicionar Morador")
+        if (isAdminMode) {
+            Spacer(Modifier.height(16.dp))
+            Button(onClick = onAddMoradorClick, modifier = Modifier.fillMaxWidth()) {
+                Text("+ Adicionar Morador")
+            }
         }
     }
 }

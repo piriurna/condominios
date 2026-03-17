@@ -19,6 +19,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -88,7 +89,7 @@ class LoginViewModelTest : TestsWithMocks() {
     }
 
     @Test
-    fun `GIVEN porteiro login succeeds THEN navigationEvent is NavigateToDoormanHome`() = runTest {
+    fun `GIVEN porteiro login succeeds THEN navigationEvent is NavigateToDoormanHome with condominioId`() = runTest {
         val user = User(id = "user-2", name = "Porteiro", cpf = "11111111111", email = "porteiro@test.com", role = UserRole.Porteiro("condo-1"))
         everySuspending { loginRepository.login(isAny(), isAny()) } returns Result.success(user)
 
@@ -98,7 +99,9 @@ class LoginViewModelTest : TestsWithMocks() {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertEquals(LoginNavigationEvent.NavigateToDoormanHome, state.navigationEvent)
+        val navEvent = state.navigationEvent
+        assertIs<LoginNavigationEvent.NavigateToDoormanHome>(navEvent)
+        assertEquals("condo-1", navEvent.condominioId)
         assertTrue(!state.isLoading)
     }
 

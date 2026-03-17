@@ -31,9 +31,9 @@ class CreateUserUseCaseTest : TestsWithMocks() {
     fun `GIVEN valid admin data WHEN creating user THEN returns success`() = runTest {
         val role = UserRole.Admin
         val user = User(id = "user-1", name = "Admin", cpf = "12345678900", email = "admin@test.com", role = role)
-        everySuspending { userRepository.createUser("Admin", "12345678900", "admin@test.com", role) } returns Result.success(user)
+        everySuspending { userRepository.createUser("Admin", "12345678900", "admin@test.com", role, "pass123") } returns Result.success(user)
 
-        val result = useCase("Admin", "12345678900", "admin@test.com", role)
+        val result = useCase("Admin", "12345678900", "admin@test.com", role, "pass123")
 
         assertTrue(result.isSuccess)
         assertEquals("Admin", result.getOrThrow().name)
@@ -45,9 +45,9 @@ class CreateUserUseCaseTest : TestsWithMocks() {
         val role = UserRole.Porteiro("condo-1")
         val user = User(id = "user-2", name = "Porteiro", cpf = "11111111111", email = "porteiro@test.com", role = role)
         everySuspending { condominioValidator.exists("condo-1") } returns true
-        everySuspending { userRepository.createUser("Porteiro", "11111111111", "porteiro@test.com", role) } returns Result.success(user)
+        everySuspending { userRepository.createUser("Porteiro", "11111111111", "porteiro@test.com", role, "pass123") } returns Result.success(user)
 
-        val result = useCase("Porteiro", "11111111111", "porteiro@test.com", role)
+        val result = useCase("Porteiro", "11111111111", "porteiro@test.com", role, "pass123")
 
         assertTrue(result.isSuccess)
         val resultRole = result.getOrThrow().role
@@ -60,7 +60,7 @@ class CreateUserUseCaseTest : TestsWithMocks() {
         val role = UserRole.Porteiro("nonexistent-condo")
         everySuspending { condominioValidator.exists("nonexistent-condo") } returns false
 
-        val result = useCase("Porteiro", "11111111111", "porteiro@test.com", role)
+        val result = useCase("Porteiro", "11111111111", "porteiro@test.com", role, "pass123")
 
         assertTrue(result.isFailure)
         assertIs<CreateUserError.CondominioNotFound>(result.exceptionOrNull())
@@ -68,7 +68,7 @@ class CreateUserUseCaseTest : TestsWithMocks() {
 
     @Test
     fun `GIVEN empty name WHEN creating user THEN returns EmptyName error`() = runTest {
-        val result = useCase("", "12345678900", "admin@test.com", UserRole.Admin)
+        val result = useCase("", "12345678900", "admin@test.com", UserRole.Admin, "pass123")
 
         assertTrue(result.isFailure)
         assertIs<CreateUserError.EmptyName>(result.exceptionOrNull())
@@ -76,7 +76,7 @@ class CreateUserUseCaseTest : TestsWithMocks() {
 
     @Test
     fun `GIVEN blank name WHEN creating user THEN returns EmptyName error`() = runTest {
-        val result = useCase("   ", "12345678900", "admin@test.com", UserRole.Admin)
+        val result = useCase("   ", "12345678900", "admin@test.com", UserRole.Admin, "pass123")
 
         assertTrue(result.isFailure)
         assertIs<CreateUserError.EmptyName>(result.exceptionOrNull())
@@ -84,7 +84,7 @@ class CreateUserUseCaseTest : TestsWithMocks() {
 
     @Test
     fun `GIVEN empty cpf WHEN creating user THEN returns EmptyCpf error`() = runTest {
-        val result = useCase("Admin", "", "admin@test.com", UserRole.Admin)
+        val result = useCase("Admin", "", "admin@test.com", UserRole.Admin, "pass123")
 
         assertTrue(result.isFailure)
         assertIs<CreateUserError.EmptyCpf>(result.exceptionOrNull())
@@ -92,7 +92,7 @@ class CreateUserUseCaseTest : TestsWithMocks() {
 
     @Test
     fun `GIVEN empty email WHEN creating user THEN returns EmptyEmail error`() = runTest {
-        val result = useCase("Admin", "12345678900", "", UserRole.Admin)
+        val result = useCase("Admin", "12345678900", "", UserRole.Admin, "pass123")
 
         assertTrue(result.isFailure)
         assertIs<CreateUserError.EmptyEmail>(result.exceptionOrNull())
@@ -102,9 +102,9 @@ class CreateUserUseCaseTest : TestsWithMocks() {
     fun `GIVEN name with whitespace WHEN creating user THEN name is trimmed`() = runTest {
         val role = UserRole.Admin
         val user = User(id = "user-3", name = "Admin", cpf = "12345678900", email = "admin@test.com", role = role)
-        everySuspending { userRepository.createUser("Admin", "12345678900", "admin@test.com", role) } returns Result.success(user)
+        everySuspending { userRepository.createUser("Admin", "12345678900", "admin@test.com", role, "pass123") } returns Result.success(user)
 
-        val result = useCase("  Admin  ", "  12345678900  ", "  admin@test.com  ", role)
+        val result = useCase("  Admin  ", "  12345678900  ", "  admin@test.com  ", role, "pass123")
 
         assertTrue(result.isSuccess)
     }
