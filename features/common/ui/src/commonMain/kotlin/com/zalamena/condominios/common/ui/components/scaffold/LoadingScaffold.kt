@@ -2,6 +2,7 @@ package com.zalamena.condominios.common.ui.components.scaffold
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
@@ -23,6 +24,7 @@ fun LoadingScaffold(
     title: String,
     modifier: Modifier = Modifier,
     errorMessage: String = "Erro ao carregar dados",
+    actions: @Composable RowScope.() -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
     floatingActionButtonPosition: FabPosition = FabPosition.End,
     content: @Composable (PaddingValues) -> Unit
@@ -30,7 +32,7 @@ fun LoadingScaffold(
     Scaffold(
         modifier = modifier,
         topBar = {
-            TopAppBar(title = { Text(title) })
+            TopAppBar(title = { Text(title) }, actions = actions)
         },
         floatingActionButton = {
             if (!isLoading && !isError) {

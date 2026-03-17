@@ -73,7 +73,7 @@ class LoginViewModelTest : TestsWithMocks() {
 
     @Test
     fun `GIVEN admin login succeeds THEN navigationEvent is NavigateToAdminHome and isLoading is false`() = runTest {
-        val user = User(name = "Admin", cpf = "00000000000", email = "admin@test.com", role = UserRole.ADMIN)
+        val user = User(name = "Admin", cpf = "00000000000", email = "admin@test.com", role = UserRole.Admin)
         everySuspending { loginRepository.login(isAny(), isAny()) } returns Result.success(user)
 
         viewModel.setUsername("admin")
@@ -89,7 +89,7 @@ class LoginViewModelTest : TestsWithMocks() {
 
     @Test
     fun `GIVEN porteiro login succeeds THEN navigationEvent is NavigateToDoormanHome`() = runTest {
-        val user = User(name = "Porteiro", cpf = "11111111111", email = "porteiro@test.com", role = UserRole.PORTEIRO)
+        val user = User(name = "Porteiro", cpf = "11111111111", email = "porteiro@test.com", role = UserRole.Porteiro("condo-1"))
         everySuspending { loginRepository.login(isAny(), isAny()) } returns Result.success(user)
 
         viewModel.setUsername("porteiro")
@@ -133,7 +133,7 @@ class LoginViewModelTest : TestsWithMocks() {
 
     @Test
     fun `GIVEN onNavigationHandled called after success THEN navigationEvent is cleared`() = runTest {
-        val user = User(name = "Admin", cpf = "00000000000", email = "admin@test.com", role = UserRole.ADMIN)
+        val user = User(name = "Admin", cpf = "00000000000", email = "admin@test.com", role = UserRole.Admin)
         everySuspending { loginRepository.login(isAny(), isAny()) } returns Result.success(user)
 
         viewModel.setUsername("admin")

@@ -35,6 +35,9 @@ import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.co
 import com.zalamena.condominios.pessoa.ui.addpessoa.AddPessoaViewModel
 import com.zalamena.login.domain.models.UserRole
 import com.zalamena.login.ui.LoginViewModel
+import com.zalamena.login.ui.createuser.CreateUserViewModel
+import com.zalamena.login.ui.createuser.navigation.CreateUserRoute
+import com.zalamena.login.ui.createuser.navigation.createUserNavHost
 import com.zalamena.login.ui.navigation.LoginRoute
 import com.zalamena.login.ui.navigation.loginNavHost
 import kotlinx.serialization.Serializable
@@ -66,7 +69,8 @@ fun AppNavHost(
     addCondominioViewModel: AddCondominioViewModel,
     apartamentoDetailViewModel: ApartamentoDetailViewModel,
     loginViewModel: LoginViewModel,
-    adminHomeViewModel: AdminHomeViewModel
+    adminHomeViewModel: AdminHomeViewModel,
+    createUserViewModel: CreateUserViewModel
 ) {
     NavHost(navController, startDestination = SplashRoute) {
 
@@ -92,6 +96,9 @@ fun AppNavHost(
                     }
                     Button(onClick = { navController.navigate(AddCondominioRoute) }) {
                         Text("Adicionar Condomínio")
+                    }
+                    Button(onClick = { navController.navigate(CreateUserRoute) }) {
+                        Text("Criar Usuário")
                     }
                     Button(onClick = { navController.navigate(AddMoradorRoute) }) {
                         Text("Go to Add Morador Flow from scratch")
@@ -124,6 +131,10 @@ fun AppNavHost(
                 onAddCondominioClick = {
                     addCondominioViewModel.reset()
                     navController.navigate(AddCondominioRoute)
+                },
+                onCreateUserClick = {
+                    createUserViewModel.reset()
+                    navController.navigate(CreateUserRoute)
                 }
             )
         }
@@ -139,8 +150,8 @@ fun AppNavHost(
             loginViewModel = loginViewModel,
             onLoginSuccess = { role ->
                 val destination = when (role) {
-                    UserRole.ADMIN -> AdminHomeRoute
-                    UserRole.PORTEIRO -> DoormanHomeRoute
+                    is UserRole.Admin -> AdminHomeRoute
+                    is UserRole.Porteiro -> DoormanHomeRoute
                 }
                 navController.navigate(destination) {
                     popUpTo(LoginRoute) { inclusive = true }
@@ -166,12 +177,18 @@ fun AppNavHost(
             condominioDashboardViewModel,
             addApartamentoViewModel,
             apartamentoDetailViewModel,
-            addMoradorFlowViewModel
+            addMoradorFlowViewModel,
+            createUserViewModel
         )
 
         addCondominioNavHost(
             navController,
             addCondominioViewModel
+        )
+
+        createUserNavHost(
+            navController,
+            createUserViewModel
         )
     }
 }

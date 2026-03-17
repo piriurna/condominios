@@ -33,11 +33,11 @@ fun LoginScreen(
     LaunchedEffect(state.navigationEvent) {
         when (state.navigationEvent) {
             is LoginNavigationEvent.NavigateToAdminHome -> {
-                onLoginSuccess(UserRole.ADMIN)
+                onLoginSuccess(UserRole.Admin)
                 viewModel.onNavigationHandled()
             }
             is LoginNavigationEvent.NavigateToDoormanHome -> {
-                onLoginSuccess(UserRole.PORTEIRO)
+                onLoginSuccess(UserRole.Porteiro(""))
                 viewModel.onNavigationHandled()
             }
             null -> {}

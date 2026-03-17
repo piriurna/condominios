@@ -54,8 +54,8 @@ class LoginViewModel(
             loginUseCase(_uiState.value.username, _uiState.value.password)
                 .onSuccess { user ->
                     val navEvent = when (user.role) {
-                        UserRole.ADMIN -> LoginNavigationEvent.NavigateToAdminHome
-                        UserRole.PORTEIRO -> LoginNavigationEvent.NavigateToDoormanHome
+                        is UserRole.Admin -> LoginNavigationEvent.NavigateToAdminHome
+                        is UserRole.Porteiro -> LoginNavigationEvent.NavigateToDoormanHome
                     }
                     _uiState.update {
                         it.copy(isLoading = false, navigationEvent = navEvent)

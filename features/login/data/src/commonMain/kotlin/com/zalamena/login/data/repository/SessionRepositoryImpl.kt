@@ -5,6 +5,7 @@ class SessionRepositoryImpl : SessionRepository {
     private var token: String? = null
     private var expiresIn: Long = 0L
     private var role: String? = null
+    private var condominioId: String? = null
 
     override suspend fun saveSession(authToken: String, expiresIn: Long, role: String) {
         token = authToken
@@ -19,4 +20,10 @@ class SessionRepositoryImpl : SessionRepository {
     }
 
     override suspend fun getRole(): String? = role
+
+    override suspend fun saveCondominioId(condominioId: String) {
+        this.condominioId = condominioId
+    }
+
+    override suspend fun getCondominioId(): String? = condominioId
 }

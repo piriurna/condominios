@@ -34,7 +34,7 @@ class LoginUseCaseTest: TestsWithMocks() {
             name = username,
             cpf = cpf,
             email = email,
-            role = UserRole.ADMIN
+            role = UserRole.Admin
         ))
 
 

@@ -12,6 +12,9 @@ import com.zalamena.condominios.condominio.ui.apartamento.detail.ApartamentoDeta
 import com.zalamena.condominios.condominio.ui.apartamento.detail.ApartamentoDetailViewModel
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDashboardScreen
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDashboardViewModel
+import com.zalamena.login.ui.createuser.CreateUserViewModel
+import com.zalamena.login.ui.createuser.RoleOption
+import com.zalamena.login.ui.createuser.navigation.CreateUserRoute
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -28,7 +31,8 @@ fun NavGraphBuilder.condominioDashboardNavHost(
     viewModel: CondominioDashboardViewModel,
     addApartamentoViewModel: AddApartamentoViewModel,
     apartamentoDetailViewModel: ApartamentoDetailViewModel,
-    addMoradorFlowViewModel: AddMoradorFlowViewModel
+    addMoradorFlowViewModel: AddMoradorFlowViewModel,
+    createUserViewModel: CreateUserViewModel
 ) {
     navigation<CondominioDashboardRoute>(startDestination = CondominioDashboardScreenRoute) {
         composable<CondominioDashboardScreenRoute> {
@@ -42,6 +46,12 @@ fun NavGraphBuilder.condominioDashboardNavHost(
                 onNavigateToApartamento = { apartamentoId ->
                     apartamentoDetailViewModel.setApartamentoId(apartamentoId)
                     navController.navigate(ApartamentoDetailScreenRoute)
+                },
+                onNavigateToCreatePorteiro = { condominioId ->
+                    createUserViewModel.reset()
+                    createUserViewModel.setRole(RoleOption.PORTEIRO)
+                    createUserViewModel.setCondominioId(condominioId)
+                    navController.navigate(CreateUserRoute)
                 }
             )
         }

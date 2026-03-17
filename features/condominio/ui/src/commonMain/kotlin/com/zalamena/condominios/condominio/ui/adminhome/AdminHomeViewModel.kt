@@ -20,6 +20,7 @@ data class AdminHomeUiState(
 
 sealed class AdminHomeNavigationEvent {
     data object AddCondominio : AdminHomeNavigationEvent()
+    data object CreateUser : AdminHomeNavigationEvent()
     data class CondominioDetails(val condominioId: String) : AdminHomeNavigationEvent()
 }
 
@@ -62,6 +63,12 @@ class AdminHomeViewModel(
     fun onAddCondominioClick() {
         _uiState.update {
             it.copy(navigationEvent = AdminHomeNavigationEvent.AddCondominio)
+        }
+    }
+
+    fun onCreateUserClick() {
+        _uiState.update {
+            it.copy(navigationEvent = AdminHomeNavigationEvent.CreateUser)
         }
     }
 
