@@ -32,6 +32,7 @@ import com.zalamena.condominios.condominio.ui.addmorador.overview.AddMoradorOver
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDashboardViewModel
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.CondominioDashboardRoute
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.condominioDashboardNavHost
+import com.zalamena.condominios.condominio.ui.porteiro.list.PorteiroListViewModel
 import com.zalamena.condominios.pessoa.ui.addpessoa.AddPessoaViewModel
 import com.zalamena.login.domain.models.UserRole
 import com.zalamena.login.ui.LoginViewModel
@@ -70,7 +71,8 @@ fun AppNavHost(
     apartamentoDetailViewModel: ApartamentoDetailViewModel,
     loginViewModel: LoginViewModel,
     adminHomeViewModel: AdminHomeViewModel,
-    createUserViewModel: CreateUserViewModel
+    createUserViewModel: CreateUserViewModel,
+    porteiroListViewModel: PorteiroListViewModel
 ) {
     NavHost(navController, startDestination = SplashRoute) {
 
@@ -178,7 +180,8 @@ fun AppNavHost(
             addApartamentoViewModel,
             apartamentoDetailViewModel,
             addMoradorFlowViewModel,
-            createUserViewModel
+            createUserViewModel,
+            porteiroListViewModel
         )
 
         addCondominioNavHost(

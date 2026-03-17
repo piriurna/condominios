@@ -40,7 +40,8 @@ fun CondominioDashboardScreen(
     viewModel: CondominioDashboardViewModel,
     onNavigateToAddApartamento: (condominioId: String) -> Unit = {},
     onNavigateToApartamento: (apartamentoId: String) -> Unit = {},
-    onNavigateToCreatePorteiro: (condominioId: String) -> Unit = {}
+    onNavigateToCreatePorteiro: (condominioId: String) -> Unit = {},
+    onNavigateToPorteiroList: (condominioId: String) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -69,6 +70,10 @@ fun CondominioDashboardScreen(
                 onNavigateToCreatePorteiro(event.condominioId)
                 viewModel.onNavigationHandled()
             }
+            is DashboardNavigationEvent.PorteiroList -> {
+                onNavigateToPorteiroList(event.condominioId)
+                viewModel.onNavigationHandled()
+            }
             null -> Unit
         }
     }
@@ -89,6 +94,9 @@ fun CondominioDashboardScreen(
                     }
                 },
                 actions = {
+                    Button(onClick = { viewModel.onPorteiroListClick() }) {
+                        Text("Porteiros")
+                    }
                     Button(onClick = { viewModel.onCreatePorteiroClick() }) {
                         Text("Criar Porteiro")
                     }

@@ -13,4 +13,10 @@ interface UserRepository {
     ): Result<User>
 
     suspend fun getUsers(): Result<List<User>>
+
+    suspend fun getUsersByCondominioId(condominioId: String): Result<List<User>>
+
+    suspend fun deleteUser(userId: String): Result<Unit>
+
+    suspend fun updateUserRole(userId: String, newRole: UserRole): Result<Unit>
 }

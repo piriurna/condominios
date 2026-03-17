@@ -102,7 +102,7 @@ class CreateUserViewModelTest : TestsWithMocks() {
     @Test
     fun `GIVEN valid porteiro data WHEN createUser THEN generatedPassword is set`() = runTest {
         val role = UserRole.Porteiro("condo-1")
-        val user = User(name = "Porteiro", cpf = "11111111111", email = "p@test.com", role = role)
+        val user = User(id = "user-1", name = "Porteiro", cpf = "11111111111", email = "p@test.com", role = role)
         everySuspending { condominioValidator.exists("condo-1") } returns true
         everySuspending { userRepository.createUser("Porteiro", "11111111111", "p@test.com", role) } returns Result.success(user)
 
@@ -124,7 +124,7 @@ class CreateUserViewModelTest : TestsWithMocks() {
     @Test
     fun `GIVEN valid admin data WHEN createUser THEN generatedPassword is set`() = runTest {
         val role = UserRole.Admin
-        val user = User(name = "Admin", cpf = "12345678900", email = "a@test.com", role = role)
+        val user = User(id = "user-2", name = "Admin", cpf = "12345678900", email = "a@test.com", role = role)
         everySuspending { userRepository.createUser("Admin", "12345678900", "a@test.com", role) } returns Result.success(user)
 
         viewModel.setName("Admin")

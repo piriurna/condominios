@@ -30,7 +30,7 @@ class CreateUserUseCaseTest : TestsWithMocks() {
     @Test
     fun `GIVEN valid admin data WHEN creating user THEN returns success`() = runTest {
         val role = UserRole.Admin
-        val user = User(name = "Admin", cpf = "12345678900", email = "admin@test.com", role = role)
+        val user = User(id = "user-1", name = "Admin", cpf = "12345678900", email = "admin@test.com", role = role)
         everySuspending { userRepository.createUser("Admin", "12345678900", "admin@test.com", role) } returns Result.success(user)
 
         val result = useCase("Admin", "12345678900", "admin@test.com", role)
@@ -43,7 +43,7 @@ class CreateUserUseCaseTest : TestsWithMocks() {
     @Test
     fun `GIVEN valid porteiro data WHEN creating user THEN returns success`() = runTest {
         val role = UserRole.Porteiro("condo-1")
-        val user = User(name = "Porteiro", cpf = "11111111111", email = "porteiro@test.com", role = role)
+        val user = User(id = "user-2", name = "Porteiro", cpf = "11111111111", email = "porteiro@test.com", role = role)
         everySuspending { condominioValidator.exists("condo-1") } returns true
         everySuspending { userRepository.createUser("Porteiro", "11111111111", "porteiro@test.com", role) } returns Result.success(user)
 
@@ -101,7 +101,7 @@ class CreateUserUseCaseTest : TestsWithMocks() {
     @Test
     fun `GIVEN name with whitespace WHEN creating user THEN name is trimmed`() = runTest {
         val role = UserRole.Admin
-        val user = User(name = "Admin", cpf = "12345678900", email = "admin@test.com", role = role)
+        val user = User(id = "user-3", name = "Admin", cpf = "12345678900", email = "admin@test.com", role = role)
         everySuspending { userRepository.createUser("Admin", "12345678900", "admin@test.com", role) } returns Result.success(user)
 
         val result = useCase("  Admin  ", "  12345678900  ", "  admin@test.com  ", role)

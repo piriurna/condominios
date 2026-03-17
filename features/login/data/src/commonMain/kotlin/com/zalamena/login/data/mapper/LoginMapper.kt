@@ -12,6 +12,7 @@ fun UserDto.toDomain(): User {
         else -> throw IllegalArgumentException("Unknown role: $role")
     }
     return User(
+        id = "",
         name = username,
         cpf = cpf,
         email = email,
