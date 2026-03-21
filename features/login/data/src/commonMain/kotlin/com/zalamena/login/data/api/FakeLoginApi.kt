@@ -15,6 +15,17 @@ class FakeLoginApi(
             return LoginSessionDto(token = "fake-token-admin", userId = "user-1", expiresIn = 86400L)
         }
 
+        if (username == "porteiro" && password == "porteiro") {
+            val porteiro = userRepository.getUsers().getOrNull()
+                ?.firstOrNull { it.role is UserRole.Porteiro }
+                ?: throw LoginException.InvalidCredentialsException
+            return LoginSessionDto(
+                token = "fake-token-${porteiro.id}",
+                userId = porteiro.id,
+                expiresIn = 86400L
+            )
+        }
+
         val result = userRepository.authenticate(username, password)
         if (result.isSuccess) {
             val user = result.getOrThrow()

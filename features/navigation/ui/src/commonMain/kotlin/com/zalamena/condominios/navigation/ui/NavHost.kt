@@ -35,8 +35,11 @@ import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDas
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDashboardViewModel
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.CondominioDashboardRoute
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.DoormanApartamentoDetailRoute
+import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.DoormanMoradorSearchRoute
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.condominioDashboardNavHost
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.doormanApartamentoDetail
+import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.doormanMoradorSearch
+import com.zalamena.condominios.condominio.ui.moradores.search.MoradorSearchViewModel
 import com.zalamena.condominios.condominio.ui.porteiro.list.PorteiroListViewModel
 import com.zalamena.condominios.pessoa.ui.addpessoa.AddPessoaViewModel
 import com.zalamena.login.domain.models.UserRole
@@ -78,6 +81,7 @@ fun AppNavHost(
     adminHomeViewModel: AdminHomeViewModel,
     createUserViewModel: CreateUserViewModel,
     porteiroListViewModel: PorteiroListViewModel,
+    moradorSearchViewModel: MoradorSearchViewModel,
     onLogout: suspend () -> Unit = {}
 ) {
     NavHost(navController, startDestination = SplashRoute) {
@@ -177,6 +181,10 @@ fun AppNavHost(
                     apartamentoDetailViewModel.setApartamentoId(apartamentoId)
                     navController.navigate(DoormanApartamentoDetailRoute)
                 },
+                onNavigateToSearchMorador = { condominioId ->
+                    moradorSearchViewModel.setCondominioId(condominioId)
+                    navController.navigate(DoormanMoradorSearchRoute)
+                },
                 onLogout = {
                     coroutineScope.launch {
                         onLogout()
@@ -188,7 +196,9 @@ fun AppNavHost(
             )
         }
 
-        doormanApartamentoDetail(apartamentoDetailViewModel)
+        doormanApartamentoDetail(navController, apartamentoDetailViewModel)
+
+        doormanMoradorSearch(navController, moradorSearchViewModel, apartamentoDetailViewModel)
 
         loginNavHost(
             navController,

@@ -42,6 +42,7 @@ fun CondominioDashboardScreen(
     onNavigateToApartamento: (apartamentoId: String) -> Unit = {},
     onNavigateToCreatePorteiro: (condominioId: String) -> Unit = {},
     onNavigateToPorteiroList: (condominioId: String) -> Unit = {},
+    onNavigateToSearchMorador: (condominioId: String) -> Unit = {},
     onLogout: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -73,6 +74,10 @@ fun CondominioDashboardScreen(
             }
             is DashboardNavigationEvent.PorteiroList -> {
                 onNavigateToPorteiroList(event.condominioId)
+                viewModel.onNavigationHandled()
+            }
+            is DashboardNavigationEvent.SearchMorador -> {
+                onNavigateToSearchMorador(event.condominioId)
                 viewModel.onNavigationHandled()
             }
             is DashboardNavigationEvent.Logout -> {
@@ -107,6 +112,9 @@ fun CondominioDashboardScreen(
                             Text("Criar Porteiro")
                         }
                     } else {
+                        Button(onClick = { viewModel.onSearchMoradorClick() }) {
+                            Text("Buscar Morador")
+                        }
                         Button(onClick = onLogout) {
                             Text("Sair")
                         }
