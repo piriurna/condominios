@@ -41,7 +41,9 @@ class ApartamentoDetailViewModel(
     val uiState: StateFlow<ApartamentoDetailUiState> = _uiState.asStateFlow()
 
     fun setApartamentoId(apartamentoId: String) {
-        _uiState.update { it.copy(apartamentoId = apartamentoId) }
+        _uiState.update {
+            ApartamentoDetailUiState(apartamentoId = apartamentoId)
+        }
     }
 
     fun load() {
