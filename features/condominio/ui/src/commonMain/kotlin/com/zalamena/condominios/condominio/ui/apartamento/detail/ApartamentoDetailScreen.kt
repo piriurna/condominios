@@ -10,14 +10,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -81,10 +85,19 @@ fun ApartamentoDetailScreen(
                     uiState = uiState,
                     isAdminMode = isAdminMode,
                     onAddMoradorClick = viewModel::onAddMoradorClick,
-                    onMoradorClick = viewModel::onMoradorClick
+                    onMoradorClick = viewModel::onMoradorClick,
+                    onDeleteMoradorClick = viewModel::onDeleteMoradorClick
                 )
             }
         }
+    }
+
+    uiState.showDeleteConfirmation?.let { morador ->
+        DeleteMoradorConfirmationDialog(
+            moradorName = morador.nome,
+            onConfirm = { viewModel.onConfirmDeleteMorador() },
+            onDismiss = { viewModel.onDismissDeleteMorador() }
+        )
     }
 }
 
@@ -93,7 +106,8 @@ private fun ApartamentoDetailContent(
     uiState: ApartamentoDetailUiState,
     isAdminMode: Boolean = true,
     onAddMoradorClick: () -> Unit = {},
-    onMoradorClick: (pessoaId: String) -> Unit = {}
+    onMoradorClick: (pessoaId: String) -> Unit = {},
+    onDeleteMoradorClick: (MoradorDetailUiData) -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -113,7 +127,12 @@ private fun ApartamentoDetailContent(
         } else {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(uiState.moradores) { morador ->
-                    MoradorRow(morador = morador, onClick = { onMoradorClick(morador.pessoaId) })
+                    MoradorRow(
+                        morador = morador,
+                        isAdminMode = isAdminMode,
+                        onClick = { onMoradorClick(morador.pessoaId) },
+                        onDeleteClick = { onDeleteMoradorClick(morador) }
+                    )
                 }
             }
         }
@@ -128,14 +147,19 @@ private fun ApartamentoDetailContent(
 }
 
 @Composable
-private fun MoradorRow(morador: MoradorDetailUiData, onClick: () -> Unit = {}) {
+private fun MoradorRow(
+    morador: MoradorDetailUiData,
+    isAdminMode: Boolean = true,
+    onClick: () -> Unit = {},
+    onDeleteClick: () -> Unit = {}
+) {
     Card(modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)) {
         Row(
             modifier = Modifier.padding(16.dp).fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(morador.nome, style = MaterialTheme.typography.bodyLarge)
                 Text(
                     text = morador.tipoLabel,
@@ -148,6 +172,40 @@ private fun MoradorRow(morador: MoradorDetailUiData, onClick: () -> Unit = {}) {
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+            if (isAdminMode) {
+                Spacer(Modifier.width(8.dp))
+                Button(
+                    onClick = onDeleteClick,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("Excluir")
+                }
+            }
         }
     }
+}
+
+@Composable
+private fun DeleteMoradorConfirmationDialog(
+    moradorName: String,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Excluir morador") },
+        text = { Text("Tem certeza que deseja excluir o morador $moradorName?") },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text("Excluir", color = MaterialTheme.colorScheme.error)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancelar")
+            }
+        }
+    )
 }

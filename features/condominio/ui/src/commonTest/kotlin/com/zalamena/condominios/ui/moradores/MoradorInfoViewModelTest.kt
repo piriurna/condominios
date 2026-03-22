@@ -2,9 +2,11 @@ package com.zalamena.condominios.ui.moradores
 
 import com.zalamena.condominios.condominio.domain.apartamento.models.Apartamento
 import com.zalamena.condominios.condominio.domain.morador.model.Morador
+import com.zalamena.condominios.condominio.domain.morador.model.MoradorException
 import com.zalamena.condominios.condominio.domain.morador.model.MoradorTipo
 import com.zalamena.condominios.condominio.domain.morador.repository.MoradoresRepository
 import com.zalamena.condominios.condominio.domain.morador.usecase.GetMoradorDetailUseCase
+import com.zalamena.condominios.condominio.domain.morador.usecase.UpdateMoradorTipoUseCaseImpl
 import com.zalamena.condominios.condominio.ui.moradores.details.MoradorInfoViewModel
 import com.zalamena.condominios.pessoa.domain.models.Pessoa
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +39,8 @@ class MoradorInfoViewModelTest : TestsWithMocks() {
     private val testDispatcher = UnconfinedTestDispatcher(testScheduler)
 
     private val getMoradorDetailUseCase by lazy { GetMoradorDetailUseCase(moradoresRepository) }
-    private val viewModel by lazy { MoradorInfoViewModel(getMoradorDetailUseCase) }
+    private val updateMoradorTipoUseCase by lazy { UpdateMoradorTipoUseCaseImpl(moradoresRepository) }
+    private val viewModel by lazy { MoradorInfoViewModel(getMoradorDetailUseCase, updateMoradorTipoUseCase) }
 
     @BeforeTest
     fun setup() {
@@ -106,6 +109,21 @@ class MoradorInfoViewModelTest : TestsWithMocks() {
         assertEquals(2, apts.size)
         assertEquals("101", apts[0].numero)
         assertEquals("202", apts[1].numero)
+    }
+
+    @Test
+    fun `GIVEN moradores exist WHEN load THEN apartamentos include tipo`() = runTest(testScheduler) {
+        val pessoa = Pessoa(id = "p1", cpf = "12345678901", nome = "Joao", email = "j@t.com", telefone = "119")
+        val moradores = listOf(
+            Morador(pessoa = pessoa, apartamento = Apartamento("apt-1", "101", "1", emptyList()), tipo = MoradorTipo.PROPRIETARIO)
+        )
+        everySuspending { moradoresRepository.getMoradoresForPessoa("p1") } returns Result.success(moradores)
+
+        viewModel.setPessoaId("p1")
+        viewModel.load()
+        advanceUntilIdle()
+
+        assertEquals(MoradorTipo.PROPRIETARIO, viewModel.uiState.value.apartamentos.first().tipo)
     }
 
     // --- Missing info ---
@@ -195,5 +213,61 @@ class MoradorInfoViewModelTest : TestsWithMocks() {
         viewModel.onNavigationHandled()
 
         assertNull(viewModel.uiState.value.navigationEvent)
+    }
+
+    // --- Admin mode ---
+
+    @Test
+    fun `WHEN setAdminMode true THEN isAdminMode is true`() = runTest(testScheduler) {
+        assertFalse(viewModel.uiState.value.isAdminMode)
+
+        viewModel.setAdminMode(true)
+
+        assertTrue(viewModel.uiState.value.isAdminMode)
+    }
+
+    // --- Edit tipo ---
+
+    @Test
+    fun `GIVEN save tipo succeeds WHEN onSaveTipo THEN reloads and clears error`() = runTest(testScheduler) {
+        val pessoa = Pessoa(id = "p1", cpf = "12345678901", nome = "Joao", email = "j@t.com", telefone = "119")
+        val moradores = listOf(
+            Morador(pessoa = pessoa, apartamento = Apartamento("apt-1", "101", "1", emptyList()), tipo = MoradorTipo.RESIDENTE)
+        )
+        everySuspending { moradoresRepository.getMoradoresForPessoa("p1") } returns Result.success(moradores)
+        everySuspending { moradoresRepository.updateMoradorTipo("p1", "apt-1", MoradorTipo.PROPRIETARIO) } returns Result.success(Unit)
+        everySuspending { moradoresRepository.getMoradoresForApartamento("apt-1") } returns Result.success(emptyList())
+
+        viewModel.setPessoaId("p1")
+        viewModel.load()
+        advanceUntilIdle()
+
+        viewModel.onSaveTipo("apt-1", MoradorTipo.PROPRIETARIO)
+        advanceUntilIdle()
+
+        assertNull(viewModel.uiState.value.tipoError)
+    }
+
+    @Test
+    fun `GIVEN PROPRIETARIO limit reached WHEN onSaveTipo THEN sets tipoError`() = runTest(testScheduler) {
+        val pessoa = Pessoa(id = "p1", cpf = "12345678901", nome = "Joao", email = "j@t.com", telefone = "119")
+        val moradores = listOf(
+            Morador(pessoa = pessoa, apartamento = Apartamento("apt-1", "101", "1", emptyList()), tipo = MoradorTipo.RESIDENTE)
+        )
+        val existingProprietarios = listOf(
+            Morador.dummy.copy(pessoa = Pessoa.dummy.copy(id = "other-1"), tipo = MoradorTipo.PROPRIETARIO),
+            Morador.dummy.copy(pessoa = Pessoa.dummy.copy(id = "other-2"), tipo = MoradorTipo.PROPRIETARIO)
+        )
+        everySuspending { moradoresRepository.getMoradoresForPessoa("p1") } returns Result.success(moradores)
+        everySuspending { moradoresRepository.getMoradoresForApartamento("apt-1") } returns Result.success(existingProprietarios)
+
+        viewModel.setPessoaId("p1")
+        viewModel.load()
+        advanceUntilIdle()
+
+        viewModel.onSaveTipo("apt-1", MoradorTipo.PROPRIETARIO)
+        advanceUntilIdle()
+
+        assertEquals("Limite de 2 proprietarios por apartamento atingido", viewModel.uiState.value.tipoError)
     }
 }

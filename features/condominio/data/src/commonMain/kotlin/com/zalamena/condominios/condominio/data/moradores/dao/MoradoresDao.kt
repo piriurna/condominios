@@ -49,4 +49,10 @@ interface MoradoresDao {
     @Query("SELECT * FROM Morador WHERE pessoaId = :pessoaId")
     @RewriteQueriesToDropUnusedColumns
     suspend fun getAllMoradoresForPessoa(pessoaId: String): List<MoradorWithPessoaAndApartamentoEntity>
+
+    @Query("DELETE FROM Morador WHERE pessoaId = :pessoaId AND apartamentoId = :apartamentoId")
+    suspend fun deleteMorador(pessoaId: String, apartamentoId: String)
+
+    @Query("UPDATE Morador SET tipo = :tipo WHERE pessoaId = :pessoaId AND apartamentoId = :apartamentoId")
+    suspend fun updateMoradorTipo(pessoaId: String, apartamentoId: String, tipo: String)
 }

@@ -21,6 +21,10 @@ import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseC
 import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCaseImpl
 import com.zalamena.condominios.condominio.domain.morador.usecase.GetMoradorDetailUseCase
 import com.zalamena.condominios.condominio.domain.morador.usecase.GetMoradoresForApartamentoUseCase
+import com.zalamena.condominios.condominio.domain.morador.usecase.RemoveMoradorUseCase
+import com.zalamena.condominios.condominio.domain.morador.usecase.RemoveMoradorUseCaseImpl
+import com.zalamena.condominios.condominio.domain.morador.usecase.UpdateMoradorTipoUseCase
+import com.zalamena.condominios.condominio.domain.morador.usecase.UpdateMoradorTipoUseCaseImpl
 import com.zalamena.condominios.condominio.ui.adminhome.AdminHomeViewModel
 import com.zalamena.condominios.condominio.ui.addapartamento.AddApartamentoViewModel
 import com.zalamena.condominios.condominio.ui.addcondominio.AddCondominioViewModel
@@ -137,6 +141,8 @@ val useCaseModule = module {
     factory<AddMoradorUseCase> { AddMoradorUseCaseImpl(get()) }
     factory { GetMoradoresForApartamentoUseCase(get()) }
     factory { GetMoradorDetailUseCase(get()) }
+    factory<RemoveMoradorUseCase> { RemoveMoradorUseCaseImpl(get()) }
+    factory<UpdateMoradorTipoUseCase> { UpdateMoradorTipoUseCaseImpl(get()) }
     factory { CreateUserUseCase(get(), get()) }
     factory { GetPorteirosByCondominioUseCase(get()) }
     factory { DeletePorteiroUseCase(get()) }
