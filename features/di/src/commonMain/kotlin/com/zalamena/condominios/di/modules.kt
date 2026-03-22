@@ -19,6 +19,7 @@ import com.zalamena.condominios.condominio.domain.condominio.usecase.GetMoradore
 import com.zalamena.condominios.condominio.domain.morador.repository.MoradoresRepository
 import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCase
 import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCaseImpl
+import com.zalamena.condominios.condominio.domain.morador.usecase.GetMoradorDetailUseCase
 import com.zalamena.condominios.condominio.domain.morador.usecase.GetMoradoresForApartamentoUseCase
 import com.zalamena.condominios.condominio.ui.adminhome.AdminHomeViewModel
 import com.zalamena.condominios.condominio.ui.addapartamento.AddApartamentoViewModel
@@ -28,6 +29,7 @@ import com.zalamena.condominios.condominio.ui.addmorador.flowController.AddMorad
 import com.zalamena.condominios.condominio.ui.addmorador.overview.AddMoradorOverviewViewModel
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDashboardViewModel
 import com.zalamena.condominios.condominio.ui.condominio.overview.CondominioOverviewViewModel
+import com.zalamena.condominios.condominio.ui.moradores.details.MoradorInfoViewModel
 import com.zalamena.condominios.condominio.ui.moradores.search.MoradorSearchViewModel
 import com.zalamena.condominios.condominio.ui.porteiro.list.PorteiroListViewModel
 import com.zalamena.condominios.condominio.domain.porteiro.models.PorteiroInfo
@@ -134,6 +136,7 @@ val useCaseModule = module {
     factory { GetApartamentosUseCase(get()) }
     factory<AddMoradorUseCase> { AddMoradorUseCaseImpl(get()) }
     factory { GetMoradoresForApartamentoUseCase(get()) }
+    factory { GetMoradorDetailUseCase(get()) }
     factory { CreateUserUseCase(get(), get()) }
     factory { GetPorteirosByCondominioUseCase(get()) }
     factory { DeletePorteiroUseCase(get()) }
@@ -157,4 +160,5 @@ val viewModelModule = module {
     viewModelOf(::CreateUserViewModel)
     viewModelOf(::PorteiroListViewModel)
     viewModelOf(::MoradorSearchViewModel)
+    viewModelOf(::MoradorInfoViewModel)
 }

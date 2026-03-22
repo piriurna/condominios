@@ -12,6 +12,8 @@ import com.zalamena.condominios.condominio.ui.apartamento.detail.ApartamentoDeta
 import com.zalamena.condominios.condominio.ui.apartamento.detail.ApartamentoDetailViewModel
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDashboardScreen
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDashboardViewModel
+import com.zalamena.condominios.condominio.ui.moradores.details.MoradorInfoScreen
+import com.zalamena.condominios.condominio.ui.moradores.details.MoradorInfoViewModel
 import com.zalamena.condominios.condominio.ui.porteiro.list.PorteiroListScreen
 import com.zalamena.condominios.condominio.ui.porteiro.list.PorteiroListViewModel
 import com.zalamena.login.ui.createuser.CreateUserViewModel
@@ -31,6 +33,9 @@ object ApartamentoDetailScreenRoute
 @Serializable
 object PorteiroListRoute
 
+@Serializable
+object AdminMoradorDetailRoute
+
 fun NavGraphBuilder.condominioDashboardNavHost(
     navController: NavController,
     viewModel: CondominioDashboardViewModel,
@@ -38,7 +43,8 @@ fun NavGraphBuilder.condominioDashboardNavHost(
     apartamentoDetailViewModel: ApartamentoDetailViewModel,
     addMoradorFlowViewModel: AddMoradorFlowViewModel,
     createUserViewModel: CreateUserViewModel,
-    porteiroListViewModel: PorteiroListViewModel
+    porteiroListViewModel: PorteiroListViewModel,
+    moradorInfoViewModel: MoradorInfoViewModel
 ) {
     navigation<CondominioDashboardRoute>(startDestination = CondominioDashboardScreenRoute) {
         composable<CondominioDashboardScreenRoute> {
@@ -73,6 +79,22 @@ fun NavGraphBuilder.condominioDashboardNavHost(
                     addMoradorFlowViewModel.reset()
                     addMoradorFlowViewModel.setCreatedApartamentoId(apartamentoId)
                     navController.navigate(AddMoradorRoute)
+                },
+                onNavigateToMoradorDetail = { pessoaId ->
+                    moradorInfoViewModel.setPessoaId(pessoaId)
+                    navController.navigate(AdminMoradorDetailRoute)
+                }
+            )
+        }
+
+        composable<AdminMoradorDetailRoute> {
+            MoradorInfoScreen(
+                viewModel = moradorInfoViewModel,
+                onNavigateToApartamento = { apartamentoId ->
+                    apartamentoDetailViewModel.setApartamentoId(apartamentoId)
+                    navController.navigate(ApartamentoDetailScreenRoute) {
+                        popUpTo(AdminMoradorDetailRoute) { inclusive = true }
+                    }
                 }
             )
         }

@@ -26,6 +26,7 @@ data class ApartamentoDetailUiState(
 
 sealed class ApartamentoDetailNavEvent {
     data class AddMorador(val apartamentoId: String) : ApartamentoDetailNavEvent()
+    data class MoradorDetail(val pessoaId: String) : ApartamentoDetailNavEvent()
 }
 
 class ApartamentoDetailViewModel(
@@ -62,6 +63,7 @@ class ApartamentoDetailViewModel(
                             andar = apt.andar,
                             moradores = moradoresResult.getOrThrow().map { m ->
                                 MoradorDetailUiData(
+                                    pessoaId = m.pessoa.id,
                                     nome = m.nome,
                                     maskedCpf = maskCpf(m.cpf),
                                     tipoLabel = m.tipo.toLabel()
@@ -75,6 +77,10 @@ class ApartamentoDetailViewModel(
                 }
             }
         }
+    }
+
+    fun onMoradorClick(pessoaId: String) {
+        _uiState.update { it.copy(navigationEvent = ApartamentoDetailNavEvent.MoradorDetail(pessoaId)) }
     }
 
     fun onAddMoradorClick() {

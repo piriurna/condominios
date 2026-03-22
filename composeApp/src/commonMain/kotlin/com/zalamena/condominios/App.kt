@@ -69,6 +69,7 @@ fun App() {
             koinViewModel(),
             koinViewModel(),
             koinViewModel(),
+            koinViewModel(),
             onLogout = { logoutUseCase() }
         )
     }

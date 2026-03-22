@@ -35,10 +35,13 @@ import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDas
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDashboardViewModel
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.CondominioDashboardRoute
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.DoormanApartamentoDetailRoute
+import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.DoormanMoradorDetailRoute
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.DoormanMoradorSearchRoute
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.condominioDashboardNavHost
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.doormanApartamentoDetail
+import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.doormanMoradorDetail
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.navigation.doormanMoradorSearch
+import com.zalamena.condominios.condominio.ui.moradores.details.MoradorInfoViewModel
 import com.zalamena.condominios.condominio.ui.moradores.search.MoradorSearchViewModel
 import com.zalamena.condominios.condominio.ui.porteiro.list.PorteiroListViewModel
 import com.zalamena.condominios.pessoa.ui.addpessoa.AddPessoaViewModel
@@ -82,6 +85,7 @@ fun AppNavHost(
     createUserViewModel: CreateUserViewModel,
     porteiroListViewModel: PorteiroListViewModel,
     moradorSearchViewModel: MoradorSearchViewModel,
+    moradorInfoViewModel: MoradorInfoViewModel,
     onLogout: suspend () -> Unit = {}
 ) {
     NavHost(navController, startDestination = SplashRoute) {
@@ -104,13 +108,13 @@ fun AppNavHost(
                         Text("Login")
                     }
                     Button(onClick = { navController.navigate(CondominioDashboardRoute) }) {
-                        Text("Dashboard de Condomínio")
+                        Text("Dashboard de Condominio")
                     }
                     Button(onClick = { navController.navigate(AddCondominioRoute) }) {
-                        Text("Adicionar Condomínio")
+                        Text("Adicionar Condominio")
                     }
                     Button(onClick = { navController.navigate(CreateUserRoute) }) {
-                        Text("Criar Usuário")
+                        Text("Criar Usuario")
                     }
                     Button(onClick = { navController.navigate(AddMoradorRoute) }) {
                         Text("Go to Add Morador Flow from scratch")
@@ -196,9 +200,11 @@ fun AppNavHost(
             )
         }
 
-        doormanApartamentoDetail(navController, apartamentoDetailViewModel)
+        doormanApartamentoDetail(navController, apartamentoDetailViewModel, moradorInfoViewModel)
 
-        doormanMoradorSearch(navController, moradorSearchViewModel, apartamentoDetailViewModel)
+        doormanMoradorSearch(navController, moradorSearchViewModel, moradorInfoViewModel)
+
+        doormanMoradorDetail(navController, moradorInfoViewModel, apartamentoDetailViewModel)
 
         loginNavHost(
             navController,
@@ -241,7 +247,8 @@ fun AppNavHost(
             apartamentoDetailViewModel,
             addMoradorFlowViewModel,
             createUserViewModel,
-            porteiroListViewModel
+            porteiroListViewModel,
+            moradorInfoViewModel
         )
 
         addCondominioNavHost(

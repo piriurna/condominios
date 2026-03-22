@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun MoradorSearchScreen(
     viewModel: MoradorSearchViewModel,
-    onNavigateToApartamento: (apartamentoId: String) -> Unit = {}
+    onNavigateToMoradorDetail: (pessoaId: String) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -42,8 +42,8 @@ fun MoradorSearchScreen(
 
     LaunchedEffect(uiState.navigationEvent) {
         when (val event = uiState.navigationEvent) {
-            is MoradorSearchNavigationEvent.ApartamentoDetails -> {
-                onNavigateToApartamento(event.apartamentoId)
+            is MoradorSearchNavigationEvent.MoradorDetail -> {
+                onNavigateToMoradorDetail(event.pessoaId)
                 viewModel.onNavigationHandled()
             }
             null -> Unit
@@ -100,7 +100,7 @@ fun MoradorSearchScreen(
                             items(uiState.moradores) { morador ->
                                 MoradorSearchCard(
                                     morador = morador,
-                                    onClick = { viewModel.onMoradorClick(morador.apartamentoId) }
+                                    onClick = { viewModel.onMoradorClick(morador.pessoaId) }
                                 )
                             }
                         }

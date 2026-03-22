@@ -1,5 +1,6 @@
 package com.zalamena.condominios.condominio.ui.apartamento.detail
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,7 +35,8 @@ import com.zalamena.condominios.condominio.ui.apartamento.detail.models.MoradorD
 fun ApartamentoDetailScreen(
     viewModel: ApartamentoDetailViewModel,
     isAdminMode: Boolean = true,
-    onNavigateToAddMorador: (apartamentoId: String) -> Unit = {}
+    onNavigateToAddMorador: (apartamentoId: String) -> Unit = {},
+    onNavigateToMoradorDetail: (pessoaId: String) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -53,6 +55,10 @@ fun ApartamentoDetailScreen(
         when (val event = uiState.navigationEvent) {
             is ApartamentoDetailNavEvent.AddMorador -> {
                 onNavigateToAddMorador(event.apartamentoId)
+                viewModel.onNavigationHandled()
+            }
+            is ApartamentoDetailNavEvent.MoradorDetail -> {
+                onNavigateToMoradorDetail(event.pessoaId)
                 viewModel.onNavigationHandled()
             }
             null -> Unit
@@ -74,7 +80,8 @@ fun ApartamentoDetailScreen(
                 ApartamentoDetailContent(
                     uiState = uiState,
                     isAdminMode = isAdminMode,
-                    onAddMoradorClick = viewModel::onAddMoradorClick
+                    onAddMoradorClick = viewModel::onAddMoradorClick,
+                    onMoradorClick = viewModel::onMoradorClick
                 )
             }
         }
@@ -85,7 +92,8 @@ fun ApartamentoDetailScreen(
 private fun ApartamentoDetailContent(
     uiState: ApartamentoDetailUiState,
     isAdminMode: Boolean = true,
-    onAddMoradorClick: () -> Unit = {}
+    onAddMoradorClick: () -> Unit = {},
+    onMoradorClick: (pessoaId: String) -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -105,7 +113,7 @@ private fun ApartamentoDetailContent(
         } else {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(uiState.moradores) { morador ->
-                    MoradorRow(morador)
+                    MoradorRow(morador = morador, onClick = { onMoradorClick(morador.pessoaId) })
                 }
             }
         }
@@ -120,8 +128,8 @@ private fun ApartamentoDetailContent(
 }
 
 @Composable
-private fun MoradorRow(morador: MoradorDetailUiData) {
-    Card(modifier = Modifier.fillMaxWidth()) {
+private fun MoradorRow(morador: MoradorDetailUiData, onClick: () -> Unit = {}) {
+    Card(modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)) {
         Row(
             modifier = Modifier.padding(16.dp).fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,

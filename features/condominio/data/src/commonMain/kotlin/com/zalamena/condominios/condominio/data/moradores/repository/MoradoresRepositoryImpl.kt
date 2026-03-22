@@ -48,4 +48,10 @@ class MoradoresRepositoryImpl(
             moradoresDao.getAllMoradoresForCondominio(condominioId).map { it.toDomain() }
         }
     }
+
+    override suspend fun getMoradoresForPessoa(pessoaId: String): Result<List<Morador>> {
+        return runCatching {
+            moradoresDao.getAllMoradoresForPessoa(pessoaId).map { it.toDomain() }
+        }
+    }
 }
