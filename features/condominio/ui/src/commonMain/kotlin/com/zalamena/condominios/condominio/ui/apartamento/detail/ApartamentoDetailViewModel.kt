@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zalamena.condominios.condominio.domain.apartamento.usecase.GetApartamentoUseCase
 import com.zalamena.condominios.condominio.domain.morador.usecase.GetMoradoresForApartamentoUseCase
+import com.zalamena.condominios.condominio.domain.morador.usecase.RemoveMoradorUseCase
 import com.zalamena.condominios.condominio.ui.apartamento.detail.models.MoradorDetailUiData
 import com.zalamena.condominios.condominio.ui.apartamento.detail.models.maskCpf
 import com.zalamena.condominios.condominio.ui.apartamento.detail.models.toLabel
@@ -21,7 +22,8 @@ data class ApartamentoDetailUiState(
     val moradores: List<MoradorDetailUiData> = emptyList(),
     val isLoading: Boolean = true,
     val isError: Boolean = false,
-    val navigationEvent: ApartamentoDetailNavEvent? = null
+    val navigationEvent: ApartamentoDetailNavEvent? = null,
+    val showDeleteConfirmation: MoradorDetailUiData? = null
 )
 
 sealed class ApartamentoDetailNavEvent {
@@ -31,7 +33,8 @@ sealed class ApartamentoDetailNavEvent {
 
 class ApartamentoDetailViewModel(
     private val getApartamentoUseCase: GetApartamentoUseCase,
-    private val getMoradoresForApartamentoUseCase: GetMoradoresForApartamentoUseCase
+    private val getMoradoresForApartamentoUseCase: GetMoradoresForApartamentoUseCase,
+    private val removeMoradorUseCase: RemoveMoradorUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ApartamentoDetailUiState())
@@ -64,6 +67,7 @@ class ApartamentoDetailViewModel(
                             moradores = moradoresResult.getOrThrow().map { m ->
                                 MoradorDetailUiData(
                                     pessoaId = m.pessoa.id,
+                                    apartamentoId = apartamentoId,
                                     nome = m.nome,
                                     maskedCpf = maskCpf(m.cpf),
                                     tipoLabel = m.tipo.toLabel()
@@ -91,5 +95,27 @@ class ApartamentoDetailViewModel(
 
     fun onNavigationHandled() {
         _uiState.update { it.copy(navigationEvent = null) }
+    }
+
+    fun onDeleteMoradorClick(morador: MoradorDetailUiData) {
+        _uiState.update { it.copy(showDeleteConfirmation = morador) }
+    }
+
+    fun onConfirmDeleteMorador() {
+        val morador = _uiState.value.showDeleteConfirmation ?: return
+        viewModelScope.launch {
+            removeMoradorUseCase(morador.pessoaId, morador.apartamentoId)
+                .onSuccess {
+                    _uiState.update { it.copy(showDeleteConfirmation = null) }
+                    load()
+                }
+                .onFailure {
+                    _uiState.update { it.copy(showDeleteConfirmation = null) }
+                }
+        }
+    }
+
+    fun onDismissDeleteMorador() {
+        _uiState.update { it.copy(showDeleteConfirmation = null) }
     }
 }

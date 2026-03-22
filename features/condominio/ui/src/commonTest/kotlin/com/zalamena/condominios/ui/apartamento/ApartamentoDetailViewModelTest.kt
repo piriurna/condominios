@@ -8,6 +8,8 @@ import com.zalamena.condominios.condominio.domain.morador.model.Morador
 import com.zalamena.condominios.condominio.domain.morador.model.MoradorTipo
 import com.zalamena.condominios.condominio.domain.morador.repository.MoradoresRepository
 import com.zalamena.condominios.condominio.domain.morador.usecase.GetMoradoresForApartamentoUseCase
+import com.zalamena.condominios.condominio.domain.morador.usecase.RemoveMoradorUseCase
+import com.zalamena.condominios.condominio.domain.morador.usecase.RemoveMoradorUseCaseImpl
 import com.zalamena.condominios.condominio.ui.apartamento.detail.ApartamentoDetailNavEvent
 import com.zalamena.condominios.condominio.ui.apartamento.detail.ApartamentoDetailViewModel
 import com.zalamena.condominios.pessoa.domain.models.Pessoa
@@ -28,6 +30,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -45,7 +48,8 @@ class ApartamentoDetailViewModelTest : TestsWithMocks() {
 
     private val getApartamentoUseCase: GetApartamentoUseCase by lazy { GetApartamentoUseCaseImpl(apartamentosRepository) }
     private val getMoradoresForApartamentoUseCase by lazy { GetMoradoresForApartamentoUseCase(moradoresRepository) }
-    private val viewModel by lazy { ApartamentoDetailViewModel(getApartamentoUseCase, getMoradoresForApartamentoUseCase) }
+    private val removeMoradorUseCase: RemoveMoradorUseCase by lazy { RemoveMoradorUseCaseImpl(moradoresRepository) }
+    private val viewModel by lazy { ApartamentoDetailViewModel(getApartamentoUseCase, getMoradoresForApartamentoUseCase, removeMoradorUseCase) }
 
     @BeforeTest
     fun setup() {
@@ -108,5 +112,99 @@ class ApartamentoDetailViewModelTest : TestsWithMocks() {
         assertFalse(viewModel.uiState.value.isError)
         assertEquals(1, viewModel.uiState.value.moradores.size)
         assertEquals("p-1", viewModel.uiState.value.moradores.first().pessoaId)
+    }
+
+    @Test
+    fun `GIVEN successful load WHEN load THEN moradores have apartamentoId`() = runTest(testScheduler) {
+        val apt = Apartamento(id = "apt-1", numero = "101", andar = "1", moradores = emptyList())
+        val moradores = listOf(
+            Morador(
+                pessoa = Pessoa(id = "p-1", cpf = "12345678901", nome = "Joao", email = "", telefone = ""),
+                apartamento = apt,
+                tipo = MoradorTipo.RESIDENTE
+            )
+        )
+        everySuspending { apartamentosRepository.getApartamento("apt-1") } returns Result.success(apt)
+        everySuspending { moradoresRepository.getMoradoresForApartamento("apt-1") } returns Result.success(moradores)
+
+        viewModel.setApartamentoId("apt-1")
+        viewModel.load()
+        advanceUntilIdle()
+
+        assertEquals("apt-1", viewModel.uiState.value.moradores.first().apartamentoId)
+    }
+
+    // --- Delete flow ---
+
+    @Test
+    fun `WHEN onDeleteMoradorClick THEN showDeleteConfirmation is set`() = runTest(testScheduler) {
+        loadMoradores()
+
+        val morador = viewModel.uiState.value.moradores.first()
+        viewModel.onDeleteMoradorClick(morador)
+
+        assertNotNull(viewModel.uiState.value.showDeleteConfirmation)
+        assertEquals(morador.pessoaId, viewModel.uiState.value.showDeleteConfirmation?.pessoaId)
+    }
+
+    @Test
+    fun `WHEN onDismissDeleteMorador THEN showDeleteConfirmation is cleared`() = runTest(testScheduler) {
+        loadMoradores()
+
+        viewModel.onDeleteMoradorClick(viewModel.uiState.value.moradores.first())
+        viewModel.onDismissDeleteMorador()
+
+        assertNull(viewModel.uiState.value.showDeleteConfirmation)
+    }
+
+    @Test
+    fun `GIVEN delete succeeds WHEN onConfirmDeleteMorador THEN list is refreshed`() = runTest(testScheduler) {
+        val apt = Apartamento(id = "apt-1", numero = "101", andar = "1", moradores = emptyList())
+        val moradores = listOf(
+            Morador(
+                pessoa = Pessoa(id = "p-1", cpf = "12345678901", nome = "Joao", email = "", telefone = ""),
+                apartamento = apt,
+                tipo = MoradorTipo.RESIDENTE
+            )
+        )
+
+        everySuspending { apartamentosRepository.getApartamento("apt-1") } returns Result.success(apt)
+        var moradoresResponse: Result<List<Morador>> = Result.success(moradores)
+        everySuspending { moradoresRepository.getMoradoresForApartamento("apt-1") } runs { moradoresResponse }
+
+        viewModel.setApartamentoId("apt-1")
+        viewModel.load()
+        advanceUntilIdle()
+
+        val morador = viewModel.uiState.value.moradores.first()
+        viewModel.onDeleteMoradorClick(morador)
+
+        everySuspending { moradoresRepository.removeMorador("p-1", "apt-1") } returns Result.success(Unit)
+        moradoresResponse = Result.success(emptyList())
+
+        viewModel.onConfirmDeleteMorador()
+        advanceUntilIdle()
+
+        assertNull(viewModel.uiState.value.showDeleteConfirmation)
+        assertTrue(viewModel.uiState.value.moradores.isEmpty())
+    }
+
+    // --- Helpers ---
+
+    private suspend fun loadMoradores() {
+        val apt = Apartamento(id = "apt-1", numero = "101", andar = "1", moradores = emptyList())
+        val moradores = listOf(
+            Morador(
+                pessoa = Pessoa(id = "p-1", cpf = "12345678901", nome = "Joao", email = "", telefone = ""),
+                apartamento = apt,
+                tipo = MoradorTipo.RESIDENTE
+            )
+        )
+        everySuspending { apartamentosRepository.getApartamento("apt-1") } returns Result.success(apt)
+        everySuspending { moradoresRepository.getMoradoresForApartamento("apt-1") } returns Result.success(moradores)
+
+        viewModel.setApartamentoId("apt-1")
+        viewModel.load()
+        testScheduler.advanceUntilIdle()
     }
 }

@@ -54,4 +54,16 @@ class MoradoresRepositoryImpl(
             moradoresDao.getAllMoradoresForPessoa(pessoaId).map { it.toDomain() }
         }
     }
+
+    override suspend fun removeMorador(pessoaId: String, apartamentoId: String): Result<Unit> {
+        return runCatching {
+            moradoresDao.deleteMorador(pessoaId, apartamentoId)
+        }
+    }
+
+    override suspend fun updateMoradorTipo(pessoaId: String, apartamentoId: String, newTipo: MoradorTipo): Result<Unit> {
+        return runCatching {
+            moradoresDao.updateMoradorTipo(pessoaId, apartamentoId, newTipo.name)
+        }
+    }
 }

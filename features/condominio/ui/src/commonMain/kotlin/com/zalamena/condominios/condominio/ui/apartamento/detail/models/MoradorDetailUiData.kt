@@ -4,6 +4,7 @@ import com.zalamena.condominios.condominio.domain.morador.model.MoradorTipo
 
 data class MoradorDetailUiData(
     val pessoaId: String,
+    val apartamentoId: String = "",
     val nome: String,
     val maskedCpf: String,
     val tipoLabel: String

@@ -88,8 +88,10 @@ fun NavGraphBuilder.condominioDashboardNavHost(
         }
 
         composable<AdminMoradorDetailRoute> {
+            moradorInfoViewModel.setAdminMode(true)
             MoradorInfoScreen(
                 viewModel = moradorInfoViewModel,
+                isAdminMode = true,
                 onNavigateToApartamento = { apartamentoId ->
                     apartamentoDetailViewModel.setApartamentoId(apartamentoId)
                     navController.navigate(ApartamentoDetailScreenRoute) {

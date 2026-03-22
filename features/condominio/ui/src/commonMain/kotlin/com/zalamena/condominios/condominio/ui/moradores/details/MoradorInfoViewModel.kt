@@ -2,7 +2,10 @@ package com.zalamena.condominios.condominio.ui.moradores.details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zalamena.condominios.condominio.domain.morador.model.MoradorException
+import com.zalamena.condominios.condominio.domain.morador.model.MoradorTipo
 import com.zalamena.condominios.condominio.domain.morador.usecase.GetMoradorDetailUseCase
+import com.zalamena.condominios.condominio.domain.morador.usecase.UpdateMoradorTipoUseCase
 import com.zalamena.condominios.condominio.ui.apartamento.detail.models.maskCpf
 import com.zalamena.condominios.condominio.ui.apartamento.detail.models.toLabel
 import com.zalamena.condominios.common.ui.withMinLoading
@@ -16,7 +19,8 @@ data class ApartamentoDoMoradorUiData(
     val apartamentoId: String,
     val numero: String,
     val andar: String,
-    val tipoLabel: String
+    val tipoLabel: String,
+    val tipo: MoradorTipo = MoradorTipo.RESIDENTE
 )
 
 sealed class MoradorInfoNavigationEvent {
@@ -31,11 +35,14 @@ data class MoradorDetailUiState(
     val apartamentos: List<ApartamentoDoMoradorUiData> = emptyList(),
     val isLoading: Boolean = false,
     val isError: Boolean = false,
-    val navigationEvent: MoradorInfoNavigationEvent? = null
+    val navigationEvent: MoradorInfoNavigationEvent? = null,
+    val isAdminMode: Boolean = false,
+    val tipoError: String? = null
 )
 
 class MoradorInfoViewModel(
-    private val getMoradorDetailUseCase: GetMoradorDetailUseCase
+    private val getMoradorDetailUseCase: GetMoradorDetailUseCase,
+    private val updateMoradorTipoUseCase: UpdateMoradorTipoUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MoradorDetailUiState())
@@ -78,7 +85,8 @@ class MoradorInfoViewModel(
                                     apartamentoId = m.apartamento.id,
                                     numero = m.apartamento.numero,
                                     andar = m.apartamento.andar,
-                                    tipoLabel = m.tipo.toLabel()
+                                    tipoLabel = m.tipo.toLabel(),
+                                    tipo = m.tipo
                                 )
                             }
                         )
@@ -98,5 +106,26 @@ class MoradorInfoViewModel(
 
     fun onNavigationHandled() {
         _uiState.update { it.copy(navigationEvent = null) }
+    }
+
+    fun setAdminMode(isAdmin: Boolean) {
+        _uiState.update { it.copy(isAdminMode = isAdmin) }
+    }
+
+    fun onSaveTipo(apartamentoId: String, newTipo: MoradorTipo) {
+        if (pessoaId.isBlank()) return
+
+        viewModelScope.launch {
+            updateMoradorTipoUseCase(pessoaId, apartamentoId, newTipo)
+                .onSuccess {
+                    _uiState.update { it.copy(tipoError = null) }
+                    load()
+                }
+                .onFailure { error ->
+                    if (error is MoradorException.MaxProprietariosExceededException) {
+                        _uiState.update { it.copy(tipoError = "Limite de 2 proprietarios por apartamento atingido") }
+                    }
+                }
+        }
     }
 }
