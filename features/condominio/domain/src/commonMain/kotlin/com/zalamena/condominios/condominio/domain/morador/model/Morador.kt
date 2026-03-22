@@ -13,7 +13,12 @@ data class Morador(
     companion object {
         val dummy = Morador(
             pessoa = Pessoa.dummy,
-            apartamento = Apartamento.dummy,
+            apartamento = Apartamento(
+                id = "id",
+                numero = "numero",
+                andar = "andar",
+                moradores = emptyList()
+            ),
             tipo = MoradorTipo.RESIDENTE
         )
     }

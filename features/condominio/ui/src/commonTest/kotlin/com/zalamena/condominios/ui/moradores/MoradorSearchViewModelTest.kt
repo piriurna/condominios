@@ -191,17 +191,17 @@ class MoradorSearchViewModelTest : TestsWithMocks() {
     // --- Navigation ---
 
     @Test
-    fun `WHEN morador clicked THEN emits ApartamentoDetails event`() = runTest(testScheduler) {
-        viewModel.onMoradorClick("apt-123")
+    fun `WHEN morador clicked THEN emits MoradorDetail event`() = runTest(testScheduler) {
+        viewModel.onMoradorClick("pessoa-123")
 
         val event = viewModel.uiState.value.navigationEvent
-        assertIs<MoradorSearchNavigationEvent.ApartamentoDetails>(event)
-        assertEquals("apt-123", event.apartamentoId)
+        assertIs<MoradorSearchNavigationEvent.MoradorDetail>(event)
+        assertEquals("pessoa-123", event.pessoaId)
     }
 
     @Test
     fun `GIVEN nav event WHEN handled THEN navigation event is cleared`() = runTest(testScheduler) {
-        viewModel.onMoradorClick("apt-123")
+        viewModel.onMoradorClick("pessoa-123")
         viewModel.onNavigationHandled()
 
         assertNull(viewModel.uiState.value.navigationEvent)

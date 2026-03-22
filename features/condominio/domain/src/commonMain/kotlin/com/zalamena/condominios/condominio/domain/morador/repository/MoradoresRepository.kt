@@ -11,4 +11,6 @@ interface MoradoresRepository {
     suspend fun getMoradoresForApartamento(apartamentoId: String): Result<List<Morador>>
 
     suspend fun getMoradoresForCondominio(condominioId: String): Result<List<Morador>>
+
+    suspend fun getMoradoresForPessoa(pessoaId: String): Result<List<Morador>>
 }

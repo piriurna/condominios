@@ -44,4 +44,9 @@ interface MoradoresDao {
     """)
     @RewriteQueriesToDropUnusedColumns
     suspend fun getAllMoradoresForCondominio(condominioId: String): List<MoradorWithPessoaAndApartamentoEntity>
+
+    @Transaction
+    @Query("SELECT * FROM Morador WHERE pessoaId = :pessoaId")
+    @RewriteQueriesToDropUnusedColumns
+    suspend fun getAllMoradoresForPessoa(pessoaId: String): List<MoradorWithPessoaAndApartamentoEntity>
 }

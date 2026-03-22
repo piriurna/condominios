@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class MoradorSearchUiData(
+    val pessoaId: String,
     val nome: String,
     val maskedCpf: String,
     val tipoLabel: String,
@@ -29,7 +30,7 @@ data class MoradorSearchUiState(
 )
 
 sealed class MoradorSearchNavigationEvent {
-    data class ApartamentoDetails(val apartamentoId: String) : MoradorSearchNavigationEvent()
+    data class MoradorDetail(val pessoaId: String) : MoradorSearchNavigationEvent()
 }
 
 class MoradorSearchViewModel(
@@ -79,9 +80,9 @@ class MoradorSearchViewModel(
         }
     }
 
-    fun onMoradorClick(apartamentoId: String) {
+    fun onMoradorClick(pessoaId: String) {
         _uiState.update {
-            it.copy(navigationEvent = MoradorSearchNavigationEvent.ApartamentoDetails(apartamentoId))
+            it.copy(navigationEvent = MoradorSearchNavigationEvent.MoradorDetail(pessoaId))
         }
     }
 
@@ -103,6 +104,7 @@ class MoradorSearchViewModel(
     }
 
     private fun Morador.toSearchUiData() = MoradorSearchUiData(
+        pessoaId = pessoa.id,
         nome = nome,
         maskedCpf = maskCpf(cpf),
         tipoLabel = tipo.toLabel(),
