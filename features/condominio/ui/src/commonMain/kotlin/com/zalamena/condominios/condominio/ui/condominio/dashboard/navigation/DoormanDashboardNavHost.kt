@@ -54,9 +54,19 @@ fun NavGraphBuilder.doormanMoradorSearch(
 }
 
 fun NavGraphBuilder.doormanMoradorDetail(
-    moradorInfoViewModel: MoradorInfoViewModel
+    navController: NavController,
+    moradorInfoViewModel: MoradorInfoViewModel,
+    apartamentoDetailViewModel: ApartamentoDetailViewModel
 ) {
     composable<DoormanMoradorDetailRoute> {
-        MoradorInfoScreen(viewModel = moradorInfoViewModel)
+        MoradorInfoScreen(
+            viewModel = moradorInfoViewModel,
+            onNavigateToApartamento = { apartamentoId ->
+                apartamentoDetailViewModel.setApartamentoId(apartamentoId)
+                navController.navigate(DoormanApartamentoDetailRoute) {
+                    popUpTo(DoormanMoradorDetailRoute) { inclusive = true }
+                }
+            }
+        )
     }
 }

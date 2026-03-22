@@ -21,8 +21,10 @@ import org.kodein.mock.tests.TestsWithMocks
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import com.zalamena.condominios.condominio.ui.moradores.details.MoradorInfoNavigationEvent
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -170,5 +172,28 @@ class MoradorInfoViewModelTest : TestsWithMocks() {
 
         assertFalse(viewModel.uiState.value.isLoading)
         assertEquals("", viewModel.uiState.value.nome)
+    }
+
+    // --- Navigation ---
+
+    @Test
+    fun `WHEN onApartamentoClick THEN emits ApartamentoDetails navigation event`() = runTest(testScheduler) {
+        assertNull(viewModel.uiState.value.navigationEvent)
+
+        viewModel.onApartamentoClick("apt-42")
+
+        val event = viewModel.uiState.value.navigationEvent
+        assertTrue(event is MoradorInfoNavigationEvent.ApartamentoDetails)
+        assertEquals("apt-42", event.apartamentoId)
+    }
+
+    @Test
+    fun `GIVEN ApartamentoDetails event WHEN onNavigationHandled THEN clears event`() = runTest(testScheduler) {
+        viewModel.onApartamentoClick("apt-42")
+        assertTrue(viewModel.uiState.value.navigationEvent is MoradorInfoNavigationEvent.ApartamentoDetails)
+
+        viewModel.onNavigationHandled()
+
+        assertNull(viewModel.uiState.value.navigationEvent)
     }
 }

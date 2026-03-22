@@ -19,6 +19,10 @@ data class ApartamentoDoMoradorUiData(
     val tipoLabel: String
 )
 
+sealed class MoradorInfoNavigationEvent {
+    data class ApartamentoDetails(val apartamentoId: String) : MoradorInfoNavigationEvent()
+}
+
 data class MoradorDetailUiState(
     val nome: String = "",
     val maskedCpf: String = "",
@@ -26,7 +30,8 @@ data class MoradorDetailUiState(
     val telefone: String = "",
     val apartamentos: List<ApartamentoDoMoradorUiData> = emptyList(),
     val isLoading: Boolean = false,
-    val isError: Boolean = false
+    val isError: Boolean = false,
+    val navigationEvent: MoradorInfoNavigationEvent? = null
 )
 
 class MoradorInfoViewModel(
@@ -83,5 +88,15 @@ class MoradorInfoViewModel(
                     _uiState.update { it.copy(isLoading = false, isError = true) }
                 }
         }
+    }
+
+    fun onApartamentoClick(apartamentoId: String) {
+        _uiState.update {
+            it.copy(navigationEvent = MoradorInfoNavigationEvent.ApartamentoDetails(apartamentoId))
+        }
+    }
+
+    fun onNavigationHandled() {
+        _uiState.update { it.copy(navigationEvent = null) }
     }
 }

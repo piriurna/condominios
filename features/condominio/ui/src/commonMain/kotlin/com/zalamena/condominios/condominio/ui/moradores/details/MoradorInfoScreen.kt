@@ -1,5 +1,6 @@
 package com.zalamena.condominios.condominio.ui.moradores.details
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,12 +31,23 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoradorInfoScreen(
-    viewModel: MoradorInfoViewModel
+    viewModel: MoradorInfoViewModel,
+    onNavigateToApartamento: (apartamentoId: String) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.load()
+    }
+
+    LaunchedEffect(uiState.navigationEvent) {
+        when (val event = uiState.navigationEvent) {
+            is MoradorInfoNavigationEvent.ApartamentoDetails -> {
+                onNavigateToApartamento(event.apartamentoId)
+                viewModel.onNavigationHandled()
+            }
+            null -> Unit
+        }
     }
 
     Scaffold(
@@ -57,7 +69,10 @@ fun MoradorInfoScreen(
                     )
                 }
                 else -> {
-                    MoradorDetailContent(uiState = uiState)
+                    MoradorDetailContent(
+                        uiState = uiState,
+                        onApartamentoClick = viewModel::onApartamentoClick
+                    )
                 }
             }
         }
@@ -65,7 +80,10 @@ fun MoradorInfoScreen(
 }
 
 @Composable
-private fun MoradorDetailContent(uiState: MoradorDetailUiState) {
+private fun MoradorDetailContent(
+    uiState: MoradorDetailUiState,
+    onApartamentoClick: (apartamentoId: String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -90,7 +108,10 @@ private fun MoradorDetailContent(uiState: MoradorDetailUiState) {
         } else {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(uiState.apartamentos) { apt ->
-                    ApartamentoDoMoradorCard(apt)
+                    ApartamentoDoMoradorCard(
+                        apt = apt,
+                        onClick = { onApartamentoClick(apt.apartamentoId) }
+                    )
                 }
             }
         }
@@ -98,8 +119,8 @@ private fun MoradorDetailContent(uiState: MoradorDetailUiState) {
 }
 
 @Composable
-private fun ApartamentoDoMoradorCard(apt: ApartamentoDoMoradorUiData) {
-    Card(modifier = Modifier.fillMaxWidth()) {
+private fun ApartamentoDoMoradorCard(apt: ApartamentoDoMoradorUiData, onClick: () -> Unit) {
+    Card(modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)) {
         Row(
             modifier = Modifier.padding(16.dp).fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,

@@ -204,7 +204,7 @@ fun AppNavHost(
 
         doormanMoradorSearch(navController, moradorSearchViewModel, moradorInfoViewModel)
 
-        doormanMoradorDetail(moradorInfoViewModel)
+        doormanMoradorDetail(navController, moradorInfoViewModel, apartamentoDetailViewModel)
 
         loginNavHost(
             navController,
