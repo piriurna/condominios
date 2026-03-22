@@ -16,13 +16,20 @@ class AddMoradorUseCaseImpl(
         apartamentoId: String,
         tipo: MoradorTipo
     ): Result<Unit> {
+        val existingResult = moradoresRepository.getMoradoresForApartamento(apartamentoId)
+        val existing = existingResult.getOrElse { emptyList() }
+
+        if (existing.any { it.pessoa.id == pessoaId }) {
+            return Result.failure(MoradorException.DuplicateMoradorException)
+        }
+
         if (tipo == MoradorTipo.PROPRIETARIO) {
-            val existing = moradoresRepository.getMoradoresForApartamento(apartamentoId)
-                .getOrElse { emptyList() }
-            if (existing.count { it.tipo == MoradorTipo.PROPRIETARIO } >= 2) {
+            val propCount = existing.count { it.tipo == MoradorTipo.PROPRIETARIO }
+            if (propCount >= 2) {
                 return Result.failure(MoradorException.MaxProprietariosExceededException)
             }
         }
+
         return moradoresRepository.addMorador(pessoaId, apartamentoId, tipo)
     }
 }

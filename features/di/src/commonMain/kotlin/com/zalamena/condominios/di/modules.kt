@@ -17,8 +17,10 @@ import com.zalamena.condominios.condominio.domain.condominio.usecase.GetCondomin
 import com.zalamena.condominios.condominio.domain.condominio.usecase.GetCondominiosUseCase
 import com.zalamena.condominios.condominio.domain.condominio.usecase.GetMoradoresUseCase
 import com.zalamena.condominios.condominio.domain.morador.repository.MoradoresRepository
+import com.zalamena.condominios.condominio.domain.morador.repository.PessoaProvider
 import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCase
 import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCaseImpl
+import com.zalamena.condominios.condominio.domain.morador.usecase.GetAvailablePessoasForApartamentoUseCase
 import com.zalamena.condominios.condominio.domain.morador.usecase.GetMoradorDetailUseCase
 import com.zalamena.condominios.condominio.domain.morador.usecase.GetMoradoresForApartamentoUseCase
 import com.zalamena.condominios.condominio.domain.morador.usecase.RemoveMoradorUseCase
@@ -34,6 +36,7 @@ import com.zalamena.condominios.condominio.ui.addmorador.overview.AddMoradorOver
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDashboardViewModel
 import com.zalamena.condominios.condominio.ui.condominio.overview.CondominioOverviewViewModel
 import com.zalamena.condominios.condominio.ui.moradores.details.MoradorInfoViewModel
+import com.zalamena.condominios.condominio.ui.addmorador.searchpessoa.SearchPessoaViewModel
 import com.zalamena.condominios.condominio.ui.moradores.search.MoradorSearchViewModel
 import com.zalamena.condominios.condominio.ui.porteiro.list.PorteiroListViewModel
 import com.zalamena.condominios.condominio.domain.porteiro.models.PorteiroInfo
@@ -123,6 +126,9 @@ val repositoryModule = module {
             get<UserRepository>().updateUserRole(porteiroId, UserRole.Porteiro(newCondominioId))
         }
     }
+    single<PessoaProvider> {
+        PessoaProvider { get<GetPessoasListUseCase>().invoke() }
+    }
 }
 
 val useCaseModule = module {
@@ -140,6 +146,7 @@ val useCaseModule = module {
     factory { GetApartamentosUseCase(get()) }
     factory<AddMoradorUseCase> { AddMoradorUseCaseImpl(get()) }
     factory { GetMoradoresForApartamentoUseCase(get()) }
+    factory { GetAvailablePessoasForApartamentoUseCase(get(), get()) }
     factory { GetMoradorDetailUseCase(get()) }
     factory<RemoveMoradorUseCase> { RemoveMoradorUseCaseImpl(get()) }
     factory<UpdateMoradorTipoUseCase> { UpdateMoradorTipoUseCaseImpl(get()) }
@@ -167,4 +174,5 @@ val viewModelModule = module {
     viewModelOf(::PorteiroListViewModel)
     viewModelOf(::MoradorSearchViewModel)
     viewModelOf(::MoradorInfoViewModel)
+    viewModelOf(::SearchPessoaViewModel)
 }

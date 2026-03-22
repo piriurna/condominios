@@ -43,9 +43,13 @@ fun AddMoradorOverviewScreen(
         )
     }
 
-    LaunchedEffect(uiState.isCompleted) {
-        if (uiState.isCompleted) {
-            navigate()
+    LaunchedEffect(uiState.navigationEvent) {
+        when (uiState.navigationEvent) {
+            is AddMoradorOverviewNavEvent.Completed -> {
+                navigate()
+                viewModel.onNavigationHandled()
+            }
+            null -> {}
         }
     }
 

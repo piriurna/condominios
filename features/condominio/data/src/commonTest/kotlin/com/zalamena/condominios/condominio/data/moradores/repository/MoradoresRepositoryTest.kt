@@ -62,6 +62,67 @@ class MoradoresRepositoryTest: TestsWithMocks() {
         assertTrue(result.exceptionOrNull() is MoradorException.MoradorNotFoundException)
     }
 
+    @Test
+    fun `GIVEN pessoa is morador in apartment A WHEN adding same pessoa to apartment B THEN should succeed`() = runTest {
+        val pessoaId = "pessoaId"
+        val apartamentoAId = "apartamentoA"
+        val apartamentoBId = "apartamentoB"
+
+        val moradorForAptA = MoradorEntity(
+            id = 0L,
+            pessoaId = pessoaId,
+            apartamentoId = apartamentoAId,
+            tipo = MoradorTipo.RESIDENTE.name
+        )
+
+        val moradorForAptB = MoradorEntity(
+            id = 0L,
+            pessoaId = pessoaId,
+            apartamentoId = apartamentoBId,
+            tipo = MoradorTipo.RESIDENTE.name
+        )
+
+        // First insert (apartment A) succeeds
+        everySuspending { moradoresDao.addMorador(moradorForAptA) } runs {}
+
+        val resultA = moradoresRepository.addMorador(pessoaId, apartamentoAId, MoradorTipo.RESIDENTE)
+        assertTrue(resultA.isSuccess, "Adding morador to apartment A should succeed")
+
+        // Second insert (apartment B) should also succeed - different apartamentoId
+        everySuspending { moradoresDao.addMorador(moradorForAptB) } runs {}
+
+        val resultB = moradoresRepository.addMorador(pessoaId, apartamentoBId, MoradorTipo.RESIDENTE)
+        assertTrue(resultB.isSuccess, "Adding same pessoa as morador to apartment B should succeed")
+
+        // Verify both DAO calls were made
+        verifyWithSuspend(exhaustive = false) {
+            moradoresDao.addMorador(moradorForAptA)
+            moradoresDao.addMorador(moradorForAptB)
+        }
+    }
+
+    @Test
+    fun `GIVEN pessoa is morador in apartment A WHEN adding to apartment B and DAO throws THEN should return failure`() = runTest {
+        val pessoaId = "pessoaId"
+        val apartamentoBId = "apartamentoB"
+
+        val moradorForAptB = MoradorEntity(
+            id = 0L,
+            pessoaId = pessoaId,
+            apartamentoId = apartamentoBId,
+            tipo = MoradorTipo.RESIDENTE.name
+        )
+
+        // DAO throws an exception (simulating a constraint violation or other DB error)
+        everySuspending { moradoresDao.addMorador(moradorForAptB) } runs {
+            throw RuntimeException("UNIQUE constraint failed")
+        }
+
+        val result = moradoresRepository.addMorador(pessoaId, apartamentoBId, MoradorTipo.RESIDENTE)
+
+        assertTrue(result.isFailure, "Should return failure when DAO throws")
+    }
+
     override fun setUpMocks() {
         mocker.injectMocks(this)
     }

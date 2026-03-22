@@ -1,9 +1,11 @@
 package com.zalamena.condominios.ui.addmorador
 
+import com.zalamena.condominios.condominio.domain.morador.model.MoradorTipo
 import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCase
 import com.zalamena.condominios.condominio.domain.apartamento.models.Apartamento
 import com.zalamena.condominios.condominio.domain.apartamento.models.ApartamentoException
 import com.zalamena.condominios.condominio.domain.apartamento.usecase.GetApartamentoUseCase
+import com.zalamena.condominios.condominio.ui.addmorador.overview.AddMoradorOverviewNavEvent
 import com.zalamena.condominios.condominio.ui.addmorador.overview.AddMoradorOverviewViewModel
 import com.zalamena.condominios.condominio.ui.moradores.mapper.toSelectUi
 import com.zalamena.condominios.pessoa.domain.models.Pessoa
@@ -133,6 +135,88 @@ class AddMoradorOverviewViewModelTest: TestsWithMocks() {
         assertEquals(null, viewModel.uiState.value.pessoa)
     }
 
+
+    @Test
+    fun `GIVEN pessoa already morador in apartment A WHEN adding to apartment B THEN should call addMorador and complete`() = runTest {
+        val pessoaId = "pessoaId"
+        val apartamentoBId = "apartamentoBId"
+        val pessoa = Pessoa.dummy.copy(id = pessoaId)
+        val apartamentoB = Apartamento.dummy.copy(id = apartamentoBId, numero = "202")
+
+        everySuspending { getPessoaUseCase(pessoaId) } returns Result.success(pessoa)
+        everySuspending { getApartamentoUseCase(apartamentoBId) } returns Result.success(apartamentoB)
+
+        viewModel.populateForm(pessoaId, apartamentoBId)
+
+        // Verify form was populated correctly
+        assertEquals(pessoa.toSelectUi(), viewModel.uiState.value.pessoa)
+        assertEquals(apartamentoB.toSelectUi(), viewModel.uiState.value.apartamento)
+
+        // Mock addMorador to succeed (pessoa is already in apt A, but domain allows apt B)
+        everySuspending {
+            addMoradorUseCase.invoke(pessoaId, apartamentoBId, MoradorTipo.RESIDENTE)
+        } returns Result.success(Unit)
+
+        viewModel.addMorador()
+
+        // Verify completion
+        assertEquals(AddMoradorOverviewNavEvent.Completed, viewModel.uiState.value.navigationEvent)
+        assertEquals(null, viewModel.uiState.value.error)
+
+        // Verify addMoradorUseCase was called with the correct apartment B args
+        verifyWithSuspend(exhaustive = false) {
+            addMoradorUseCase.invoke(pessoaId, apartamentoBId, MoradorTipo.RESIDENTE)
+        }
+    }
+
+    @Test
+    fun `GIVEN pessoa already morador in apartment A WHEN adding to apartment B fails THEN should show error`() = runTest {
+        val pessoaId = "pessoaId"
+        val apartamentoBId = "apartamentoBId"
+        val pessoa = Pessoa.dummy.copy(id = pessoaId)
+        val apartamentoB = Apartamento.dummy.copy(id = apartamentoBId, numero = "202")
+
+        everySuspending { getPessoaUseCase(pessoaId) } returns Result.success(pessoa)
+        everySuspending { getApartamentoUseCase(apartamentoBId) } returns Result.success(apartamentoB)
+
+        viewModel.populateForm(pessoaId, apartamentoBId)
+
+        // Mock addMorador to fail
+        everySuspending {
+            addMoradorUseCase.invoke(pessoaId, apartamentoBId, MoradorTipo.RESIDENTE)
+        } returns Result.failure(RuntimeException("Insert failed"))
+
+        viewModel.addMorador()
+
+        // Verify error state
+        assertEquals(null, viewModel.uiState.value.navigationEvent)
+        assertEquals("Insert failed", viewModel.uiState.value.error)
+    }
+
+    @Test
+    fun `GIVEN add completed WHEN onNavigationHandled called THEN navigationEvent should be null`() = runTest {
+        val pessoaId = "pessoaId"
+        val apartamentoId = "apartamentoId"
+        val pessoa = Pessoa.dummy.copy(id = pessoaId)
+        val apartamento = Apartamento.dummy.copy(id = apartamentoId)
+
+        // Populate form and complete successfully
+        everySuspending { getPessoaUseCase(pessoaId) } returns Result.success(pessoa)
+        everySuspending { getApartamentoUseCase(apartamentoId) } returns Result.success(apartamento)
+        viewModel.populateForm(pessoaId, apartamentoId)
+
+        everySuspending {
+            addMoradorUseCase.invoke(pessoaId, apartamentoId, MoradorTipo.RESIDENTE)
+        } returns Result.success(Unit)
+        viewModel.addMorador()
+
+        assertEquals(AddMoradorOverviewNavEvent.Completed, viewModel.uiState.value.navigationEvent)
+
+        // Consuming the event should clear it
+        viewModel.onNavigationHandled()
+
+        assertEquals(null, viewModel.uiState.value.navigationEvent)
+    }
 
     override fun setUpMocks() {
         mocker.injectMocks(this)

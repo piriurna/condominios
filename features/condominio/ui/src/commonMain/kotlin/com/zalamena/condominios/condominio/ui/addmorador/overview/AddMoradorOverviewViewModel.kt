@@ -14,13 +14,17 @@ import com.zalamena.condominios.condominio.ui.moradores.models.SelectPessoaUiDat
 import com.zalamena.condominios.pessoa.domain.usecase.GetPessoaUseCase
 import kotlinx.coroutines.launch
 
+sealed class AddMoradorOverviewNavEvent {
+    data object Completed : AddMoradorOverviewNavEvent()
+}
+
 data class AddMoradorOverviewUiState(
     val isLoading: Boolean = false,
     val pessoa: SelectPessoaUiData? = null,
     val apartamento: SelectApartamentoUiData? = null,
     val selectedTipo: MoradorTipo = MoradorTipo.RESIDENTE,
     val error: String? = null,
-    val isCompleted: Boolean = false
+    val navigationEvent: AddMoradorOverviewNavEvent? = null
 )
 
 class AddMoradorOverviewViewModel(
@@ -34,7 +38,8 @@ class AddMoradorOverviewViewModel(
     fun populateForm(selectedPessoaId: String?, selectedApartamentoId: String?) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
-                isLoading = true
+                isLoading = true,
+                error = null
             )
 
             if(selectedPessoaId == null || selectedApartamentoId == null) {
@@ -103,8 +108,12 @@ class AddMoradorOverviewViewModel(
             _uiState.value = _uiState.value.copy(
                 isLoading = false,
                 error = null,
-                isCompleted = true
+                navigationEvent = AddMoradorOverviewNavEvent.Completed
             )
         }
+    }
+
+    fun onNavigationHandled() {
+        _uiState.value = _uiState.value.copy(navigationEvent = null)
     }
 }
