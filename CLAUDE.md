@@ -58,6 +58,10 @@ powershell.exe -Command "Set-Location 'C:\Users\franc\Documents\Projetos Android
 
 > **Note:** `org.gradle.java.home` is set in `local.properties` to use OpenJDK 25 (`~/.jdks/openjdk-25`). Gradle 9 requires JVM 17+; the system default is JDK 8.
 
+## Workflow
+
+- **Always use the dev agent** (`subagent_type: dev`) for implementing features, writing code, running builds, and running tests. Only do quick reads/exploration in the main conversation to gather context for the agent prompt.
+
 ## Key conventions
 
 - **CPF masking** is a UI concern — domain stores CPF as plain string; `maskCpf()` lives in the UI layer

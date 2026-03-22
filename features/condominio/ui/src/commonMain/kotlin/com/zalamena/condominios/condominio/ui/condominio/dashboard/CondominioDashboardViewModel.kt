@@ -27,6 +27,7 @@ sealed class DashboardNavigationEvent {
     data class ApartamentoDetails(val apartamentoId: String) : DashboardNavigationEvent()
     data class CreatePorteiro(val condominioId: String) : DashboardNavigationEvent()
     data class PorteiroList(val condominioId: String) : DashboardNavigationEvent()
+    data class SearchMorador(val condominioId: String) : DashboardNavigationEvent()
     object Logout : DashboardNavigationEvent()
 }
 
@@ -105,6 +106,12 @@ class CondominioDashboardViewModel(
         val condominioId = _uiState.value.condominioId
         if (condominioId.isBlank()) return
         _uiState.update { it.copy(navigationEvent = DashboardNavigationEvent.PorteiroList(condominioId)) }
+    }
+
+    fun onSearchMoradorClick() {
+        val condominioId = _uiState.value.condominioId
+        if (condominioId.isBlank()) return
+        _uiState.update { it.copy(navigationEvent = DashboardNavigationEvent.SearchMorador(condominioId)) }
     }
 
     fun onNavigationHandled() {

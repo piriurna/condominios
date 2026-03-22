@@ -28,6 +28,7 @@ import com.zalamena.condominios.condominio.ui.addmorador.flowController.AddMorad
 import com.zalamena.condominios.condominio.ui.addmorador.overview.AddMoradorOverviewViewModel
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDashboardViewModel
 import com.zalamena.condominios.condominio.ui.condominio.overview.CondominioOverviewViewModel
+import com.zalamena.condominios.condominio.ui.moradores.search.MoradorSearchViewModel
 import com.zalamena.condominios.condominio.ui.porteiro.list.PorteiroListViewModel
 import com.zalamena.condominios.condominio.domain.porteiro.models.PorteiroInfo
 import com.zalamena.condominios.condominio.domain.porteiro.repository.PorteiroDeleter
@@ -155,4 +156,5 @@ val viewModelModule = module {
     viewModelOf(::SplashViewModel)
     viewModelOf(::CreateUserViewModel)
     viewModelOf(::PorteiroListViewModel)
+    viewModelOf(::MoradorSearchViewModel)
 }
