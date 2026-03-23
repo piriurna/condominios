@@ -75,12 +75,53 @@ class AddApartamentoViewModelTest : TestsWithMocks() {
     }
 
     @Test
-    fun `GIVEN invalid form WHEN adding apartamento THEN should show error`() = runTest(testScheduler) {
+    fun `GIVEN blank form WHEN adding apartamento THEN sets per-field errors`() = runTest(testScheduler) {
         viewModel.addApartamento()
         advanceUntilIdle()
 
-        assertNotNull(viewModel.uiState.value.errorMessage)
+        assertNotNull(viewModel.uiState.value.numeroError)
+        assertNotNull(viewModel.uiState.value.andarError)
         assertFalse(viewModel.uiState.value.isLoading)
+    }
+
+    @Test
+    fun `GIVEN only numero blank WHEN adding apartamento THEN only numeroError is set`() = runTest(testScheduler) {
+        viewModel.setAndarApartamento("1")
+        viewModel.addApartamento()
+        advanceUntilIdle()
+
+        assertNotNull(viewModel.uiState.value.numeroError)
+        assertNull(viewModel.uiState.value.andarError)
+    }
+
+    @Test
+    fun `GIVEN only andar blank WHEN adding apartamento THEN only andarError is set`() = runTest(testScheduler) {
+        viewModel.setNumeroApartamento("101")
+        viewModel.addApartamento()
+        advanceUntilIdle()
+
+        assertNull(viewModel.uiState.value.numeroError)
+        assertNotNull(viewModel.uiState.value.andarError)
+    }
+
+    @Test
+    fun `GIVEN numeroError exists WHEN setNumeroApartamento THEN error is cleared`() = runTest(testScheduler) {
+        viewModel.addApartamento()
+        advanceUntilIdle()
+        assertNotNull(viewModel.uiState.value.numeroError)
+
+        viewModel.setNumeroApartamento("101")
+        assertNull(viewModel.uiState.value.numeroError)
+    }
+
+    @Test
+    fun `GIVEN andarError exists WHEN setAndarApartamento THEN error is cleared`() = runTest(testScheduler) {
+        viewModel.addApartamento()
+        advanceUntilIdle()
+        assertNotNull(viewModel.uiState.value.andarError)
+
+        viewModel.setAndarApartamento("1")
+        assertNull(viewModel.uiState.value.andarError)
     }
 
     @Test

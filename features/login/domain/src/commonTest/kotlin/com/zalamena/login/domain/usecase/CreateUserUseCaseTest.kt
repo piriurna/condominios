@@ -99,6 +99,30 @@ class CreateUserUseCaseTest : TestsWithMocks() {
     }
 
     @Test
+    fun `GIVEN cpf with less than 11 digits WHEN creating user THEN returns InvalidCpf error`() = runTest {
+        val result = useCase("Admin", "123456", "admin@test.com", UserRole.Admin, "pass123")
+
+        assertTrue(result.isFailure)
+        assertIs<CreateUserError.InvalidCpf>(result.exceptionOrNull())
+    }
+
+    @Test
+    fun `GIVEN cpf with more than 11 digits WHEN creating user THEN returns InvalidCpf error`() = runTest {
+        val result = useCase("Admin", "123456789012", "admin@test.com", UserRole.Admin, "pass123")
+
+        assertTrue(result.isFailure)
+        assertIs<CreateUserError.InvalidCpf>(result.exceptionOrNull())
+    }
+
+    @Test
+    fun `GIVEN email without at sign WHEN creating user THEN returns InvalidEmail error`() = runTest {
+        val result = useCase("Admin", "12345678900", "admintest.com", UserRole.Admin, "pass123")
+
+        assertTrue(result.isFailure)
+        assertIs<CreateUserError.InvalidEmail>(result.exceptionOrNull())
+    }
+
+    @Test
     fun `GIVEN name with whitespace WHEN creating user THEN name is trimmed`() = runTest {
         val role = UserRole.Admin
         val user = User(id = "user-3", name = "Admin", cpf = "12345678900", email = "admin@test.com", role = role)

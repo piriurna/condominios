@@ -107,7 +107,11 @@ class CreateUserViewModel(
                             _uiState.update { it.copy(isLoading = false, nameError = error.message) }
                         is CreateUserError.EmptyCpf ->
                             _uiState.update { it.copy(isLoading = false, cpfError = error.message) }
+                        is CreateUserError.InvalidCpf ->
+                            _uiState.update { it.copy(isLoading = false, cpfError = error.message) }
                         is CreateUserError.EmptyEmail ->
+                            _uiState.update { it.copy(isLoading = false, emailError = error.message) }
+                        is CreateUserError.InvalidEmail ->
                             _uiState.update { it.copy(isLoading = false, emailError = error.message) }
                         else ->
                             _uiState.update { it.copy(isLoading = false, error = error.message ?: "Erro ao criar usuário") }

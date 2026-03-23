@@ -17,6 +17,8 @@ data class AddApartamentoUiState(
     val addApartamentoForm: AddApartamentoFormUiData = AddApartamentoFormUiData.BLANK,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
+    val numeroError: String? = null,
+    val andarError: String? = null,
     val createdApartamentoId: String? = null
 )
 
@@ -44,6 +46,7 @@ class AddApartamentoViewModel(
                 addApartamentoForm = it.addApartamentoForm.copy(
                     numero = fixedNumero
                 ),
+                numeroError = null,
                 errorMessage = null
             )
         }
@@ -57,6 +60,7 @@ class AddApartamentoViewModel(
                 addApartamentoForm = it.addApartamentoForm.copy(
                     andar = fixedAndar
                 ),
+                andarError = null,
                 errorMessage = null
             )
         }
@@ -70,20 +74,25 @@ class AddApartamentoViewModel(
                 it.copy(isLoading = true)
             }
 
-            if(!formValid()) {
+            val form = _uiState.value.addApartamentoForm
+            val numErr = if (form.numero.isBlank()) "Número é obrigatório" else null
+            val andErr = if (form.andar.isBlank()) "Andar é obrigatório" else null
+
+            if (numErr != null || andErr != null) {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = "Preencha todos os campos"
+                        numeroError = numErr,
+                        andarError = andErr,
+                        errorMessage = null
                     )
                 }
-
                 return@launch
             }
 
-            val form = _uiState.value.addApartamentoForm.toDomain(_uiState.value.condominioId)
+            val domainForm = _uiState.value.addApartamentoForm.toDomain(_uiState.value.condominioId)
 
-            val addResult = addApartamentoUseCase(form)
+            val addResult = addApartamentoUseCase(domainForm)
 
             when {
                 addResult.isFailure -> {

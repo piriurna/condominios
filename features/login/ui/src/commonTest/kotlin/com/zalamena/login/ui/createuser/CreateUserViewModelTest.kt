@@ -223,6 +223,64 @@ class CreateUserViewModelTest : TestsWithMocks() {
     }
 
     @Test
+    fun `GIVEN invalid cpf WHEN createUser THEN cpfError is set with format message`() = runTest {
+        viewModel.setName("Admin")
+        viewModel.setCpf("123456")
+        viewModel.setEmail("a@test.com")
+        viewModel.setRole(RoleOption.ADMIN)
+        viewModel.createUser()
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertNotNull(state.cpfError)
+        assertEquals("CPF deve ter 11 dígitos", state.cpfError)
+        assertNull(state.generatedPassword)
+    }
+
+    @Test
+    fun `GIVEN invalid email WHEN createUser THEN emailError is set with format message`() = runTest {
+        viewModel.setName("Admin")
+        viewModel.setCpf("12345678900")
+        viewModel.setEmail("admintest.com")
+        viewModel.setRole(RoleOption.ADMIN)
+        viewModel.createUser()
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertNotNull(state.emailError)
+        assertEquals("Email deve conter @", state.emailError)
+        assertNull(state.generatedPassword)
+    }
+
+    @Test
+    fun `GIVEN cpfError exists WHEN setCpf THEN error is cleared`() = runTest {
+        viewModel.setName("Admin")
+        viewModel.setCpf("123")
+        viewModel.setEmail("a@test.com")
+        viewModel.setRole(RoleOption.ADMIN)
+        viewModel.createUser()
+        advanceUntilIdle()
+        assertNotNull(viewModel.uiState.value.cpfError)
+
+        viewModel.setCpf("12345678900")
+        assertNull(viewModel.uiState.value.cpfError)
+    }
+
+    @Test
+    fun `GIVEN emailError exists WHEN setEmail THEN error is cleared`() = runTest {
+        viewModel.setName("Admin")
+        viewModel.setCpf("12345678900")
+        viewModel.setEmail("invalid")
+        viewModel.setRole(RoleOption.ADMIN)
+        viewModel.createUser()
+        advanceUntilIdle()
+        assertNotNull(viewModel.uiState.value.emailError)
+
+        viewModel.setEmail("valid@test.com")
+        assertNull(viewModel.uiState.value.emailError)
+    }
+
+    @Test
     fun `GIVEN nameError exists WHEN setName THEN error is cleared`() = runTest {
         viewModel.setCpf("12345678900")
         viewModel.setEmail("a@test.com")
