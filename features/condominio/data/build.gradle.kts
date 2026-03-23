@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    kotlin("plugin.serialization") version "2.2.0"
     id("org.kodein.mock.mockmp") version "2.0.2"
 }
 
@@ -52,6 +53,13 @@ kotlin {
 
             implementation(libs.kotlinx.datetime)
 
+            // Ktor HTTP client
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.cio)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+
+            implementation(libs.kotlinx.serialization.json)
 
             //Projects
             api(project(":features:condominio:domain"))
@@ -62,6 +70,7 @@ kotlin {
             implementation(libs.assertk)
 
             implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.ktor.client.mock)
         }
         jvmMain.dependencies {
             implementation(libs.kotlinx.coroutinesSwing)

@@ -55,6 +55,12 @@ kotlin {
 
             implementation(libs.kotlinx.coroutines.test)
 
+            // Ktor (needed for HttpClient type in DI wiring)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.cio)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+
             api(project(":features:condominio:domain"))
 
             api(project(":features:condominio:data"))

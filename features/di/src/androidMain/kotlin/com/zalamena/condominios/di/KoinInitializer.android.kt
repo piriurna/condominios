@@ -15,6 +15,7 @@ actual object PlatformKoinInitializer {
             androidContext(applicationContext)
             modules(
                 platformModule,
+                networkModule,
                 daoModule,
                 repositoryModule,
                 useCaseModule,

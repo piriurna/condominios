@@ -7,6 +7,7 @@ actual object PlatformKoinInitializer {
         startKoin {
             modules(
                 platformModule,
+                networkModule,
                 daoModule,
                 repositoryModule,
                 useCaseModule,
