@@ -76,6 +76,8 @@ private fun AddApartamentoScreenContent(
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number
                 ),
+                isError = uiState.numeroError != null,
+                supportingText = { uiState.numeroError?.let { Text(it) } }
             )
             Spacer(modifier = Modifier.width(16.dp))
             TextField(
@@ -87,7 +89,8 @@ private fun AddApartamentoScreenContent(
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number
                 ),
-
+                isError = uiState.andarError != null,
+                supportingText = { uiState.andarError?.let { Text(it) } }
             )
         }
         Spacer(modifier = Modifier.height(16.dp))

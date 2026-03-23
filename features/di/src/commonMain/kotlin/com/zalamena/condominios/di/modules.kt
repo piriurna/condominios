@@ -75,7 +75,17 @@ import com.zalamena.login.domain.usecase.LoginUseCase
 import com.zalamena.login.domain.usecase.LogoutUseCase
 import com.zalamena.login.ui.LoginViewModel
 import com.zalamena.login.ui.SplashViewModel
+import com.zalamena.condominios.condominio.data.address.IbgeApi
+import com.zalamena.condominios.condominio.data.address.ViaCepApi
+import com.zalamena.condominios.condominio.domain.address.CepLookupProvider
+import com.zalamena.condominios.condominio.domain.address.CidadeProvider
+import com.zalamena.condominios.condominio.domain.address.EstadoProvider
 import com.zalamena.login.ui.createuser.CreateUserViewModel
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -88,6 +98,30 @@ val daoModule = module {
     single<ApartamentoDao> { get<AppDatabase>().getApartamentosDao() }
     single<CondominioDao> { get<AppDatabase>().getCondominioDao() }
     single<MoradoresDao> { get<AppDatabase>().getMoradoresDao() }
+}
+
+val networkModule = module {
+    single<HttpClient> {
+        HttpClient(CIO) {
+            install(ContentNegotiation) {
+                json(Json {
+                    ignoreUnknownKeys = true
+                    isLenient = true
+                })
+            }
+        }
+    }
+    single { IbgeApi(get()) }
+    single { ViaCepApi(get()) }
+    single<EstadoProvider> {
+        EstadoProvider { get<IbgeApi>().getEstados() }
+    }
+    single<CidadeProvider> {
+        CidadeProvider { uf -> get<IbgeApi>().getCidades(uf) }
+    }
+    single<CepLookupProvider> {
+        CepLookupProvider { cep -> get<ViaCepApi>().lookup(cep) }
+    }
 }
 
 val repositoryModule = module {
