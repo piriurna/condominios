@@ -8,7 +8,8 @@ import com.zalamena.condominios.condominio.ui.condominio.dashboard.models.Condom
 fun Condominio.toSummaryUi(): CondominioSummaryUiData = CondominioSummaryUiData(
     id = id,
     nome = nome,
-    enderecoDescription = "${endereco.rua}, ${endereco.numero} — ${endereco.cidade}/${endereco.estado}"
+    enderecoDescription = "${endereco.rua}, ${endereco.numero} — ${endereco.cidade}/${endereco.estado}",
+    apartamentoCount = apartamentos.size
 )
 
 fun Apartamento.toDashboardUi(): ApartamentoDashboardUiData = ApartamentoDashboardUiData(

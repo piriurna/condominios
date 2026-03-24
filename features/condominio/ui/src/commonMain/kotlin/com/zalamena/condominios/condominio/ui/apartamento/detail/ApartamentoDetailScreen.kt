@@ -1,24 +1,19 @@
 package com.zalamena.condominios.condominio.ui.apartamento.detail
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -41,6 +36,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.zalamena.condominios.common.ui.components.EmptyState
+import com.zalamena.condominios.common.ui.components.MoradorCard
 import com.zalamena.condominios.condominio.ui.apartamento.detail.models.MoradorDetailUiData
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -166,11 +162,14 @@ private fun ApartamentoDetailContent(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(uiState.moradores) { morador ->
-                    MoradorRow(
-                        morador = morador,
-                        isAdminMode = isAdminMode,
+                    MoradorCard(
+                        nome = morador.nome,
+                        cpf = morador.maskedCpf,
+                        tipoLabel = morador.tipoLabel,
                         onClick = { onMoradorClick(morador.pessoaId) },
-                        onDeleteClick = { onDeleteMoradorClick(morador) }
+                        onDelete = if (isAdminMode) {
+                            { onDeleteMoradorClick(morador) }
+                        } else null
                     )
                 }
             }
@@ -179,47 +178,6 @@ private fun ApartamentoDetailContent(
                 Spacer(Modifier.height(16.dp))
                 Button(onClick = onAddMoradorClick, modifier = Modifier.fillMaxWidth()) {
                     Text("Adicionar Morador")
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun MoradorRow(
-    morador: MoradorDetailUiData,
-    isAdminMode: Boolean = true,
-    onClick: () -> Unit = {},
-    onDeleteClick: () -> Unit = {}
-) {
-    Card(modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)) {
-        Row(
-            modifier = Modifier.padding(16.dp).fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(morador.nome, style = MaterialTheme.typography.bodyLarge)
-                Text(
-                    text = morador.tipoLabel,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-            Text(
-                text = morador.maskedCpf,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            if (isAdminMode) {
-                Spacer(Modifier.width(8.dp))
-                Button(
-                    onClick = onDeleteClick,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.error
-                    )
-                ) {
-                    Text("Excluir")
                 }
             }
         }

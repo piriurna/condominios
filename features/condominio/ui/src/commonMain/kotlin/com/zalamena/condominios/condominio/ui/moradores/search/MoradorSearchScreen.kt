@@ -1,10 +1,8 @@
 package com.zalamena.condominios.condominio.ui.moradores.search
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -32,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.zalamena.condominios.common.ui.components.EmptyState
+import com.zalamena.condominios.common.ui.components.MoradorCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -122,22 +120,10 @@ fun MoradorSearchScreen(
 
 @Composable
 private fun MoradorSearchCard(morador: MoradorSearchUiData, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp).fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column {
-                Text(morador.nome, style = MaterialTheme.typography.titleMedium)
-                Text(morador.tipoLabel, style = MaterialTheme.typography.bodySmall)
-                Text(morador.maskedCpf, style = MaterialTheme.typography.bodySmall)
-            }
-            Column(horizontalAlignment = Alignment.End) {
-                Text("Apt ${morador.aptNumero}", style = MaterialTheme.typography.titleSmall)
-                Text("Andar ${morador.aptAndar}", style = MaterialTheme.typography.bodySmall)
-            }
-        }
-    }
+    MoradorCard(
+        nome = "${morador.nome} - Apt ${morador.aptNumero}",
+        cpf = morador.maskedCpf,
+        tipoLabel = morador.tipoLabel,
+        onClick = onClick
+    )
 }

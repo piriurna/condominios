@@ -1,10 +1,8 @@
 package com.zalamena.condominios.condominio.ui.condominio.dashboard
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -37,8 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.zalamena.condominios.common.ui.components.ApartamentoCard
 import com.zalamena.condominios.common.ui.components.EmptyState
-import com.zalamena.condominios.condominio.ui.condominio.dashboard.models.ApartamentoDashboardUiData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -138,7 +135,11 @@ fun CondominioDashboardScreen(
         },
         floatingActionButton = {
             if (uiState.isAdminMode && !uiState.isLoading && !uiState.isError) {
-                FloatingActionButton(onClick = { viewModel.onAddApartamentoClick() }) {
+                FloatingActionButton(
+                    onClick = { viewModel.onAddApartamentoClick() },
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ) {
                     Icon(Icons.Default.Add, contentDescription = "Adicionar apartamento")
                 }
             }
@@ -178,7 +179,12 @@ fun CondominioDashboardScreen(
                             Spacer(Modifier.height(8.dp))
                         }
                         items(uiState.apartamentos) { apt ->
-                            ApartamentoCard(apt, onClick = { viewModel.onApartamentoClick(apt.id) })
+                            ApartamentoCard(
+                                numero = apt.numero,
+                                andar = apt.andar,
+                                moradorCount = apt.moradorCount,
+                                onClick = { viewModel.onApartamentoClick(apt.id) }
+                            )
                         }
                     }
                 }
@@ -187,20 +193,3 @@ fun CondominioDashboardScreen(
     }
 }
 
-@Composable
-private fun ApartamentoCard(apt: ApartamentoDashboardUiData, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp).fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column {
-                Text("Apt ${apt.numero}", style = MaterialTheme.typography.titleMedium)
-                Text("Andar ${apt.andar}", style = MaterialTheme.typography.bodySmall)
-            }
-            Text("${apt.moradorCount} morador(es)", style = MaterialTheme.typography.bodySmall)
-        }
-    }
-}

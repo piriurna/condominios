@@ -1,21 +1,25 @@
 package com.zalamena.condominios.condominio.ui.adminhome
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.zalamena.condominios.common.ui.components.CondominioCard
 import com.zalamena.condominios.common.ui.components.EmptyState
 import com.zalamena.condominios.common.ui.components.scaffold.LoadingScaffold
 
@@ -57,7 +61,11 @@ fun AdminHomeScreen(
             }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { viewModel.onAddCondominioClick() }) {
+            FloatingActionButton(
+                onClick = { viewModel.onAddCondominioClick() },
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            ) {
                 Icon(Icons.Default.Add, contentDescription = "Adicionar condominio")
             }
         }
@@ -69,17 +77,20 @@ fun AdminHomeScreen(
                 onAction = { viewModel.onAddCondominioClick() }
             )
         } else {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                item { Spacer(Modifier.height(8.dp)) }
                 items(state.condominios) { condominio ->
-                    ListItem(
-                        headlineContent = { Text(condominio.nome) },
-                        supportingContent = { Text(condominio.enderecoDescription) },
-                        modifier = Modifier.clickable {
-                            viewModel.onCondominioClick(condominio.id)
-                        }
+                    CondominioCard(
+                        nome = condominio.nome,
+                        endereco = condominio.enderecoDescription,
+                        apartamentoCount = condominio.apartamentoCount,
+                        onClick = { viewModel.onCondominioClick(condominio.id) }
                     )
-                    HorizontalDivider()
                 }
+                item { Spacer(Modifier.height(8.dp)) }
             }
         }
     }
