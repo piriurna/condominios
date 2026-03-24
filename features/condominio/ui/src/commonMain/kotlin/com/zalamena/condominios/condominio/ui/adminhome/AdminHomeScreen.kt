@@ -52,9 +52,6 @@ fun AdminHomeScreen(
         title = "Condominios",
         errorMessage = "Erro ao carregar condominios",
         actions = {
-            Button(onClick = { viewModel.onCreateUserClick() }) {
-                Text("Criar Usuario")
-            }
             Button(onClick = onLogout) {
                 Text("Sair")
             }

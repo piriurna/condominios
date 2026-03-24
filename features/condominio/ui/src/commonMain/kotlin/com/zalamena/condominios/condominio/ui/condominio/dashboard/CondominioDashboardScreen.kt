@@ -111,11 +111,13 @@ fun CondominioDashboardScreen(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Voltar"
-                        )
+                    if (uiState.isAdminMode) {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Voltar"
+                            )
+                        }
                     }
                 },
                 actions = {
@@ -127,9 +129,6 @@ fun CondominioDashboardScreen(
                             Text("Criar Porteiro")
                         }
                     } else {
-                        Button(onClick = { viewModel.onSearchMoradorClick() }) {
-                            Text("Buscar Morador")
-                        }
                         Button(onClick = onLogout) {
                             Text("Sair")
                         }
