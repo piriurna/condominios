@@ -1,20 +1,14 @@
 package com.zalamena.condominios.navigation.ui
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.launch
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
 import androidx.compose.runtime.DisposableEffect
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -59,12 +53,6 @@ import kotlinx.serialization.Serializable
 object SplashRoute
 
 @Serializable
-object DebugRoute
-
-@Serializable
-object ButtonsRoute
-
-@Serializable
 object AdminHomeRoute
 
 @Serializable
@@ -94,38 +82,6 @@ fun AppNavHost(
 
         composable<SplashRoute> {
             Box(modifier = Modifier.fillMaxSize())
-        }
-
-        navigation<DebugRoute>(startDestination = ButtonsRoute) {
-            composable<ButtonsRoute> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Button(onClick = { navController.navigate(AdminHomeRoute) }) {
-                        Text("Admin Home")
-                    }
-                    Button(onClick = { navController.navigate(LoginRoute) }) {
-                        Text("Login")
-                    }
-                    Button(onClick = { navController.navigate(CondominioDashboardRoute) }) {
-                        Text("Dashboard de Condominio")
-                    }
-                    Button(onClick = { navController.navigate(AddCondominioRoute) }) {
-                        Text("Adicionar Condominio")
-                    }
-                    Button(onClick = { navController.navigate(CreateUserRoute) }) {
-                        Text("Criar Usuario")
-                    }
-                    Button(onClick = { navController.navigate(AddMoradorRoute) }) {
-                        Text("Go to Add Morador Flow from scratch")
-                    }
-                    Button(onClick = { navController.navigate(AddMoradorRoute) }) {
-                        Text("Go to Add Morador Flow with created entities")
-                    }
-                }
-            }
         }
 
         composable<AdminHomeRoute> {
