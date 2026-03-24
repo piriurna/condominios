@@ -101,17 +101,37 @@ private fun AddCondominioContent(
         Spacer(Modifier.height(8.dp))
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = uiState.form.rua,
-            label = { Text("Rua") },
-            onValueChange = onRuaChange,
+            value = uiState.form.cep,
+            label = { Text("CEP") },
+            onValueChange = onCepChange,
             singleLine = true,
-            isError = uiState.ruaError != null,
-            supportingText = { uiState.ruaError?.let { Text(it) } }
+            isError = uiState.cepError != null,
+            supportingText = {
+                when {
+                    uiState.cepError != null -> Text(uiState.cepError)
+                    uiState.cepMessage != null -> Text(uiState.cepMessage)
+                }
+            },
+            trailingIcon = {
+                if (uiState.isLoadingCep) {
+                    CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                }
+            }
         )
         Spacer(Modifier.height(8.dp))
         Row(modifier = Modifier.fillMaxWidth()) {
             TextField(
-                modifier = Modifier.weight(2f),
+                modifier = Modifier.weight(3f),
+                value = uiState.form.rua,
+                label = { Text("Rua") },
+                onValueChange = onRuaChange,
+                singleLine = true,
+                isError = uiState.ruaError != null,
+                supportingText = { uiState.ruaError?.let { Text(it) } }
+            )
+            Spacer(Modifier.width(8.dp))
+            TextField(
+                modifier = Modifier.weight(1f),
                 value = uiState.form.numero,
                 label = { Text("Numero") },
                 onValueChange = onNumeroChange,
@@ -119,28 +139,6 @@ private fun AddCondominioContent(
                 isError = uiState.numeroError != null,
                 supportingText = { uiState.numeroError?.let { Text(it) } }
             )
-            Spacer(Modifier.width(8.dp))
-            Box(modifier = Modifier.weight(3f)) {
-                TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = uiState.form.cep,
-                    label = { Text("CEP") },
-                    onValueChange = onCepChange,
-                    singleLine = true,
-                    isError = uiState.cepError != null,
-                    supportingText = {
-                        when {
-                            uiState.cepError != null -> Text(uiState.cepError)
-                            uiState.cepMessage != null -> Text(uiState.cepMessage)
-                        }
-                    },
-                    trailingIcon = {
-                        if (uiState.isLoadingCep) {
-                            CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
-                        }
-                    }
-                )
-            }
         }
         Spacer(Modifier.height(8.dp))
         Row(modifier = Modifier.fillMaxWidth()) {

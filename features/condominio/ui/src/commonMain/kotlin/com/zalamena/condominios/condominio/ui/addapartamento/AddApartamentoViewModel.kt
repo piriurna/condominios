@@ -19,7 +19,8 @@ data class AddApartamentoUiState(
     val errorMessage: String? = null,
     val numeroError: String? = null,
     val andarError: String? = null,
-    val createdApartamentoId: String? = null
+    val createdApartamentoId: String? = null,
+    val andarManuallyEdited: Boolean = false
 )
 
 
@@ -32,7 +33,7 @@ class AddApartamentoViewModel(
 
 
     fun reset() {
-        _uiState.update { AddApartamentoUiState() }
+        _uiState.update { AddApartamentoUiState(condominioId = it.condominioId) }
     }
 
     fun setCondominioId(condominioId: String) {
@@ -42,16 +43,24 @@ class AddApartamentoViewModel(
     fun setNumeroApartamento(numeroApartamento: String) {
         val fixedNumero = numeroApartamento.trim().filter { it.isDigit() }
         _uiState.update {
+            val suggestedAndar = if (!it.andarManuallyEdited && fixedNumero.length >= 2) {
+                fixedNumero.dropLast(2)
+            } else if (!it.andarManuallyEdited) {
+                ""
+            } else {
+                it.addApartamentoForm.andar
+            }
             it.copy(
                 addApartamentoForm = it.addApartamentoForm.copy(
-                    numero = fixedNumero
+                    numero = fixedNumero,
+                    andar = suggestedAndar
                 ),
                 numeroError = null,
+                andarError = null,
                 errorMessage = null
             )
         }
     }
-
 
     fun setAndarApartamento(andarApartamento: String) {
         val fixedAndar = andarApartamento.trim().filter { it.isDigit() }
@@ -61,6 +70,7 @@ class AddApartamentoViewModel(
                     andar = fixedAndar
                 ),
                 andarError = null,
+                andarManuallyEdited = true,
                 errorMessage = null
             )
         }
