@@ -1,7 +1,7 @@
 package com.zalamena.condominios.condominio.ui.addapartamento
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,10 +11,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -25,10 +32,12 @@ import androidx.compose.ui.unit.dp
 import com.zalamena.condominios.common.ui.components.loading.FullscreenLoading
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddApartamentoScreen(
     viewModel: AddApartamentoViewModel,
-    navigate: suspend () -> Unit = {}
+    navigate: suspend () -> Unit = {},
+    onBack: () -> Unit = {}
 ) {
     val uiState = viewModel.uiState.collectAsState(AddApartamentoUiState())
 
@@ -36,12 +45,30 @@ fun AddApartamentoScreen(
         if(viewModel.uiState.value.createdApartamentoId != null) navigate()
     }
 
-    AddApartamentoScreenContent(
-        uiState.value,
-        onAndarApartamentoChange = viewModel::setAndarApartamento,
-        onNumeroApartamentoChange = viewModel::setNumeroApartamento,
-        addApartamentoClick = viewModel::addApartamento
-    )
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Adicionar Apartamento") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Voltar"
+                        )
+                    }
+                }
+            )
+        }
+    ) { padding ->
+        Box(modifier = Modifier.padding(padding)) {
+            AddApartamentoScreenContent(
+                uiState.value,
+                onAndarApartamentoChange = viewModel::setAndarApartamento,
+                onNumeroApartamentoChange = viewModel::setNumeroApartamento,
+                addApartamentoClick = viewModel::addApartamento
+            )
+        }
+    }
 
     FullscreenLoading(isLoading = uiState.value.isLoading)
 }
@@ -55,12 +82,10 @@ private fun AddApartamentoScreenContent(
 ) {
     Column(
         Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Dados do apartamento", style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp)
@@ -68,7 +93,7 @@ private fun AddApartamentoScreenContent(
             TextField(
                 modifier = Modifier.weight(2f),
                 value = uiState.addApartamentoForm.numero,
-                label = { Text("Número") },
+                label = { Text("Numero") },
                 onValueChange = {
                     onNumeroApartamentoChange(it)
                 },
@@ -98,7 +123,13 @@ private fun AddApartamentoScreenContent(
             Text("Adicionar apartamento")
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text(uiState.errorMessage ?: "")
+        uiState.errorMessage?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
     }
 }
 

@@ -12,9 +12,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -27,12 +31,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.zalamena.condominios.common.ui.components.EmptyState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoradorSearchScreen(
     viewModel: MoradorSearchViewModel,
-    onNavigateToMoradorDetail: (pessoaId: String) -> Unit = {}
+    onNavigateToMoradorDetail: (pessoaId: String) -> Unit = {},
+    onBack: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -52,7 +58,17 @@ fun MoradorSearchScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Buscar Morador") })
+            TopAppBar(
+                title = { Text("Buscar Morador") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Voltar"
+                        )
+                    }
+                }
+            )
         }
     ) { padding ->
         Column(
@@ -76,22 +92,15 @@ fun MoradorSearchScreen(
                     uiState.isError -> {
                         Text(
                             text = "Erro ao carregar moradores",
-                            modifier = Modifier.align(Alignment.Center)
+                            modifier = Modifier.align(Alignment.Center),
+                            color = MaterialTheme.colorScheme.error
                         )
                     }
                     uiState.moradores.isEmpty() && uiState.query.isNotBlank() -> {
-                        Text(
-                            text = "Nenhum morador encontrado",
-                            modifier = Modifier.align(Alignment.Center),
-                            style = MaterialTheme.typography.bodyLarge
-                        )
+                        EmptyState(message = "Nenhum morador encontrado")
                     }
                     uiState.moradores.isEmpty() -> {
-                        Text(
-                            text = "Nenhum morador cadastrado",
-                            modifier = Modifier.align(Alignment.Center),
-                            style = MaterialTheme.typography.bodyLarge
-                        )
+                        EmptyState(message = "Busque por nome ou numero do apartamento")
                     }
                     else -> {
                         LazyColumn(

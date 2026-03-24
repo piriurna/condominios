@@ -12,11 +12,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.zalamena.condominios.common.ui.components.EmptyState
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.models.ApartamentoDashboardUiData
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,7 +49,8 @@ fun CondominioDashboardScreen(
     onNavigateToCreatePorteiro: (condominioId: String) -> Unit = {},
     onNavigateToPorteiroList: (condominioId: String) -> Unit = {},
     onNavigateToSearchMorador: (condominioId: String) -> Unit = {},
-    onLogout: () -> Unit = {}
+    onLogout: () -> Unit = {},
+    onBack: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -103,6 +110,14 @@ fun CondominioDashboardScreen(
                         }
                     }
                 },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Voltar"
+                        )
+                    }
+                },
                 actions = {
                     if (uiState.isAdminMode) {
                         Button(onClick = { viewModel.onPorteiroListClick() }) {
@@ -125,7 +140,7 @@ fun CondominioDashboardScreen(
         floatingActionButton = {
             if (uiState.isAdminMode && !uiState.isLoading && !uiState.isError) {
                 FloatingActionButton(onClick = { viewModel.onAddApartamentoClick() }) {
-                    Text("+")
+                    Icon(Icons.Default.Add, contentDescription = "Adicionar apartamento")
                 }
             }
         }
@@ -138,21 +153,19 @@ fun CondominioDashboardScreen(
                 uiState.isError -> {
                     Text(
                         text = "Erro ao carregar apartamentos",
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center),
+                        color = MaterialTheme.colorScheme.error
                     )
                 }
                 uiState.apartamentos.isEmpty() -> {
-                    Column(
-                        modifier = Modifier.align(Alignment.Center),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text("Nenhum apartamento cadastrado")
-                        if (uiState.isAdminMode) {
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Button(onClick = { viewModel.onAddApartamentoClick() }) {
-                                Text("Criar primeiro apartamento")
-                            }
-                        }
+                    if (uiState.isAdminMode) {
+                        EmptyState(
+                            message = "Nenhum apartamento cadastrado",
+                            actionLabel = "Adicionar apartamento",
+                            onAction = { viewModel.onAddApartamentoClick() }
+                        )
+                    } else {
+                        EmptyState(message = "Nenhum apartamento neste condominio")
                     }
                 }
                 else -> {

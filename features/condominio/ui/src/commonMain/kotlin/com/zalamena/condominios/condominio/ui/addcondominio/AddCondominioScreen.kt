@@ -1,6 +1,5 @@
 package com.zalamena.condominios.condominio.ui.addcondominio
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,24 +8,27 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -41,10 +43,12 @@ import com.zalamena.condominios.common.ui.components.loading.FullscreenLoading
 import com.zalamena.condominios.condominio.domain.address.Cidade
 import com.zalamena.condominios.condominio.domain.address.Estado
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddCondominioScreen(
     viewModel: AddCondominioViewModel,
-    navigate: suspend () -> Unit = {}
+    navigate: suspend () -> Unit = {},
+    onBack: () -> Unit = {}
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
@@ -52,16 +56,34 @@ fun AddCondominioScreen(
         if (uiState.value.createdCondominioId != null) navigate()
     }
 
-    AddCondominioContent(
-        uiState = uiState.value,
-        onNomeChange = viewModel::setNome,
-        onRuaChange = viewModel::setRua,
-        onNumeroChange = viewModel::setNumero,
-        onCepChange = viewModel::setCep,
-        onCidadeChange = viewModel::setCidade,
-        onEstadoChange = viewModel::setEstado,
-        onAddClick = viewModel::addCondominio
-    )
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Adicionar Condominio") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Voltar"
+                        )
+                    }
+                }
+            )
+        }
+    ) { padding ->
+        Box(modifier = Modifier.padding(padding)) {
+            AddCondominioContent(
+                uiState = uiState.value,
+                onNomeChange = viewModel::setNome,
+                onRuaChange = viewModel::setRua,
+                onNumeroChange = viewModel::setNumero,
+                onCepChange = viewModel::setCep,
+                onCidadeChange = viewModel::setCidade,
+                onEstadoChange = viewModel::setEstado,
+                onAddClick = viewModel::addCondominio
+            )
+        }
+    }
 
     FullscreenLoading(isLoading = uiState.value.isLoading)
 }
@@ -81,13 +103,11 @@ private fun AddCondominioContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 32.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Dados do condominio", style = MaterialTheme.typography.titleLarge)
         Spacer(Modifier.height(16.dp))
         TextField(
             modifier = Modifier.fillMaxWidth(),

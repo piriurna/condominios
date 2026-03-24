@@ -17,10 +17,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
@@ -45,7 +49,8 @@ import com.zalamena.condominios.condominio.ui.apartamento.detail.models.toLabel
 fun MoradorInfoScreen(
     viewModel: MoradorInfoViewModel,
     isAdminMode: Boolean = false,
-    onNavigateToApartamento: (apartamentoId: String) -> Unit = {}
+    onNavigateToApartamento: (apartamentoId: String) -> Unit = {},
+    onBack: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -65,7 +70,17 @@ fun MoradorInfoScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Detalhes do Morador") })
+            TopAppBar(
+                title = { Text("Detalhes do Morador") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Voltar"
+                        )
+                    }
+                }
+            )
         }
     ) { padding ->
         Box(
