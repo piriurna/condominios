@@ -68,7 +68,8 @@ fun NavGraphBuilder.condominioDashboardNavHost(
                 onNavigateToPorteiroList = { condominioId ->
                     porteiroListViewModel.setCondominioId(condominioId)
                     navController.navigate(PorteiroListRoute)
-                }
+                },
+                onBack = { navController.popBackStack() }
             )
         }
 
@@ -83,7 +84,8 @@ fun NavGraphBuilder.condominioDashboardNavHost(
                 onNavigateToMoradorDetail = { pessoaId ->
                     moradorInfoViewModel.setPessoaId(pessoaId)
                     navController.navigate(AdminMoradorDetailRoute)
-                }
+                },
+                onBack = { navController.popBackStack() }
             )
         }
 
@@ -97,12 +99,16 @@ fun NavGraphBuilder.condominioDashboardNavHost(
                     navController.navigate(ApartamentoDetailScreenRoute) {
                         popUpTo(AdminMoradorDetailRoute) { inclusive = true }
                     }
-                }
+                },
+                onBack = { navController.popBackStack() }
             )
         }
 
         composable<PorteiroListRoute> {
-            PorteiroListScreen(viewModel = porteiroListViewModel)
+            PorteiroListScreen(
+                viewModel = porteiroListViewModel,
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }

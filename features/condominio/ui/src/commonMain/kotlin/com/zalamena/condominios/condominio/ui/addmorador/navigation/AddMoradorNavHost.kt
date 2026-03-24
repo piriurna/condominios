@@ -57,7 +57,8 @@ fun NavGraphBuilder.addMoradorNavGraph( // TODO: Improve this flow to make it le
                 },
                 onNavigateToCreatePessoa = {
                     navController.navigate(AddMoradorPessoaRoute)
-                }
+                },
+                onBack = { navController.popBackStack() }
             )
         }
 
@@ -73,10 +74,14 @@ fun NavGraphBuilder.addMoradorNavGraph( // TODO: Improve this flow to make it le
         }
 
         composable<AddMoradorApartamentoRoute> {
-            AddApartamentoScreen(addApartamentoViewModel) {
-                addMoradorFlowViewModel.setCreatedApartamentoId(addApartamentoViewModel.uiState.value.createdApartamentoId!!)
-                navController.navigate(AddMoradorOverviewRoute)
-            }
+            AddApartamentoScreen(
+                viewModel = addApartamentoViewModel,
+                navigate = {
+                    addMoradorFlowViewModel.setCreatedApartamentoId(addApartamentoViewModel.uiState.value.createdApartamentoId!!)
+                    navController.navigate(AddMoradorOverviewRoute)
+                },
+                onBack = { navController.popBackStack() }
+            )
         }
 
         composable<AddMoradorOverviewRoute> {

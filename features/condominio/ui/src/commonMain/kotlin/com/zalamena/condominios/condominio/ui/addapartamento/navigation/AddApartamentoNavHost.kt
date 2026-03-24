@@ -20,9 +20,11 @@ fun NavGraphBuilder.addApartamentoNavHost(
 ) {
     navigation<AddApartamentoRoute>(AddApartamentoScreenRoute) {
         composable<AddApartamentoScreenRoute> {
-            AddApartamentoScreen(addApartamentoViewModel) {
-                navController.popBackStack() // In this case we are just adding an apartamento and not in the AddMorador Flow
-            }
+            AddApartamentoScreen(
+                viewModel = addApartamentoViewModel,
+                navigate = { navController.popBackStack() },
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }

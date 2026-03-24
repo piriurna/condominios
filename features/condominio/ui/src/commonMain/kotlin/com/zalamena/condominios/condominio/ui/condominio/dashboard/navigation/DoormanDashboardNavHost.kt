@@ -32,7 +32,8 @@ fun NavGraphBuilder.doormanApartamentoDetail(
             onNavigateToMoradorDetail = { pessoaId ->
                 moradorInfoViewModel.setPessoaId(pessoaId)
                 navController.navigate(DoormanMoradorDetailRoute)
-            }
+            },
+            onBack = { navController.popBackStack() }
         )
     }
 }
@@ -48,7 +49,8 @@ fun NavGraphBuilder.doormanMoradorSearch(
             onNavigateToMoradorDetail = { pessoaId ->
                 moradorInfoViewModel.setPessoaId(pessoaId)
                 navController.navigate(DoormanMoradorDetailRoute)
-            }
+            },
+            onBack = { navController.popBackStack() }
         )
     }
 }
@@ -66,7 +68,8 @@ fun NavGraphBuilder.doormanMoradorDetail(
                 navController.navigate(DoormanApartamentoDetailRoute) {
                     popUpTo(DoormanMoradorDetailRoute) { inclusive = true }
                 }
-            }
+            },
+            onBack = { navController.popBackStack() }
         )
     }
 }
