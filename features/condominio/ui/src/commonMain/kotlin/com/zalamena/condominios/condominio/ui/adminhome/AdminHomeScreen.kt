@@ -5,10 +5,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.LocationCity
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -57,6 +61,12 @@ fun AdminHomeScreen(
         errorMessage = "Erro ao carregar condominios",
         actions = {
             Button(onClick = onLogout) {
+                Icon(
+                    Icons.AutoMirrored.Filled.ExitToApp,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(Modifier.width(4.dp))
                 Text("Sair")
             }
         },
@@ -73,6 +83,7 @@ fun AdminHomeScreen(
         if (state.condominios.isEmpty()) {
             EmptyState(
                 message = "Nenhum condominio cadastrado",
+                icon = Icons.Default.LocationCity,
                 actionLabel = "Adicionar condominio",
                 onAction = { viewModel.onAddCondominioClick() }
             )

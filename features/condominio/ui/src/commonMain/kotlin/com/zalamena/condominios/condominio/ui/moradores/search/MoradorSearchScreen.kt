@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -95,10 +96,16 @@ fun MoradorSearchScreen(
                         )
                     }
                     uiState.moradores.isEmpty() && uiState.query.isNotBlank() -> {
-                        EmptyState(message = "Nenhum morador encontrado")
+                        EmptyState(
+                            message = "Nenhum morador encontrado",
+                            icon = Icons.Default.Search
+                        )
                     }
                     uiState.moradores.isEmpty() -> {
-                        EmptyState(message = "Busque por nome ou numero do apartamento")
+                        EmptyState(
+                            message = "Busque por nome ou numero do apartamento",
+                            icon = Icons.Default.Search
+                        )
                     }
                     else -> {
                         LazyColumn(

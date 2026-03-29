@@ -2,8 +2,8 @@ package com.zalamena.condominios.navigation.ui.shell
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -69,7 +69,7 @@ fun AdminShellScreen(
         bottomBar = {
             NavigationBar {
                 NavigationBarItem(
-                    icon = { Icon(Icons.Default.Home, contentDescription = "Condominios") },
+                    icon = { Icon(Icons.Default.LocationCity, contentDescription = "Condominios") },
                     label = { Text("Condominios") },
                     selected = currentRoute?.contains("AdminCondominiosTab") == true,
                     onClick = {
@@ -83,7 +83,7 @@ fun AdminShellScreen(
                     }
                 )
                 NavigationBarItem(
-                    icon = { Icon(Icons.Default.Person, contentDescription = "Usuarios") },
+                    icon = { Icon(Icons.Default.Group, contentDescription = "Usuarios") },
                     label = { Text("Usuarios") },
                     selected = currentRoute?.contains("AdminUsersTab") == true,
                     onClick = {

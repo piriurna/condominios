@@ -12,6 +12,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -32,6 +34,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -153,6 +157,7 @@ private fun ApartamentoDetailContent(
         if (uiState.moradores.isEmpty()) {
             EmptyState(
                 message = "Nenhum morador neste apartamento",
+                icon = Icons.Default.Person,
                 actionLabel = if (isAdminMode) "Adicionar morador" else null,
                 onAction = if (isAdminMode) onAddMoradorClick else null
             )
@@ -177,6 +182,12 @@ private fun ApartamentoDetailContent(
             if (isAdminMode) {
                 Spacer(Modifier.height(16.dp))
                 Button(onClick = onAddMoradorClick, modifier = Modifier.fillMaxWidth()) {
+                    Icon(
+                        Icons.Default.PersonAdd,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(Modifier.width(4.dp))
                     Text("Adicionar Morador")
                 }
             }

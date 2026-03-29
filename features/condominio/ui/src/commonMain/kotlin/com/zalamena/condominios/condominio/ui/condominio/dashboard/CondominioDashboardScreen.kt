@@ -5,16 +5,19 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.filled.MeetingRoom
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -28,6 +31,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -119,15 +125,38 @@ fun CondominioDashboardScreen(
                 },
                 actions = {
                     if (uiState.isAdminMode) {
-                        Button(onClick = { viewModel.onPorteiroListClick() }) {
-                            Text("Porteiros")
+                        var menuExpanded by remember { mutableStateOf(false) }
+                        IconButton(onClick = { menuExpanded = true }) {
+                            Icon(
+                                Icons.Default.MoreVert,
+                                contentDescription = "Menu"
+                            )
                         }
-                        Button(onClick = { viewModel.onCreatePorteiroClick() }) {
-                            Text("Criar Porteiro")
+                        DropdownMenu(
+                            expanded = menuExpanded,
+                            onDismissRequest = { menuExpanded = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Porteiros") },
+                                onClick = {
+                                    menuExpanded = false
+                                    viewModel.onPorteiroListClick()
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Criar Porteiro") },
+                                onClick = {
+                                    menuExpanded = false
+                                    viewModel.onCreatePorteiroClick()
+                                }
+                            )
                         }
                     } else {
-                        Button(onClick = onLogout) {
-                            Text("Sair")
+                        IconButton(onClick = onLogout) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ExitToApp,
+                                contentDescription = "Sair"
+                            )
                         }
                     }
                 }
@@ -161,11 +190,15 @@ fun CondominioDashboardScreen(
                     if (uiState.isAdminMode) {
                         EmptyState(
                             message = "Nenhum apartamento cadastrado",
+                            icon = Icons.Default.MeetingRoom,
                             actionLabel = "Adicionar apartamento",
                             onAction = { viewModel.onAddApartamentoClick() }
                         )
                     } else {
-                        EmptyState(message = "Nenhum apartamento neste condominio")
+                        EmptyState(
+                            message = "Nenhum apartamento neste condominio",
+                            icon = Icons.Default.MeetingRoom
+                        )
                     }
                 }
                 else -> {
@@ -183,7 +216,8 @@ fun CondominioDashboardScreen(
                                 numero = apt.numero,
                                 andar = apt.andar,
                                 moradorCount = apt.moradorCount,
-                                onClick = { viewModel.onApartamentoClick(apt.id) }
+                                onClick = { viewModel.onApartamentoClick(apt.id) },
+                                proprietarioNome = apt.proprietarioNome
                             )
                         }
                     }

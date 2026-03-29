@@ -38,8 +38,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Badge
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import com.zalamena.condominios.common.ui.components.EmptyState
@@ -81,7 +84,10 @@ fun PorteiroListScreen(
         }
     ) {
         if (uiState.porteiros.isEmpty()) {
-            EmptyState(message = "Nenhum porteiro cadastrado")
+            EmptyState(
+                message = "Nenhum porteiro cadastrado",
+                icon = Icons.Default.Badge
+            )
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
@@ -125,11 +131,29 @@ private fun PorteiroCard(
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(porteiro.name, style = MaterialTheme.typography.titleMedium)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Default.Badge,
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.width(8.dp))
+                Text(porteiro.name, style = MaterialTheme.typography.titleMedium)
+            }
             Spacer(Modifier.height(4.dp))
             Text("CPF: ${maskCpf(porteiro.cpf)}", style = MaterialTheme.typography.bodyMedium)
             Spacer(Modifier.height(2.dp))
-            Text(porteiro.email, style = MaterialTheme.typography.bodySmall)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Default.Email,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.width(4.dp))
+                Text(porteiro.email, style = MaterialTheme.typography.bodySmall)
+            }
             Spacer(Modifier.height(12.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
