@@ -24,6 +24,7 @@ fun LoadingScaffold(
     title: String,
     modifier: Modifier = Modifier,
     errorMessage: String = "Erro ao carregar dados",
+    navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
     floatingActionButtonPosition: FabPosition = FabPosition.End,
@@ -32,7 +33,11 @@ fun LoadingScaffold(
     Scaffold(
         modifier = modifier,
         topBar = {
-            TopAppBar(title = { Text(title) }, actions = actions)
+            TopAppBar(
+                title = { Text(title) },
+                navigationIcon = navigationIcon,
+                actions = actions
+            )
         },
         floatingActionButton = {
             if (!isLoading && !isError) {

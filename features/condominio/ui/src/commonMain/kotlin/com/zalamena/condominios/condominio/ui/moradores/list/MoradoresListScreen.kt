@@ -9,7 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.unit.dp
 import com.zalamena.condominios.condominio.ui.moradores.components.MoradorListItem
 import com.zalamena.condominios.condominio.ui.moradores.models.MoradorUiData
@@ -34,7 +34,7 @@ fun MoradoresListScreenContent(
 ) {
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(top = 50.dp).background(Color.White),
+        modifier = Modifier.fillMaxSize().padding(top = 50.dp).background(MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(uiState.moradores) {

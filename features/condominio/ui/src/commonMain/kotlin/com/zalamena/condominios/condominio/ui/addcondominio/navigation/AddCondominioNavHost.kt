@@ -22,7 +22,8 @@ fun NavGraphBuilder.addCondominioNavHost(
         composable<AddCondominioScreenRoute> {
             AddCondominioScreen(
                 viewModel = viewModel,
-                navigate = { navController.popBackStack() }
+                navigate = { navController.popBackStack() },
+                onBack = { navController.popBackStack() }
             )
         }
     }

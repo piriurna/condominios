@@ -17,10 +17,18 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.MeetingRoom
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
@@ -45,7 +53,8 @@ import com.zalamena.condominios.condominio.ui.apartamento.detail.models.toLabel
 fun MoradorInfoScreen(
     viewModel: MoradorInfoViewModel,
     isAdminMode: Boolean = false,
-    onNavigateToApartamento: (apartamentoId: String) -> Unit = {}
+    onNavigateToApartamento: (apartamentoId: String) -> Unit = {},
+    onBack: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -65,7 +74,17 @@ fun MoradorInfoScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Detalhes do Morador") })
+            TopAppBar(
+                title = { Text("Detalhes do Morador") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Voltar"
+                        )
+                    }
+                }
+            )
         }
     ) { padding ->
         Box(
@@ -110,8 +129,27 @@ private fun MoradorDetailContent(
         Spacer(Modifier.height(4.dp))
         Text(uiState.maskedCpf, style = MaterialTheme.typography.bodyMedium)
         Spacer(Modifier.height(8.dp))
-        Text("Email: ${uiState.email}", style = MaterialTheme.typography.bodyMedium)
-        Text("Telefone: ${uiState.telefone}", style = MaterialTheme.typography.bodyMedium)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                Icons.Default.Email,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.width(8.dp))
+            Text(uiState.email, style = MaterialTheme.typography.bodyMedium)
+        }
+        Spacer(Modifier.height(4.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                Icons.Default.Phone,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.width(8.dp))
+            Text(uiState.telefone, style = MaterialTheme.typography.bodyMedium)
+        }
 
         Spacer(Modifier.height(16.dp))
         HorizontalDivider()
@@ -165,9 +203,18 @@ private fun ApartamentoDoMoradorCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
-                    Text("Apt ${apt.numero}", style = MaterialTheme.typography.titleSmall)
-                    Text("Andar ${apt.andar}", style = MaterialTheme.typography.bodySmall)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        Icons.Default.MeetingRoom,
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Column {
+                        Text("Apt ${apt.numero}", style = MaterialTheme.typography.titleSmall)
+                        Text("Andar ${apt.andar}", style = MaterialTheme.typography.bodySmall)
+                    }
                 }
                 if (!isAdminMode) {
                     Text(

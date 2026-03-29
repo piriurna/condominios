@@ -1,6 +1,5 @@
 package com.zalamena.condominios
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -11,6 +10,7 @@ import com.zalamena.condominios.navigation.ui.AdminHomeRoute
 import com.zalamena.condominios.navigation.ui.AppNavHost
 import com.zalamena.condominios.navigation.ui.DoormanHomeRoute
 import com.zalamena.condominios.navigation.ui.SplashRoute
+import com.zalamena.condominios.theme.CondominiosTheme
 import com.zalamena.login.domain.usecase.LogoutUseCase
 import com.zalamena.login.ui.SplashNavigationEvent
 import com.zalamena.login.ui.SplashViewModel
@@ -22,7 +22,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
+    CondominiosTheme {
         val navController = rememberNavController()
         val splashViewModel: SplashViewModel = koinViewModel()
         val navEvent by splashViewModel.navEvent.collectAsState()
