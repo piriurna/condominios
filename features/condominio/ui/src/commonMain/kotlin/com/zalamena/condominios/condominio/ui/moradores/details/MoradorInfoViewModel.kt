@@ -154,10 +154,12 @@ class MoradorInfoViewModel(
     // Account creation methods
 
     fun onShowCreateAccountDialog() {
+        val currentEmail = _uiState.value.email
+        val prefillEmail = if (currentEmail != "Nao informado") currentEmail else ""
         _uiState.update {
             it.copy(
                 showCreateAccountDialog = true,
-                createAccountEmail = "",
+                createAccountEmail = prefillEmail,
                 createAccountPassword = "",
                 createAccountEmailError = null,
                 createAccountPasswordError = null,

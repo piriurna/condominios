@@ -4,6 +4,8 @@ import com.zalamena.condominios.condominio.domain.apartamento.models.Apartamento
 import com.zalamena.condominios.condominio.domain.morador.model.Morador
 import com.zalamena.condominios.condominio.domain.morador.model.MoradorException
 import com.zalamena.condominios.condominio.domain.morador.model.MoradorTipo
+import com.zalamena.condominios.condominio.domain.morador.repository.MoradorAccountCreator
+import com.zalamena.condominios.condominio.domain.morador.repository.MoradorAccountProvider
 import com.zalamena.condominios.condominio.domain.morador.repository.MoradoresRepository
 import com.zalamena.condominios.condominio.domain.morador.usecase.GetMoradorDetailUseCase
 import com.zalamena.condominios.condominio.domain.morador.usecase.UpdateMoradorTipoUseCaseImpl
@@ -40,7 +42,9 @@ class MoradorInfoViewModelTest : TestsWithMocks() {
 
     private val getMoradorDetailUseCase by lazy { GetMoradorDetailUseCase(moradoresRepository) }
     private val updateMoradorTipoUseCase by lazy { UpdateMoradorTipoUseCaseImpl(moradoresRepository) }
-    private val viewModel by lazy { MoradorInfoViewModel(getMoradorDetailUseCase, updateMoradorTipoUseCase) }
+    private val noOpAccountProvider = MoradorAccountProvider { null }
+    private val noOpAccountCreator = MoradorAccountCreator { _, _, _ -> Result.failure(UnsupportedOperationException()) }
+    private val viewModel by lazy { MoradorInfoViewModel(getMoradorDetailUseCase, updateMoradorTipoUseCase, noOpAccountProvider, noOpAccountCreator) }
 
     @BeforeTest
     fun setup() {
