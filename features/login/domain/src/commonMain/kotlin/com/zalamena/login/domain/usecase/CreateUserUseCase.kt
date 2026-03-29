@@ -36,6 +36,10 @@ class CreateUserUseCase(
             return Result.failure(CreateUserError.CondominioNotFound)
         }
 
+        if (role is UserRole.Morador && !condominioValidator.exists(role.condominioId)) {
+            return Result.failure(CreateUserError.CondominioNotFound)
+        }
+
         return userRepository.createUser(
             name = name.trim(),
             cpf = cpf.trim(),

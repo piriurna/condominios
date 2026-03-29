@@ -9,4 +9,6 @@ interface ApartamentosRepository {
     suspend fun getApartamentos(): Result<List<Apartamento>>
 
     suspend fun addApartamento(condominioId: String, apartamento: Apartamento): Result<String>
+
+    suspend fun getCondominioIdForApartamento(apartamentoId: String): String?
 }

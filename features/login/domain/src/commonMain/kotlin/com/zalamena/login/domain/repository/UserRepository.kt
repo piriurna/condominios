@@ -22,4 +22,6 @@ interface UserRepository {
     suspend fun updateUserRole(userId: String, newRole: UserRole): Result<Unit>
 
     suspend fun authenticate(email: String, password: String): Result<User>
+
+    suspend fun getUserByPessoaId(pessoaId: String): Result<User?>
 }
