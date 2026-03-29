@@ -158,6 +158,13 @@ fun AppNavHost(
                             popUpTo(LoginRoute) { inclusive = true }
                         }
                     }
+                    is UserRole.Morador -> {
+                        condominioDashboardViewModel.setCondominioId(role.condominioId)
+                        condominioDashboardViewModel.setAdminMode(false)
+                        navController.navigate(DoormanHomeRoute) {
+                            popUpTo(LoginRoute) { inclusive = true }
+                        }
+                    }
                 }
             }
         )

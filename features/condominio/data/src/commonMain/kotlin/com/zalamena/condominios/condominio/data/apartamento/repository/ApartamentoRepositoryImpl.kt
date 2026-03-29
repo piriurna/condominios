@@ -31,6 +31,10 @@ class ApartamentoRepositoryImpl(
         }
     }
 
+    override suspend fun getCondominioIdForApartamento(apartamentoId: String): String? {
+        return apartamentoDao.getCondominioIdForApartamento(apartamentoId)
+    }
+
     private suspend fun generateApartamentoId(numeroApartamento: String): String {
         return "${apartamentoDao.getApartamentos().size}-${numeroApartamento}"
     }

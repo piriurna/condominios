@@ -17,6 +17,8 @@ import com.zalamena.condominios.condominio.domain.condominio.usecase.GetCondomin
 import com.zalamena.condominios.condominio.domain.condominio.usecase.GetCondominiosUseCase
 import com.zalamena.condominios.condominio.domain.condominio.usecase.GetMoradoresUseCase
 import com.zalamena.condominios.condominio.domain.morador.repository.MoradoresRepository
+import com.zalamena.condominios.condominio.domain.morador.repository.MoradorAccountCreator
+import com.zalamena.condominios.condominio.domain.morador.repository.MoradorAccountProvider
 import com.zalamena.condominios.condominio.domain.morador.repository.PessoaProvider
 import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCase
 import com.zalamena.condominios.condominio.domain.morador.usecase.AddMoradorUseCaseImpl
@@ -70,7 +72,10 @@ import com.zalamena.login.data.repository.UserRepositoryImpl
 import com.zalamena.login.domain.repository.LoginRepository
 import com.zalamena.login.domain.repository.CondominioValidator
 import com.zalamena.login.domain.repository.UserRepository
+import com.zalamena.login.domain.repository.MoradorValidator
+import com.zalamena.login.domain.usecase.CreateMoradorAccountUseCase
 import com.zalamena.login.domain.usecase.CreateUserUseCase
+import com.zalamena.login.domain.usecase.GetMoradorAccountUseCase
 import com.zalamena.login.domain.usecase.LoginUseCase
 import com.zalamena.login.domain.usecase.LogoutUseCase
 import com.zalamena.login.ui.LoginViewModel
@@ -138,7 +143,7 @@ val repositoryModule = module {
     single<PorteiroProvider> {
         PorteiroProvider { condominioId ->
             get<UserRepository>().getUsersByCondominioId(condominioId).map { users ->
-                users.map { user ->
+                users.filter { it.role is UserRole.Porteiro }.map { user ->
                     PorteiroInfo(
                         id = user.id,
                         name = user.name,
@@ -163,6 +168,25 @@ val repositoryModule = module {
     single<PessoaProvider> {
         PessoaProvider { get<GetPessoasListUseCase>().invoke() }
     }
+    single<MoradorValidator> {
+        MoradorValidator { pessoaId ->
+            val moradores = get<MoradoresRepository>().getMoradoresForPessoa(pessoaId).getOrNull()
+            moradores?.firstOrNull()?.apartamento?.let { apt ->
+                // Get the condominioId by looking up the apartamento's condominio
+                get<ApartamentosRepository>().getCondominioIdForApartamento(apt.id)
+            }
+        }
+    }
+    single<MoradorAccountProvider> {
+        MoradorAccountProvider { pessoaId ->
+            get<UserRepository>().getUserByPessoaId(pessoaId).getOrNull()?.email
+        }
+    }
+    single<MoradorAccountCreator> {
+        MoradorAccountCreator { pessoaId, email, password ->
+            get<CreateMoradorAccountUseCase>().invoke(pessoaId, email, password).map { it.email }
+        }
+    }
 }
 
 val useCaseModule = module {
@@ -185,6 +209,8 @@ val useCaseModule = module {
     factory<RemoveMoradorUseCase> { RemoveMoradorUseCaseImpl(get()) }
     factory<UpdateMoradorTipoUseCase> { UpdateMoradorTipoUseCaseImpl(get()) }
     factory { CreateUserUseCase(get(), get()) }
+    factory { CreateMoradorAccountUseCase(get(), get()) }
+    factory { GetMoradorAccountUseCase(get()) }
     factory { GetPorteirosByCondominioUseCase(get()) }
     factory { DeletePorteiroUseCase(get()) }
     factory { ReassignPorteiroUseCase(get(), get()) }

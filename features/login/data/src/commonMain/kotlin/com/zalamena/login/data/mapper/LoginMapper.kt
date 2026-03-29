@@ -9,6 +9,10 @@ fun UserDto.toDomain(): User {
     val userRole = when (role.uppercase()) {
         "ADMIN" -> UserRole.Admin
         "PORTEIRO" -> UserRole.Porteiro(condominioId = condominioId ?: "")
+        "MORADOR" -> UserRole.Morador(
+            pessoaId = pessoaId ?: "",
+            condominioId = condominioId ?: ""
+        )
         else -> throw IllegalArgumentException("Unknown role: $role")
     }
     return User(

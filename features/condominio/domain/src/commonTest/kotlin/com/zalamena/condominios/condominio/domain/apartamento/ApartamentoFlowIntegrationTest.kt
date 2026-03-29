@@ -37,6 +37,9 @@ class ApartamentoFlowIntegrationTest {
                 apartamentosStorage.add(condominioId to apartamento.copy(id = id))
                 id
             }
+
+        override suspend fun getCondominioIdForApartamento(apartamentoId: String): String? =
+            apartamentosStorage.find { (_, apt) -> apt.id == apartamentoId }?.first
     }
 
     private val fakeCondominioRepository = object : CondominioRepository {

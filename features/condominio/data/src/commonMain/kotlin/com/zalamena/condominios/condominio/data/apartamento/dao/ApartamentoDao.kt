@@ -21,4 +21,7 @@ interface ApartamentoDao {
 
     @Insert
     suspend fun addApartamento(apartamento: ApartamentoEntity)
+
+    @Query("SELECT condominioId FROM Apartamento WHERE id = :apartamentoId")
+    suspend fun getCondominioIdForApartamento(apartamentoId: String): String?
 }

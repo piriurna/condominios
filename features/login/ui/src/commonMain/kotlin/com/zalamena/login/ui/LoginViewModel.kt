@@ -56,6 +56,7 @@ class LoginViewModel(
                     val navEvent = when (val role = user.role) {
                         is UserRole.Admin -> LoginNavigationEvent.NavigateToAdminHome
                         is UserRole.Porteiro -> LoginNavigationEvent.NavigateToDoormanHome(role.condominioId)
+                        is UserRole.Morador -> LoginNavigationEvent.NavigateToDoormanHome(role.condominioId)
                     }
                     _uiState.update {
                         it.copy(isLoading = false, navigationEvent = navEvent)

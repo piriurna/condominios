@@ -27,6 +27,7 @@ class SplashViewModel(
                 val role = loginRepository.getRole()
                 _navEvent.value = when (role) {
                     is UserRole.Porteiro -> SplashNavigationEvent.NavigateToDoormanHome(role.condominioId)
+                    is UserRole.Morador -> SplashNavigationEvent.NavigateToDoormanHome(role.condominioId)
                     is UserRole.Admin -> SplashNavigationEvent.NavigateToAdminHome
                     null -> SplashNavigationEvent.NavigateToLogin
                 }
