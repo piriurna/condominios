@@ -48,7 +48,13 @@ class FakeLoginApi(
 
         val condominioId = when (val role = user.role) {
             is UserRole.Porteiro -> role.condominioId
+            is UserRole.Morador -> role.condominioId
             is UserRole.Admin -> null
+        }
+
+        val pessoaId = when (val role = user.role) {
+            is UserRole.Morador -> role.pessoaId
+            else -> null
         }
 
         return UserDto(
@@ -58,8 +64,10 @@ class FakeLoginApi(
             role = when (user.role) {
                 is UserRole.Admin -> "ADMIN"
                 is UserRole.Porteiro -> "PORTEIRO"
+                is UserRole.Morador -> "MORADOR"
             },
-            condominioId = condominioId
+            condominioId = condominioId,
+            pessoaId = pessoaId
         )
     }
 }

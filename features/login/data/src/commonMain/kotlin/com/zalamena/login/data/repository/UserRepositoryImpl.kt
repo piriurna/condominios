@@ -53,8 +53,11 @@ class UserRepositoryImpl : UserRepository {
     override suspend fun getUsersByCondominioId(condominioId: String): Result<List<User>> {
         return try {
             val filtered = users.filter { user ->
-                val role = user.role
-                role is UserRole.Porteiro && role.condominioId == condominioId
+                when (val role = user.role) {
+                    is UserRole.Porteiro -> role.condominioId == condominioId
+                    is UserRole.Morador -> role.condominioId == condominioId
+                    else -> false
+                }
             }
             Result.success(filtered)
         } catch (e: Exception) {
@@ -84,6 +87,18 @@ class UserRepositoryImpl : UserRepository {
                 users[index] = users[index].copy(role = newRole)
                 Result.success(Unit)
             }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getUserByPessoaId(pessoaId: String): Result<User?> {
+        return try {
+            val user = users.find { user ->
+                val role = user.role
+                role is UserRole.Morador && role.pessoaId == pessoaId
+            }
+            Result.success(user)
         } catch (e: Exception) {
             Result.failure(e)
         }

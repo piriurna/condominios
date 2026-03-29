@@ -7,5 +7,7 @@ interface SessionRepository {
     suspend fun getRole(): String?
     suspend fun saveCondominioId(condominioId: String)
     suspend fun getCondominioId(): String?
+    suspend fun savePessoaId(pessoaId: String)
+    suspend fun getPessoaId(): String?
     suspend fun clearSession()
 }

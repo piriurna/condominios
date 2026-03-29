@@ -22,6 +22,11 @@ class LoginRepositoryImpl (
                 val condominioId = sessionRepository.getCondominioId() ?: ""
                 UserRole.Porteiro(condominioId)
             }
+            "MORADOR" -> {
+                val condominioId = sessionRepository.getCondominioId() ?: ""
+                val pessoaId = sessionRepository.getPessoaId() ?: ""
+                UserRole.Morador(pessoaId = pessoaId, condominioId = condominioId)
+            }
             else -> null
         }
     }
@@ -44,6 +49,10 @@ class LoginRepositoryImpl (
 
             if (userResult.condominioId != null) {
                 sessionRepository.saveCondominioId(userResult.condominioId)
+            }
+
+            if (userResult.pessoaId != null) {
+                sessionRepository.savePessoaId(userResult.pessoaId)
             }
 
             Result.success(userResult.toDomain())
