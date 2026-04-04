@@ -3,12 +3,15 @@ package com.zalamena.condominios.navigation.ui.shell
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -43,6 +46,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.zalamena.condominios.condominio.domain.amenity.model.Amenity
 import com.zalamena.login.ui.navigation.LoginRoute
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -144,7 +148,7 @@ fun MoradorShellScreen(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable<MoradorHomeTab> {
-                MoradorHomeContent(condominioName = uiState.condominioName)
+                MoradorHomeContent(uiState = uiState)
             }
 
             composable<MoradorReservasTab> {
@@ -155,45 +159,118 @@ fun MoradorShellScreen(
 }
 
 @Composable
-fun MoradorHomeContent(condominioName: String) {
-    Column(
+fun MoradorHomeContent(uiState: MoradorShellUiState) {
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        if (condominioName.isNotEmpty()) {
-            Text(
-                text = condominioName,
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Spacer(modifier = Modifier.height(24.dp))
+        if (uiState.condominioName.isNotEmpty()) {
+            item {
+                Text(
+                    text = uiState.condominioName,
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
 
-        Text(
-            text = "Comodidades",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        EmptyStateCard(
-            icon = Icons.Default.LocationCity,
-            message = "Nenhuma comodidade disponivel"
-        )
+        item {
+            Text(
+                text = "Comodidades",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        if (uiState.amenities.isEmpty()) {
+            item {
+                EmptyStateCard(
+                    icon = Icons.Default.LocationCity,
+                    message = "Nenhuma comodidade disponivel"
+                )
+            }
+        } else {
+            items(uiState.amenities) { amenity ->
+                AmenityCard(amenity)
+            }
+        }
 
-        Text(
-            text = "Minhas Reservas",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        EmptyStateCard(
-            icon = Icons.Default.CalendarMonth,
-            message = "Nenhuma reserva"
-        )
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Minhas Reservas",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+
+        item {
+            EmptyStateCard(
+                icon = Icons.Default.CalendarMonth,
+                message = "Nenhuma reserva"
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
     }
+}
+
+@Composable
+private fun AmenityCard(amenity: Amenity) {
+    ElevatedCard(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = amenity.nome,
+                style = MaterialTheme.typography.titleMedium
+            )
+            if (amenity.descricao.isNotBlank()) {
+                Text(
+                    text = amenity.descricao,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Spacer(Modifier.height(4.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                amenity.capacidade?.let { cap ->
+                    Text(
+                        text = "$cap pessoas",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                amenity.precoUso?.let { preco ->
+                    Text(
+                        text = formatBrl(preco),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun formatBrl(value: Double): String {
+    val cents = (value * 100).toLong()
+    val integerPart = cents / 100
+    val decimalPart = (cents % 100).toString().padStart(2, '0')
+    val integerFormatted = integerPart.toString()
+        .reversed()
+        .chunked(3)
+        .joinToString(".")
+        .reversed()
+    return "R$ $integerFormatted,$decimalPart"
 }
 
 @Composable

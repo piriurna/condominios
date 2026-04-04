@@ -52,6 +52,7 @@ fun CondominioDashboardScreen(
     onNavigateToCreatePorteiro: (condominioId: String) -> Unit = {},
     onNavigateToPorteiroList: (condominioId: String) -> Unit = {},
     onNavigateToSearchMorador: (condominioId: String) -> Unit = {},
+    onNavigateToAmenityList: (condominioId: String) -> Unit = {},
     onLogout: () -> Unit = {},
     onBack: () -> Unit = {}
 ) {
@@ -88,6 +89,10 @@ fun CondominioDashboardScreen(
             }
             is DashboardNavigationEvent.SearchMorador -> {
                 onNavigateToSearchMorador(event.condominioId)
+                viewModel.onNavigationHandled()
+            }
+            is DashboardNavigationEvent.AmenityList -> {
+                onNavigateToAmenityList(event.condominioId)
                 viewModel.onNavigationHandled()
             }
             is DashboardNavigationEvent.Logout -> {
@@ -148,6 +153,13 @@ fun CondominioDashboardScreen(
                                 onClick = {
                                     menuExpanded = false
                                     viewModel.onCreatePorteiroClick()
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Comodidades") },
+                                onClick = {
+                                    menuExpanded = false
+                                    viewModel.onAmenityListClick()
                                 }
                             )
                         }

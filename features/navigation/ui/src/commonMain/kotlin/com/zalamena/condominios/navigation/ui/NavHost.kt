@@ -28,6 +28,8 @@ import com.zalamena.condominios.condominio.ui.adminhome.AdminHomeViewModel
 import com.zalamena.condominios.condominio.ui.apartamento.detail.ApartamentoDetailViewModel
 import com.zalamena.condominios.condominio.ui.addmorador.flowController.AddMoradorFlowViewModel
 import com.zalamena.condominios.condominio.ui.addmorador.navigation.addMoradorNavGraph
+import com.zalamena.condominios.condominio.ui.amenity.add.AddAmenityViewModel
+import com.zalamena.condominios.condominio.ui.amenity.list.AmenityListViewModel
 import com.zalamena.condominios.condominio.ui.addmorador.overview.AddMoradorOverviewViewModel
 import com.zalamena.condominios.condominio.ui.addmorador.searchpessoa.SearchPessoaViewModel
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDashboardViewModel
@@ -79,6 +81,8 @@ fun AppNavHost(
     moradorInfoViewModel: MoradorInfoViewModel,
     searchPessoaViewModel: SearchPessoaViewModel,
     moradorShellViewModel: MoradorShellViewModel,
+    amenityListViewModel: AmenityListViewModel,
+    addAmenityViewModel: AddAmenityViewModel,
     onLogout: suspend () -> Unit = {}
 ) {
     NavHost(navController, startDestination = SplashRoute) {
@@ -204,7 +208,9 @@ fun AppNavHost(
             addMoradorFlowViewModel,
             createUserViewModel,
             porteiroListViewModel,
-            moradorInfoViewModel
+            moradorInfoViewModel,
+            amenityListViewModel,
+            addAmenityViewModel
         )
 
         addCondominioNavHost(

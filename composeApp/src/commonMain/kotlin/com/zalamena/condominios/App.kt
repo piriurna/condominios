@@ -82,6 +82,8 @@ fun App() {
             koinViewModel(),
             koinViewModel(),
             moradorShellViewModel,
+            koinViewModel(),
+            koinViewModel(),
             onLogout = { logoutUseCase() }
         )
     }
