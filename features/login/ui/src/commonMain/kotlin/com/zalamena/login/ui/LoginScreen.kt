@@ -50,6 +50,13 @@ fun LoginScreen(
                 onLoginSuccess(UserRole.Porteiro((state.navigationEvent as LoginNavigationEvent.NavigateToDoormanHome).condominioId))
                 viewModel.onNavigationHandled()
             }
+            is LoginNavigationEvent.NavigateToMoradorHome -> {
+                onLoginSuccess(UserRole.Morador(
+                    pessoaId = "",
+                    condominioId = (state.navigationEvent as LoginNavigationEvent.NavigateToMoradorHome).condominioId
+                ))
+                viewModel.onNavigationHandled()
+            }
             null -> {}
         }
     }

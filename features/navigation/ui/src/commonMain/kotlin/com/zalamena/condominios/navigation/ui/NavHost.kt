@@ -37,6 +37,8 @@ import com.zalamena.condominios.condominio.ui.moradores.search.MoradorSearchView
 import com.zalamena.condominios.condominio.ui.porteiro.list.PorteiroListViewModel
 import com.zalamena.condominios.navigation.ui.shell.AdminShellScreen
 import com.zalamena.condominios.navigation.ui.shell.DoormanShellScreen
+import com.zalamena.condominios.navigation.ui.shell.MoradorShellScreen
+import com.zalamena.condominios.navigation.ui.shell.MoradorShellViewModel
 import com.zalamena.login.ui.LoginViewModel
 import com.zalamena.login.ui.createuser.CreateUserViewModel
 import com.zalamena.login.ui.createuser.navigation.createUserNavHost
@@ -54,6 +56,9 @@ object AdminHomeRoute
 
 @Serializable
 object DoormanHomeRoute
+
+@Serializable
+object MoradorHomeRoute
 
 
 @Composable
@@ -73,6 +78,7 @@ fun AppNavHost(
     moradorSearchViewModel: MoradorSearchViewModel,
     moradorInfoViewModel: MoradorInfoViewModel,
     searchPessoaViewModel: SearchPessoaViewModel,
+    moradorShellViewModel: MoradorShellViewModel,
     onLogout: suspend () -> Unit = {}
 ) {
     NavHost(navController, startDestination = SplashRoute) {
@@ -141,6 +147,14 @@ fun AppNavHost(
             )
         }
 
+        composable<MoradorHomeRoute> {
+            MoradorShellScreen(
+                parentNavController = navController,
+                moradorShellViewModel = moradorShellViewModel,
+                onLogout = onLogout
+            )
+        }
+
         loginNavHost(
             navController,
             loginViewModel = loginViewModel,
@@ -159,9 +173,8 @@ fun AppNavHost(
                         }
                     }
                     is UserRole.Morador -> {
-                        condominioDashboardViewModel.setCondominioId(role.condominioId)
-                        condominioDashboardViewModel.setAdminMode(false)
-                        navController.navigate(DoormanHomeRoute) {
+                        moradorShellViewModel.setCondominioId(role.condominioId)
+                        navController.navigate(MoradorHomeRoute) {
                             popUpTo(LoginRoute) { inclusive = true }
                         }
                     }

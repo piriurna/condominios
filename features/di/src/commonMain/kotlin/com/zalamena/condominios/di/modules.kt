@@ -41,6 +41,7 @@ import com.zalamena.condominios.condominio.ui.moradores.details.MoradorInfoViewM
 import com.zalamena.condominios.condominio.ui.addmorador.searchpessoa.SearchPessoaViewModel
 import com.zalamena.condominios.condominio.ui.moradores.search.MoradorSearchViewModel
 import com.zalamena.condominios.condominio.ui.porteiro.list.PorteiroListViewModel
+import com.zalamena.condominios.navigation.ui.shell.MoradorShellViewModel
 import com.zalamena.condominios.condominio.domain.porteiro.models.PorteiroInfo
 import com.zalamena.condominios.condominio.domain.porteiro.repository.PorteiroDeleter
 import com.zalamena.condominios.condominio.domain.porteiro.repository.PorteiroProvider
@@ -235,4 +236,5 @@ val viewModelModule = module {
     viewModelOf(::MoradorSearchViewModel)
     viewModelOf(::MoradorInfoViewModel)
     viewModelOf(::SearchPessoaViewModel)
+    viewModelOf(::MoradorShellViewModel)
 }
