@@ -9,7 +9,9 @@ import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDas
 import com.zalamena.condominios.navigation.ui.AdminHomeRoute
 import com.zalamena.condominios.navigation.ui.AppNavHost
 import com.zalamena.condominios.navigation.ui.DoormanHomeRoute
+import com.zalamena.condominios.navigation.ui.MoradorHomeRoute
 import com.zalamena.condominios.navigation.ui.SplashRoute
+import com.zalamena.condominios.navigation.ui.shell.MoradorShellViewModel
 import com.zalamena.condominios.theme.CondominiosTheme
 import com.zalamena.login.domain.usecase.LogoutUseCase
 import com.zalamena.login.ui.SplashNavigationEvent
@@ -27,6 +29,7 @@ fun App() {
         val splashViewModel: SplashViewModel = koinViewModel()
         val navEvent by splashViewModel.navEvent.collectAsState()
         val condominioDashboardViewModel: CondominioDashboardViewModel = koinViewModel()
+        val moradorShellViewModel: MoradorShellViewModel = koinViewModel()
         val logoutUseCase: LogoutUseCase = koinInject()
 
         LaunchedEffect(navEvent) {
@@ -51,6 +54,13 @@ fun App() {
                     }
                     splashViewModel.onNavigationHandled()
                 }
+                is SplashNavigationEvent.NavigateToMoradorHome -> {
+                    moradorShellViewModel.setCondominioId(event.condominioId)
+                    navController.navigate(MoradorHomeRoute) {
+                        popUpTo(SplashRoute) { inclusive = true }
+                    }
+                    splashViewModel.onNavigationHandled()
+                }
                 null -> {}
             }
         }
@@ -71,6 +81,7 @@ fun App() {
             koinViewModel(),
             koinViewModel(),
             koinViewModel(),
+            moradorShellViewModel,
             onLogout = { logoutUseCase() }
         )
     }

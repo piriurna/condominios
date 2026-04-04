@@ -22,6 +22,7 @@ data class LoginUiState(
 sealed class LoginNavigationEvent {
     object NavigateToAdminHome : LoginNavigationEvent()
     data class NavigateToDoormanHome(val condominioId: String) : LoginNavigationEvent()
+    data class NavigateToMoradorHome(val condominioId: String) : LoginNavigationEvent()
 }
 
 class LoginViewModel(
@@ -56,7 +57,7 @@ class LoginViewModel(
                     val navEvent = when (val role = user.role) {
                         is UserRole.Admin -> LoginNavigationEvent.NavigateToAdminHome
                         is UserRole.Porteiro -> LoginNavigationEvent.NavigateToDoormanHome(role.condominioId)
-                        is UserRole.Morador -> LoginNavigationEvent.NavigateToDoormanHome(role.condominioId)
+                        is UserRole.Morador -> LoginNavigationEvent.NavigateToMoradorHome(role.condominioId)
                     }
                     _uiState.update {
                         it.copy(isLoading = false, navigationEvent = navEvent)

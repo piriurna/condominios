@@ -12,6 +12,7 @@ sealed class SplashNavigationEvent {
     object NavigateToLogin : SplashNavigationEvent()
     object NavigateToAdminHome : SplashNavigationEvent()
     data class NavigateToDoormanHome(val condominioId: String) : SplashNavigationEvent()
+    data class NavigateToMoradorHome(val condominioId: String) : SplashNavigationEvent()
 }
 
 class SplashViewModel(
@@ -27,7 +28,7 @@ class SplashViewModel(
                 val role = loginRepository.getRole()
                 _navEvent.value = when (role) {
                     is UserRole.Porteiro -> SplashNavigationEvent.NavigateToDoormanHome(role.condominioId)
-                    is UserRole.Morador -> SplashNavigationEvent.NavigateToDoormanHome(role.condominioId)
+                    is UserRole.Morador -> SplashNavigationEvent.NavigateToMoradorHome(role.condominioId)
                     is UserRole.Admin -> SplashNavigationEvent.NavigateToAdminHome
                     null -> SplashNavigationEvent.NavigateToLogin
                 }

@@ -75,6 +75,8 @@ kotlin {
             api(project(":features:login:data"))
             api(project(":features:login:domain"))
             api(project(":features:login:ui"))
+
+            api(project(":features:navigation:ui"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
