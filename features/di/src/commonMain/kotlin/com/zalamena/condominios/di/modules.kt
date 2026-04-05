@@ -41,6 +41,13 @@ import com.zalamena.condominios.condominio.ui.moradores.details.MoradorInfoViewM
 import com.zalamena.condominios.condominio.ui.addmorador.searchpessoa.SearchPessoaViewModel
 import com.zalamena.condominios.condominio.ui.moradores.search.MoradorSearchViewModel
 import com.zalamena.condominios.condominio.ui.porteiro.list.PorteiroListViewModel
+import com.zalamena.condominios.condominio.ui.amenity.add.AddAmenityViewModel
+import com.zalamena.condominios.condominio.ui.amenity.list.AmenityListViewModel
+import com.zalamena.condominios.condominio.data.amenity.dao.AmenityDao
+import com.zalamena.condominios.condominio.data.amenity.repository.AmenityRepositoryImpl
+import com.zalamena.condominios.condominio.domain.amenity.repository.AmenityRepository
+import com.zalamena.condominios.condominio.domain.amenity.usecase.AddAmenityUseCase
+import com.zalamena.condominios.condominio.domain.amenity.usecase.GetAmenitiesByCondominioUseCase
 import com.zalamena.condominios.navigation.ui.shell.MoradorShellViewModel
 import com.zalamena.condominios.condominio.domain.porteiro.models.PorteiroInfo
 import com.zalamena.condominios.condominio.domain.porteiro.repository.PorteiroDeleter
@@ -104,6 +111,7 @@ val daoModule = module {
     single<ApartamentoDao> { get<AppDatabase>().getApartamentosDao() }
     single<CondominioDao> { get<AppDatabase>().getCondominioDao() }
     single<MoradoresDao> { get<AppDatabase>().getMoradoresDao() }
+    single<AmenityDao> { get<AppDatabase>().getAmenityDao() }
 }
 
 val networkModule = module {
@@ -135,6 +143,7 @@ val repositoryModule = module {
     single<ApartamentosRepository> { ApartamentoRepositoryImpl(get()) }
     single<CondominioRepository> { CondominioRepositoryImpl(get()) }
     single<MoradoresRepository> { MoradoresRepositoryImpl(get()) }
+    single<AmenityRepository> { AmenityRepositoryImpl(get()) }
     single<AddPessoaFormValidator> { AddPessoaFormValidatorImpl() }
     single<LoginApi> { FakeLoginApi(get()) }
     single<SessionRepository> { SessionRepositoryImpl() }
@@ -215,6 +224,8 @@ val useCaseModule = module {
     factory { GetPorteirosByCondominioUseCase(get()) }
     factory { DeletePorteiroUseCase(get()) }
     factory { ReassignPorteiroUseCase(get(), get()) }
+    factory { AddAmenityUseCase(get()) }
+    factory { GetAmenitiesByCondominioUseCase(get()) }
 }
 
 val viewModelModule = module {
@@ -237,4 +248,6 @@ val viewModelModule = module {
     viewModelOf(::MoradorInfoViewModel)
     viewModelOf(::SearchPessoaViewModel)
     viewModelOf(::MoradorShellViewModel)
+    viewModelOf(::AmenityListViewModel)
+    viewModelOf(::AddAmenityViewModel)
 }

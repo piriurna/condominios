@@ -14,6 +14,10 @@ import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDas
 import com.zalamena.condominios.condominio.ui.condominio.dashboard.CondominioDashboardViewModel
 import com.zalamena.condominios.condominio.ui.moradores.details.MoradorInfoScreen
 import com.zalamena.condominios.condominio.ui.moradores.details.MoradorInfoViewModel
+import com.zalamena.condominios.condominio.ui.amenity.add.AddAmenityScreen
+import com.zalamena.condominios.condominio.ui.amenity.add.AddAmenityViewModel
+import com.zalamena.condominios.condominio.ui.amenity.list.AmenityListScreen
+import com.zalamena.condominios.condominio.ui.amenity.list.AmenityListViewModel
 import com.zalamena.condominios.condominio.ui.porteiro.list.PorteiroListScreen
 import com.zalamena.condominios.condominio.ui.porteiro.list.PorteiroListViewModel
 import com.zalamena.login.ui.createuser.CreateUserViewModel
@@ -36,6 +40,12 @@ object PorteiroListRoute
 @Serializable
 object AdminMoradorDetailRoute
 
+@Serializable
+object AmenityListRoute
+
+@Serializable
+object AddAmenityRoute
+
 fun NavGraphBuilder.condominioDashboardNavHost(
     navController: NavController,
     viewModel: CondominioDashboardViewModel,
@@ -44,7 +54,9 @@ fun NavGraphBuilder.condominioDashboardNavHost(
     addMoradorFlowViewModel: AddMoradorFlowViewModel,
     createUserViewModel: CreateUserViewModel,
     porteiroListViewModel: PorteiroListViewModel,
-    moradorInfoViewModel: MoradorInfoViewModel
+    moradorInfoViewModel: MoradorInfoViewModel,
+    amenityListViewModel: AmenityListViewModel,
+    addAmenityViewModel: AddAmenityViewModel
 ) {
     navigation<CondominioDashboardRoute>(startDestination = CondominioDashboardScreenRoute) {
         composable<CondominioDashboardScreenRoute> {
@@ -68,6 +80,10 @@ fun NavGraphBuilder.condominioDashboardNavHost(
                 onNavigateToPorteiroList = { condominioId ->
                     porteiroListViewModel.setCondominioId(condominioId)
                     navController.navigate(PorteiroListRoute)
+                },
+                onNavigateToAmenityList = { condominioId ->
+                    amenityListViewModel.setCondominioId(condominioId)
+                    navController.navigate(AmenityListRoute)
                 },
                 onBack = { navController.popBackStack() }
             )
@@ -107,6 +123,26 @@ fun NavGraphBuilder.condominioDashboardNavHost(
         composable<PorteiroListRoute> {
             PorteiroListScreen(
                 viewModel = porteiroListViewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable<AmenityListRoute> {
+            AmenityListScreen(
+                viewModel = amenityListViewModel,
+                onNavigateToAddAmenity = { condominioId ->
+                    addAmenityViewModel.reset()
+                    addAmenityViewModel.setCondominioId(condominioId)
+                    navController.navigate(AddAmenityRoute)
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable<AddAmenityRoute> {
+            AddAmenityScreen(
+                viewModel = addAmenityViewModel,
+                onSuccess = { navController.popBackStack() },
                 onBack = { navController.popBackStack() }
             )
         }
